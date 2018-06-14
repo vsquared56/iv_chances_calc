@@ -225,13 +225,15 @@
 					padding: 20px 20px 20px 20px; 
 					font-family: "Verdana", "Helvetica", "sans-serif";}
 		.chart { 	margin:auto; }
-		.description { font-size:1.5em; }
+		.description { font-size:1.5em; 
+						border: 2px solid #BBBBBB;
+						padding: 1% 1% 1% 1%; 
+						margin: 1% 0 0 0; }
 		.optionentry { font-size:2em; 
 						border: 2px solid #BBBBBB; 
 						margin: 1% 0 0 0; 
 						padding: 1% 1% 1% 1%; }
-		.optiontextbox { 	font-size:1em; 
-							;}
+		.optiontextbox { 	font-size:1em; }
 		.inputbox { 	white-space:nowrap; }
 		.calcbutton { 	font-size:2em; 
 						margin: 1% 1% 1% 1%; }
@@ -242,7 +244,8 @@
 					padding: 30px 0 0 0; }
 		select { 	font-size:0.75em; 
 					height:2em;}
-		#resultstext { font-size:1.35em; }
+		#resultstext {	font-size:1.35em; 
+						margin: 1% 0 0 0; }
 	</style>
   </head>
 	<body>
@@ -300,7 +303,6 @@
 			<br>
 			<div class="chart" id="visualization"></div>
 			<div class="description">
-				<hr>
 				Need to find six 90%+ IV Pokemon during Community Day?  Or willing to settle for one,
 				as long as it has 15 Attack?
 				<br><br>
