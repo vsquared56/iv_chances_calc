@@ -8,10 +8,28 @@
 
       function init()
 	  {
-
+		var width, height;
+		width = window.innerWidth - 100;
+		if (width < 500)
+		{
+		  width = 500;
+		}
+		else if (width > 1300)
+		{
+		  width = 1300;
+		}
+		height = window.innerHeight - 300;
+		if (height < 300)
+		{
+		  height = 300;
+		}
+		else if (height > 1000)
+		{
+		  height = 1000;
+		}
         var options = {
-			width: Math.min(900,window.innerWidth-100),
-			height: Math.max(800,window.innerHeight - 300),
+			width: width,
+			height: height,
 			chartArea:{width:'90%',height:'85%'},
 			
 			hAxis: {title: 'Number of catches/encounters' },
@@ -181,7 +199,7 @@
       }
     </script>
 	<style type="text/css">
-		.content { 	max-width:1000px;
+		.content { 	max-width:1400px;
 					margin:auto;
 					min-height:100%;
 					background-color:#DDDDDD;
