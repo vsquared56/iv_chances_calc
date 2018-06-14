@@ -226,14 +226,22 @@
 					font-family: "Verdana", "Helvetica", "sans-serif";}
 		.chart { 	margin:auto; }
 		.description { font-size:1.5em; }
-		.optionentry { font-size:2em; }
-		.optiontextbox { font-size:1em; }
-		.inputbox { white-space:nowrap; }
-		.calcbutton { font-size:2em; }
+		.optionentry { font-size:2em; 
+						border: 2px solid #BBBBBB; 
+						margin: 1% 0 0 0; 
+						padding: 1% 1% 1% 1%; }
+		.optiontextbox { 	font-size:1em; 
+							;}
+		.inputbox { 	white-space:nowrap; }
+		.calcbutton { 	font-size:2em; 
+						margin: 1% 1% 1% 1%; }
+		.buttonsurround {	border: 2px solid #BBBBBB;
+							margin: 3% 0 0 0; }
 		.footer { 	font-size:0.75em;
 					text-align:center; 
 					padding: 30px 0 0 0; }
-		select { font-size:0.75em; }
+		select { 	font-size:0.75em; 
+					height:2em;}
 		#resultstext { font-size:1.35em; }
 	</style>
   </head>
@@ -260,7 +268,6 @@
 					<option value=0>0</option>
 				</select>
 			</div>
-			<br>
 			<div class="optionentry">Minimum IV Percentage:
 				<br>
 				<select id="appraisal">
@@ -272,7 +279,6 @@
 				</select>
 				<span class="inputbox"><input class="optiontextbox" id="min_iv_percent" size="4" value="82.2" disabled="true">%IV</span>
 			</div>
-			<br>
 			<div class="optionentry">Type of catches/encounters:
 				<select id="encounter_type">
 					<option value="normal">Normal wild Pokemon</option>
@@ -280,18 +286,15 @@
 					<option value="raid">Raid Pokemon</option>
 				</select>
 			</div>
-			<br>
 			<div class="optionentry">Number of above Pokemon needed:
 				<input class="optiontextbox" id="pokemon_to_get" size="4" value="1">
 			</div>
-			<br>
 			<div class="optionentry">Encounters to graph:
 				<input class="optiontextbox" id="encounters_to_graph" size="5" value="300"><br>
 			</div>
-			<br>
-			<button class="calcbutton" type="button" id="b1">Calculate</button>
-			<br><br>
-		
+			<div class="buttonsurround">
+				<button class="calcbutton" type="button" id="b1">Calculate</button>
+			</div>
 			<div id="resultstext"></div>
 			<div id="debug"></div>
 			<br>
