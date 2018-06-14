@@ -186,9 +186,11 @@
 					min-height:100%;
 					background-color:#DDDDDD;
 					padding: 20px 20px 20px 20px; }
-		.chart { margin:auto; }
+		.chart { 	margin:auto; }
+		.description { font-size:150%; }
 		.optionentry { font-size:200%; }
 		.optiontextbox { font-size:100%; }
+		.inputbox { white-space:nowrap; }
 		.calcbutton { font-size:200%; }
 		select { font-size:75%; }
 		#resultstext { font-size:135%; }
@@ -227,7 +229,7 @@
 					<option value="bad">Not likely headway / Not great / Room for improvement</option>
 					<option value="other">Other</option>
 				</select>
-				<input class="optiontextbox" id="min_iv_percent" size="4" value="82.2" disabled="true">%IV
+				<span class="inputbox"><input class="optiontextbox" id="min_iv_percent" size="4" value="82.2" disabled="true">%IV</span>
 			</div>
 			<br>
 			<div class="optionentry">Type of catches/encounters:
@@ -253,6 +255,19 @@
 			<div id="debug"></div>
 			<br>
 			<div class="chart" id="visualization"></div>
+			<div class="description">
+				<hr>
+				Need to find 6 90%+ IV Tyranitars for Community Day?
+				<br><br>
+				Use this tool to get an idea of your chances of getting a desirable Pokemon
+				after a certain number of encounters or catches.
+				<br><br>
+				Enter your desired minimum attack IV, the minimum overall IV percentage,
+				and whether these are normal, weather-boosted, or raid encounters.
+				<br><br>
+				Set your expectations too high, or just want to play around with the stats?
+				Change any parameter and click Calculate again!
+			</div>
 		</div>
 	</body>
 </html>
