@@ -184,8 +184,8 @@
 			}
 			
 			//Print some results and draw the chart.
-			document.getElementById("resultstext").innerHTML = prnumerator + " of every " + prdenominator + " Pokemon will match the IV criteria...";
-			options.title = "Chance of finding " + pokemontoget + " Pokemon above " + minivpercent + "% IV with " + minattack + "ATT after x " + encountertype + " catches/encounters";
+			document.getElementById("resultstext").innerHTML = prnumerator + " of every " + prdenominator + " Pokemon (" + (p*100).toFixed(2) + "%) will match the IV criteria...";
+			options.title = "Chance of finding at least " + pokemontoget + " Pokemon above " + minivpercent + "% IV with " + minattack + "ATT after x " + encountertype + " catches/encounters";
 			
 			options.vAxis.viewWindow = {min:0, max:1};
 			
