@@ -10,10 +10,8 @@
 	  {
 
         var options = {
-			width: 900,
-			//width: window.innerWidth - 100,
-			//height: 600,
-			height: window.innerHeight - 300,
+			width: Math.min(900,window.innerWidth-100),
+			height: Math.max(800,window.innerHeight - 300),
 			chartArea:{width:'90%',height:'85%'},
 			
 			hAxis: {title: 'Number of catches/encounters' },
@@ -23,8 +21,6 @@
 				duration: 1000,
 				easing: 'in'
 			},
-			
-			explorer: {},
 			
 			curveType: 'function',
 			title: 'Company Performance',
