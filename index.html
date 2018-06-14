@@ -10,30 +10,36 @@
 	  {
 	    //Set chart size
 		var width, height;
-		width = window.innerWidth - 100;
-		if (width < 500)
+		function calcChartArea()
 		{
-		  width = 500;
+
+			width = window.innerWidth - 100;
+			if (width < 500)
+			{
+			  width = 500;
+			}
+			else if (width > 1300)
+			{
+			  width = 1300;
+			}
+			height = window.innerHeight - 300;
+			if (height < 300)
+			{
+			  height = 300;
+			}
+			else if (height > 1000)
+			{
+			  height = 1000;
+			}
 		}
-		else if (width > 1300)
-		{
-		  width = 1300;
-		}
-		height = window.innerHeight - 300;
-		if (height < 300)
-		{
-		  height = 300;
-		}
-		else if (height > 1000)
-		{
-		  height = 1000;
-		}
+		
+		calcChartArea();
 		
 		//Chart options
         var options = {
 			width: width,
 			height: height,
-			chartArea:{width:'90%',height:'85%'},
+			chartArea:{left:80,width:'90%',height:'85%'},
 			
 			fontSize: 20,
 			
@@ -187,7 +193,13 @@
 			document.getElementById("resultstext").innerHTML = prnumerator + " of every " + prdenominator + " Pokemon (" + (p*100).toFixed(2) + "%) will match the IV criteria...";
 			options.title = "Chance of finding at least " + pokemontoget + " Pokemon above " + minivpercent + "% IV with min " + minattack + "ATT after x " + encountertype + " catches/encounters";
 			
+			//Reset some options
 			options.vAxis.viewWindow = {min:0, max:1};
+			
+			//Reset the chart area
+			calcChartArea();
+			options.width = width;
+			options.height = height;
 			
 			drawChart();
 		}
