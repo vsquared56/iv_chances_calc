@@ -190,7 +190,7 @@
 			}
 			
 			//Print some results and draw the chart.
-			document.getElementById("resultstext").innerHTML = prnumerator + " of every " + prdenominator + " Pokemon (" + (p*100).toFixed(2) + "%) will match the IV criteria...";
+			document.getElementById("resultstext").innerHTML = "On average, " + prnumerator + " of every " + prdenominator + " Pokemon (" + (p*100).toFixed(2) + "%) will match the IV criteria...";
 			options.title = "Chance of finding at least " + pokemontoget + " Pokemon above " + minivpercent + "% IV with min " + minattack + "ATT after x " + encountertype + " catches/encounters";
 			
 			//Reset some options
@@ -229,6 +229,8 @@
 		.optiontextbox { font-size:100%; }
 		.inputbox { white-space:nowrap; }
 		.calcbutton { font-size:200%; }
+		.footer { 	font-size:75%;
+					text-align:center; }
 		select { font-size:75%; }
 		#resultstext { font-size:135%; }
 	</style>
@@ -305,6 +307,7 @@
 				Set your expectations too high, or just want to play around with the stats?
 				Change any parameter and click Calculate again!
 			</div>
+			<div class="footer">By <a href="https://sil.ph/VSquared56">VSquared56</a></div>
 		</div>
 	</body>
 </html>
