@@ -1,0 +1,227 @@
+<html>
+  <head>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+	<script type="text/javascript" src="binom.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(init);
+
+      function init()
+	  {
+
+        var options = {
+			//width: 1200,
+			width: window.innerWidth - 100,
+			//height: 900,
+			height: window.innerHeight - 300,
+			vAxis: {minValue:0, maxValue:100}, // This is also reset at the bottom of the button onclick function
+			animation: {
+				duration: 1000,
+				easing: 'in'
+			},
+			title: 'Company Performance',
+			curveType: 'function',
+			legend: { position: 'bottom' }
+        };
+
+		var chart = new google.visualization.LineChart(
+        document.getElementById('visualization'));
+		
+		var data = new google.visualization.DataTable();
+		data.addColumn('number', 'Pokemon Caught');
+		data.addColumn('number', 'Probability');
+		
+		/* Initialize the IV table */
+		var iv = [];
+		for (i = 0; i < 16; i++) {
+			for (j = 0; j < 16; j++) {
+				for (k = 0; k < 16; k++) {
+					iv.push({
+						atk: i,
+						def: j,
+						sta: k,
+						percent: 100*(i+j+k)/45,
+						lowestiv: Math.min(i, j, k)
+					});
+				}
+			}
+		}
+		
+		/* Change the minimum IV box depending on the Appraisal selection */
+		document.getElementById("appraisal").onchange = function() {
+		  if(this.value === "best")
+		  {
+		    document.getElementById("min_iv_percent").value = 82.2;
+			document.getElementById("min_iv_percent").disabled = true;
+		  }
+		  else if(this.value === "good")
+		  {
+		    document.getElementById("min_iv_percent").value = 66.7;
+			document.getElementById("min_iv_percent").disabled = true;
+		  }
+		  else if(this.value === "aboveaverage")
+		  {
+		    document.getElementById("min_iv_percent").value = 51.1;
+			document.getElementById("min_iv_percent").disabled = true;
+		  }
+		  else if(this.value === "bad")
+		  {
+		    document.getElementById("min_iv_percent").value = 0;
+			document.getElementById("min_iv_percent").disabled = true;
+		  }
+		  else if(this.value === "other")
+		  {
+		    document.getElementById("min_iv_percent").disabled = false;
+		  }
+		}
+		
+		/* Change the encounters to graph depending on the Type of catch selection */
+		document.getElementById("encounter_type").onchange = function() {
+		  if(this.value === "normal")
+		  {
+		    document.getElementById("encounters_to_graph").value = 300;
+		  }
+		  else if(this.value === "boosted")
+		  {
+		    document.getElementById("encounters_to_graph").value = 300;
+		  }
+		  else if(this.value === "raid")
+		  {
+		    document.getElementById("encounters_to_graph").value = 30;
+		  }
+		}
+		
+		var button = document.getElementById('b1');
+		
+		/* Process the button click -- calculate probability, populate data table, and draw the chart */
+		button.onclick = function() {
+		
+			// Process input boxes
+			var minattack = document.getElementById("min_attack_iv").value;
+			var minivpercent = document.getElementById("min_iv_percent").value;
+			var encountertype = document.getElementById("encounter_type").value;
+			var pokemontoget = document.getElementById("pokemon_to_get").value;
+			var numcatches = document.getElementById("encounters_to_graph").value;
+			
+			var miniv = 0;
+			if (encountertype === "normal")
+			{
+			  miniv = 0;
+			}
+			else if (encountertype === "boosted")
+			{
+			  miniv = 5;
+			}
+			else if (encountertype === "raid")
+			{
+			  miniv = 10;
+			}
+			
+		
+		  // Calculate the number of potential matches (and the total possible matches) given the input minattack, minpercent, and miniv.
+			var prnumerator = 0;
+			var prdenominator = 0;
+			var p = 1;
+			
+			// Loop through the entire iv table, counting the chance any single encounter will fit our criteria
+			for (i = 0; i < iv.length; i++)
+			{
+			    // If it matches ATK and IV% criteria, and fits the type of encounter (miniv), we want it.
+				if ((iv[i].atk >= minattack) && (iv[i].percent >= minivpercent) && (iv[i].lowestiv >= miniv))
+				{
+					prnumerator++;
+				}
+				// Divide by the total number of possible encounters (those matching the encounter type, miniv)
+				if (iv[i].lowestiv >= miniv)
+				{
+					prdenominator++;
+				}
+			}
+			p = (prnumerator / prdenominator);
+			
+			document.getElementById("resultstext").innerHTML = prnumerator + " of every " + prdenominator + " Pokemon will match the IV criteria...";
+			
+			// Discard any data drawn previously
+			data.removeRows(0,data.getNumberOfRows());
+			
+			// Fill the data table, where x is the number of catches/encounters, y is the probability of successfully finding what we're looking for.
+			var i;
+			var prob;
+			// i is the number of catches/encounters.
+			for (i = 0; i < numcatches; i++)
+			{
+			    // binomcdf(k,n,p) gives us the chances of getting k or fewer successes after n trials with p probability.
+				// Since we want the chances of getting k or more successes, we do (1-binomcdf(k-1,n,p).
+			    prob = 100*(1-binomcdf((pokemontoget - 1),i,(p)));
+				data.addRow([i,prob]);
+			}
+			
+			options.title = "Chance of finding " + pokemontoget + " Pokemon above " + minivpercent + "% IV with " + minattack + "ATT after x " + encountertype + " catches/encounters";
+			
+			options.vAxis.viewWindow = {min:0, max:100};
+			
+			drawChart();
+		}
+		
+		
+		function drawChart() {
+		// Disabling the button while the chart is drawing.
+			button.disabled = true;
+			google.visualization.events.addListener(chart, 'ready',
+				function() {
+				button.disabled = false;
+			});
+			chart.draw(data, options);
+		}
+		
+      }
+    </script>
+  </head>
+  <body>
+    Minimum Attack IV
+    <select id="min_attack_iv">
+	  <option value=15>15</option>
+	  <option value=14>14</option>
+	  <option value=13>13</option>
+	  <option value=12>12</option>
+	  <option value=11>11</option>
+	  <option value=10>10</option>
+	  <option value=9>9</option>
+	  <option value=8>8</option>
+	  <option value=7>7</option>
+	  <option value=6>6</option>
+	  <option value=5>5</option>
+	  <option value=4>4</option>
+	  <option value=3>3</option>
+	  <option value=2>2</option>
+	  <option value=1>1</option>
+	  <option value=0>0</option>
+	</select><br>
+	Minimum IV Percentage
+	<select id="appraisal">
+	  <option value="best">Wonder /  Simply amazing / Battle with the best</option>
+	  <option value="good">Certainly caught attention / Strong Pokemon / Really strong</option>
+	  <option value="aboveaverage">Above Average / Decent Pokemon / Pretty decent</option>
+	  <option value="bad">Not likely to make headway / Not great in battle / Has room for improvement</option>
+	  <option value="other">Other</option>
+	</select>
+	<input id="min_iv_percent" size="4" value="82.2" disabled="true">%IV<br>
+	Type of catches/encounters
+	<select id="encounter_type">
+	  <option value="normal">Normal wild Pokemon</option>
+	  <option value="boosted">Weather boosted Pokemon</option>
+	  <option value="raid">Raid Pokemon</option>
+	</select><br>
+	Number of above Pokemon needed
+	<input id="pokemon_to_get" size="4" value="1"><br>
+	Encounters to graph
+	<input id="encounters_to_graph" size="5" value="300"><br>
+	
+    <button type="button" id="b1">Calculate</button>
+	<br>
+	<br>
+	<div id="resultstext"></div>
+	<div id="debug"></div>
+    <div id="visualization"></div>
+  </body>
+</html>
