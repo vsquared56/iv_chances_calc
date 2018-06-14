@@ -8,6 +8,7 @@
 
       function init()
 	  {
+	    //Set chart size
 		var width, height;
 		width = window.innerWidth - 100;
 		if (width < 500)
@@ -27,10 +28,16 @@
 		{
 		  height = 1000;
 		}
+		
+		//Chart options
         var options = {
 			width: width,
 			height: height,
 			chartArea:{width:'90%',height:'85%'},
+			
+			fontSize: 20,
+			
+			lineWidth: 4,
 			
 			hAxis: {title: 'Number of catches/encounters' },
 			vAxis: {minValue:0, maxValue:1, format: 'percent'}, // This is also reset at the bottom of the button onclick function
@@ -161,8 +168,6 @@
 			}
 			p = (prnumerator / prdenominator);
 			
-			document.getElementById("resultstext").innerHTML = prnumerator + " of every " + prdenominator + " Pokemon will match the IV criteria...";
-			
 			// Discard any data drawn previously
 			data.removeRows(0,data.getNumberOfRows());
 			
@@ -178,6 +183,8 @@
 				data.addRow([i,prob]);
 			}
 			
+			//Print some results and draw the chart.
+			document.getElementById("resultstext").innerHTML = prnumerator + " of every " + prdenominator + " Pokemon will match the IV criteria...";
 			options.title = "Chance of finding " + pokemontoget + " Pokemon above " + minivpercent + "% IV with " + minattack + "ATT after x " + encountertype + " catches/encounters";
 			
 			options.vAxis.viewWindow = {min:0, max:1};
@@ -275,7 +282,7 @@
 			<div class="chart" id="visualization"></div>
 			<div class="description">
 				<hr>
-				Need to find 6 90%+ IV Tyranitars for Community Day?
+				Need to find 6 90%+ IV Pokemon for Community Day?
 				<br><br>
 				Use this tool to get an idea of your chances of getting a desirable Pokemon
 				after a certain number of encounters or catches.
