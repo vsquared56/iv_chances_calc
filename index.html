@@ -21,7 +21,7 @@
       function init()
 	  {
 	    //Set chart size
-		var width, height;
+		var width, height, heightpercent;
 		function calcChartArea()
 		{
 
@@ -43,6 +43,14 @@
 			{
 			  height = 1000;
 			}
+			if (height > 800)
+			{
+			  heightpercent = '70%';
+			}
+			else
+			{
+			  heightpercent = '85%';
+			}
 		}
 		
 		calcChartArea();
@@ -51,7 +59,7 @@
         var options = {
 			width: width,
 			height: height,
-			chartArea:{left:80,width:'90%',height:'80%'},
+			chartArea:{left:80,width:'90%',height:heightpercent},
 			
 			fontSize: 20,
 			
