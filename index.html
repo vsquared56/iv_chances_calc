@@ -431,8 +431,10 @@
 			// Fill the data table, where x is the number of catches/encounters, y is the probability of successfully finding what we're looking for.
 			var i;
 			var prob;
+			var datapoints = 1000; //Don't calculate/chart more than 1000 data points.
+			var datainterval = Math.ceil(numcatches / datapoints);
 			// i is the number of catches/encounters.
-			for (i = 0; i <= numcatches; i++)
+			for (i = 0; i <= numcatches; i+= datainterval)
 			{
 			    // binomcdf(k,n,p) gives us the chances of getting k or fewer successes after n trials with p probability.
 				// Since we want the chances of getting k or more successes, we do (1-binomcdf(k-1,n,p).
