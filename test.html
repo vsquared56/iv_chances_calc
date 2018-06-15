@@ -497,6 +497,7 @@
 						padding: 1% 1% 1% 1%; }
 		.optiontextbox { 	font-size:1em; }
 		.optiondescription { font-size:0.75em; }
+		.optionsubdescription { font-size:0.5em; }
 		.inputbox { 	white-space:nowrap; }
 		.calcbutton { 	font-size:2em; 
 						margin: 1% 1% 1% 1%;
@@ -525,7 +526,7 @@
 	<body>
 		<div class="content">
 			<h1>IV Catch/Encounter Calculator + Grapher</h1>
-			<div class="optionentry">Minimum Attack IV:
+			<div class="optionentry"><span class="optiondescription">Minimum Attack IV:</span>
 				<select id="min_attack_iv">
 					<option value=15>15</option>
 					<option value=14>14</option>
@@ -545,7 +546,7 @@
 					<option value=0>0</option>
 				</select>
 			</div>
-			<div class="optionentry">Minimum IV Percentage:
+			<div class="optionentry"><span class="optiondescription">Minimum IV Percentage:</span>
 				<br>
 				<select id="appraisal">
 					<option value="best">Wonder /  Simply amazing / Battle with the best</option>
@@ -556,14 +557,14 @@
 				</select>
 				<span class="inputbox"><input class="optiontextbox" id="min_iv_percent" size="4" value="82.2" disabled="true">%IV</span>
 			</div>
-			<div class="optionentry">Type of catches/encounters:
+			<div class="optionentry"><span class="optiondescription">Type of catches/encounters:</span>
 				<select id="encounter_type">
 					<option value="normal">Normal wild Pokemon</option>
 					<option value="boosted">Weather boosted Pokemon</option>
 					<option value="raid">Raid Pokemon</option>
 				</select>
 			</div>
-			<div class="optionentry" id="min_level_div">Minimum Pokemon Level:
+			<div class="optionentry" id="min_level_div"><span class="optiondescription">Minimum Pokemon Level:</span>
 				<select id="min_level">
 					<option value="any">Any</option>
 					<option id="pokelvl35" value=35 disabled="true">35</option>
@@ -602,7 +603,7 @@
 					<option id="pokelvl2" value=2>2</option>
 					<option id="pokelvl1" value=1>1</option>
 				</select>
-				Trainer Level:
+				<span class="optiondescription">Trainer Level:</span>
 				<select id="trainer_level" disabled="true">
 					<option value=30>&ge;30</option>
 					<option value=29>29</option>
@@ -637,16 +638,16 @@
 				</select>
 			</div>
 
-			<div class="optionentry">Additional probability modifier:
+			<div class="optionentry"><span class="optiondescription">Additional probability modifier:</span>
 				<input class="optiontextbox" id="rate_modifier" size="4" value="1">
-				<div class="optiondescription">Keep this set to 1 in most cases, or set it to the expected shiny rate, formatted as a decimal!</div>
+				<div class="optionsubdescription">Keep this set to 1 in most cases, or set it to the expected shiny rate, formatted as a decimal!</div>
 			</div>
 			
-			<div class="optionentry">Number of above Pokemon needed:
+			<div class="optionentry"><span class="optiondescription">Number of above Pokemon needed:</span>
 				<input class="optiontextbox" id="pokemon_to_get" size="4" value="1">
 			</div>
 			
-			<div class="optionentry">Encounters to graph:
+			<div class="optionentry"><span class="optiondescription">Encounters to graph:</span>
 				<input class="optiontextbox" id="encounters_to_graph" size="5" value="300"><br>
 			</div>
 			
