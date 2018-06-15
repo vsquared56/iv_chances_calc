@@ -58,13 +58,15 @@
 			
 			// Decrease chart area to fit the title if it spans two lines
 			
-			if (width < 1100)
+			if (width < 1000)
 			{
 			  heightpercent = '70%';
+			  widthpercent = '80%';
 			}
 			else
 			{
 			  heightpercent = '85%';
+			  widthpercent = '90%';
 			}
 
 			
@@ -76,7 +78,7 @@
         var options = {
 			//width: width,
 			height: height,
-			chartArea:{width:'90%',height:heightpercent},
+			chartArea:{width:widthpercent,height:heightpercent},
 			
 			//fontSize: 20,
 			
