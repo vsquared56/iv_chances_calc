@@ -402,7 +402,7 @@
 			}
 			
 			lvlp = (lvlnumerator/lvldenominator);
-			finalp = p*lvlp;
+			finalp = p*lvlp*ratemodifier;
 			
 			// Discard any data drawn previously
 			data.removeRows(0,data.getNumberOfRows());
@@ -419,7 +419,7 @@
 				data.addRow([i,prob]);
 			}
 			
-			//Print some results and draw the chart.
+			//Print the final probability per encounter
 			document.getElementById("resultstext").innerHTML =	"On average, " + prnumerator + " of every " + prdenominator +
 																" Pokemon (" + (p*100).toFixed(2) + "%) will match the IV criteria...<br>";
 			if (minlevel != 0)
@@ -434,12 +434,24 @@
 			}
 			document.getElementById("resultstext").innerHTML += "This gives a total probability of " + (p*lvlp*ratemodifier*100).toFixed(6) + "% per encounter.";
 			
-			document.getElementById("debug").innerHTML = 	"Plotting 1-binomcdf(k,n,p) with k=" + (pokemontoget - 1) + ", p=(" + prnumerator +
+			//Print some debug text
+			document.getElementById("debug").innerHTML = 	"Plotting 1-binomcdf(k,n,p) with k=" + (pokemontoget - 1) + ", p = (" + prnumerator +
 															"/" + prdenominator + ")*(" + lvlnumerator + "/" + lvldenominator + ")*" + ratemodifier +
-															"= (" + p.toFixed(4) + "*" + lvlp.toFixed(4) + "*" + ratemodifier.toFixed(4) + ")=" + finalp.toFixed(8) +
+															" = (" + p.toFixed(4) + "*" + lvlp.toFixed(4) + "*" + ratemodifier.toFixed(4) + ") = " + finalp.toFixed(8) +
 															" for 0<=n<=" + numcatches;
-															
-			options.title = "Chance of finding at least " + pokemontoget + " Pokemon above " + minivpercent + "% IV with min " + minattack + "ATT after x " + encountertype + " catches/encounters";
+									
+			//Set the chart title
+			options.title = "Chance of finding at least " + pokemontoget + " ";
+			if (ratemodifier != 1)
+			{
+				options.title += "shiny ";
+			}
+			options.title += "Pokemon above " + minivpercent + "% IV with min " + minattack + "ATT ";
+			if (minlevel != 0)
+			{
+				options.title += "with level >" + minlevel + " ";
+			}
+			options.title += "after x " + encountertype + " catches/encounters";
 			
 			//Reset some options
 			options.vAxis.viewWindow = {min:0, max:1};
@@ -449,6 +461,7 @@
 			options.width = width;
 			options.height = height;
 			
+			//Draw the chart!
 			drawChart();
 		}
 		
