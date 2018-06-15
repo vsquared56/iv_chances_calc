@@ -43,14 +43,15 @@
         };
 
 		/* Set chart area.
-		 * Call this during init, and then on window resize.
-		 * Don't call during button press to prevent virtual-keyboard size changes on mobile
+		 * Call this during init.
+		 * Don't call during button press to prevent virtual-keyboard size changes on mobile.
+		 * Don't call on window resize?
 		 */
 		var width, height, heightpercent;
 		function setChartArea()
 		{
-			width = window.outerWidth;
-			height = window.outerHeight;
+			width = window.innerWidth;
+			height = window.innerHeight;
 			
 			if (height > width)
 			{
@@ -83,7 +84,6 @@
 		window.addEventListener('resize', function(){
 			clearTimeout(timer);
 			timer = setTimeout(function(){
-				setChartArea();
 				drawChart();
 				}, 500);
 			});
