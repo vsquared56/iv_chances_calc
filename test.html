@@ -237,6 +237,7 @@
 			changePokeLvlOption(1,5,"enabled");
 			
 			document.getElementById("min_level_div").style.display = "block"; //Display the minimum Pokemon level / Trainer level div
+			document.getElementById("trainer_level_div").style.display = "block";
 		  }
 		  else if(this.value === "boosted")
 		  {
@@ -248,6 +249,7 @@
 			changePokeLvlOption(1,5,"disabled");
 			
 			document.getElementById("min_level_div").style.display = "block";
+			document.getElementById("trainer_level_div").style.display = "block";
 		  }
 		  else if(this.value === "raid")
 		  {
@@ -256,6 +258,7 @@
 			document.getElementById("trainer_level").disabled = true;
 			
 			document.getElementById("min_level_div").style.display = "none";  //Hide the minimum Pokemon level / Trainer level div
+			document.getElementById("trainer_level_div").style.display = "none";
 		  }
 		  
 		  findLevelErrors();
@@ -602,7 +605,9 @@
 					<option id="pokelvl2" value=2>2</option>
 					<option id="pokelvl1" value=1>1</option>
 				</select>
-				<span class="optiondescription">Trainer Level:</span>
+			</div>
+			<div class="optionentry" id="trainer_level_div">
+				<div class="optiondescription">Trainer Level:</div>
 				<select id="trainer_level" disabled="true">
 					<option value=30>&ge;30</option>
 					<option value=29>29</option>
