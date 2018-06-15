@@ -20,32 +20,37 @@
 
       function init()
 	  {
-	    //Set chart size
-		var width, height, heightpercent;
-		function calcChartArea()
-		{
+		
+		//Chart options
+        var options = {
+			
+			//fontSize: 20,
+			
+			lineWidth: 4,
+			
+			hAxis: {title: 'Number of catches/encounters' },
+			vAxis: {minValue:0, maxValue:1, format: 'percent'}, // This is also reset at the bottom of the button onclick function
+			
+			animation: {
+				duration: 1000,
+				easing: 'in'
+			},
+			
+			curveType: 'none',
+			title: 'Company Performance',
+			legend: { position: 'none' },
+			tooltip: { trigger: 'selection' }
+        };
 
-			/*width = window.innerWidth - 100;
-			if (width < 500)
-			{
-			  width = 500;
-			}
-			else if (width > 1300)
-			{
-			  width = 1300;
-			}
-			height = window.innerHeight - 200;
-			if (height < 400)
-			{
-			  height = 400;
-			}
-			else if (height > 1000)
-			{
-			  height = 1000;
-			}
-			*/
-			width = window.innerWidth;
-			height = window.innerHeight;
+		/* Set chart area.
+		 * Call this during init, and then on window resize.
+		 * Don't call during button press to prevent virtual-keyboard size changes on mobile
+		 */
+		var width, height, heightpercent;
+		function setChartArea()
+		{
+			width = window.outerWidth;
+			height = window.outerHeight;
 			
 			if (height > width)
 			{
@@ -68,36 +73,23 @@
 			  heightpercent = '85%';
 			  widthpercent = '90%';
 			}
-
 			
+			options.height = height;
+			options.chartArea = {width:widthpercent,height:heightpercent};
 		}
 		
-		calcChartArea();
+		/* Window resize handling */
+		var timer;
+		window.addEventListener('resize', function(){
+			clearTimeout(timer);
+			timer = setTimeout(function(){
+				setChartArea();
+				drawChart();
+				}, 500);
+			});
 		
-		//Chart options
-        var options = {
-			//width: width,
-			height: height,
-			chartArea:{width:widthpercent,height:heightpercent},
-			
-			//fontSize: 20,
-			
-			lineWidth: 4,
-			
-			hAxis: {title: 'Number of catches/encounters' },
-			vAxis: {minValue:0, maxValue:1, format: 'percent'}, // This is also reset at the bottom of the button onclick function
-			
-			animation: {
-				duration: 1000,
-				easing: 'in'
-			},
-			
-			curveType: 'none',
-			title: 'Company Performance',
-			legend: { position: 'none' },
-			tooltip: { trigger: 'selection' }
-        };
-
+		setChartArea();
+		
 		var chart = new google.visualization.LineChart(
         document.getElementById('visualization'));
 		
@@ -478,20 +470,6 @@
 			
 			//Reset some options
 			options.vAxis.viewWindow = {min:0, max:1};
-			
-			//Reset the chart area
-			calcChartArea();
-			//options.width = width;
-			options.height = height;
-			
-			/* Window resize handling */
-			var timer;
-			window.addEventListener('resize', function(){
-				clearTimeout(timer);
-				timer = setTimeout(function(){
-					drawChart();
-					}, 500);
-				});
 			
 			//Draw the chart!
 			drawChart();
