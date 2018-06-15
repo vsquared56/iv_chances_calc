@@ -43,15 +43,6 @@
 			{
 			  height = 1000;
 			}
-			// Decrease chart area to fit the title if it spans two lines
-			if (width < 1100)
-			{
-			  heightpercent = '70%';
-			}
-			else
-			{
-			  heightpercent = '85%';
-			}
 			*/
 			width = window.innerWidth;
 			height = window.innerHeight;
@@ -62,8 +53,21 @@
 			}
 			else
 			{
-			  height = height - 200;
+			  height = Math.max((height - 200),(width/2.5));
 			}
+			
+			// Decrease chart area to fit the title if it spans two lines
+			
+			if (width < 1100)
+			{
+			  heightpercent = '70%';
+			}
+			else
+			{
+			  heightpercent = '85%';
+			}
+
+			
 		}
 		
 		calcChartArea();
