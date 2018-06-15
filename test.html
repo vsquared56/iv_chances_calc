@@ -76,7 +76,7 @@
         var options = {
 			//width: width,
 			height: height,
-			chartArea:{left:70,width:'90%',height:heightpercent},
+			chartArea:{width:'90%',height:heightpercent},
 			
 			//fontSize: 20,
 			
@@ -479,6 +479,15 @@
 			calcChartArea();
 			//options.width = width;
 			options.height = height;
+			
+			/* Window resize handling */
+			var timer;
+			window.addEventListener('resize', function(){
+				clearTimeout(timer);
+				timer = setTimeout(function(){
+					drawChart();
+					}, 500);
+				});
 			
 			//Draw the chart!
 			drawChart();
