@@ -37,7 +37,6 @@
 			},
 			
 			curveType: 'none',
-			title: 'Company Performance',
 			legend: { position: 'none' },
 			tooltip: { trigger: 'selection' }
         };
@@ -81,10 +80,14 @@
 		
 		/* Window resize handling */
 		var timer;
+		var chartDrawn = false;
 		window.addEventListener('resize', function(){
 			clearTimeout(timer);
 			timer = setTimeout(function(){
-				drawChart();
+				if (chartDrawn)
+				{
+					drawChart();
+				}
 				}, 500);
 			});
 		
@@ -299,6 +302,23 @@
 		  findLevelErrors();
 		}
 		
+		/* Probability Modifier Selection -- onchange
+		 * Set the shiny rate box depending on the selection
+		 */
+		document.getElementById("ratemodifierselect").onchange = function()
+		{
+		  if (this.value === "custom")
+		  {
+		  	document.getElementById("rate_modifier").disabled = false;
+		  }
+		  else
+		  {
+		    document.getElementById("rate_modifier").disabled = true;
+			document.getElementById("rate_modifier").value = this.value;
+		  }
+		  findLevelErrors();
+		}
+		
 		var button = document.getElementById('b1');
 		
 		/* Process the button click -- calculate probability, populate data table, and draw the chart */
@@ -445,7 +465,7 @@
 																
 			if (ratemodifier != 1)
 			{
-				document.getElementById("resultstext").innerHTML += "Finally, there's a manual rate modifier (shiny rate?!) of " + ratemodifier.toFixed(4) + "<br>";
+				document.getElementById("resultstext").innerHTML += "Finally, there's a manual rate modifier (shiny rate) of " + ratemodifier.toFixed(4) + "<br>";
 			}
 			document.getElementById("resultstext").innerHTML += "This gives a total probability of " + (p*lvlp*ratemodifier*100).toFixed(6) + "% per encounter.";
 			
@@ -483,6 +503,7 @@
 				function() {
 				button.disabled = false;
 			});
+			chartDrawn = true;
 			chart.draw(data, options);
 		}
 		
@@ -540,8 +561,19 @@
 	<body>
 		<div class="content">
 			<h1>IV Catch/Encounter Calculator + Grapher</h1>
+			<div class="optionentry"><div class="optiondescription">Minimum IV Percentage:</div>
+				<select id="appraisal">
+					<option value="best">Wonder /  Simply amazing / Battle with the best</option>
+					<option value="good">Certainly caught attention / Strong Pokemon / Really strong</option>
+					<option value="aboveaverage">Above Average / Decent Pokemon / Pretty decent</option>
+					<option value="bad">Not likely headway / Not great / Room for improvement</option>
+					<option value="other">Other</option>
+				</select>
+				<span class="inputbox"><input class="optiontextbox" id="min_iv_percent" size="4" value="82.2" disabled="true">%IV</span>
+			</div>
 			<div class="optionentry"><div class="optiondescription">Minimum Attack IV:</div>
 				<select id="min_attack_iv">
+					<option value=0>Any</option>
 					<option value=15>15</option>
 					<option value=14>14</option>
 					<option value=13>13</option>
@@ -559,16 +591,6 @@
 					<option value=1>1</option>
 					<option value=0>0</option>
 				</select>
-			</div>
-			<div class="optionentry"><div class="optiondescription">Minimum IV Percentage:</div>
-				<select id="appraisal">
-					<option value="best">Wonder /  Simply amazing / Battle with the best</option>
-					<option value="good">Certainly caught attention / Strong Pokemon / Really strong</option>
-					<option value="aboveaverage">Above Average / Decent Pokemon / Pretty decent</option>
-					<option value="bad">Not likely headway / Not great / Room for improvement</option>
-					<option value="other">Other</option>
-				</select>
-				<span class="inputbox"><input class="optiontextbox" id="min_iv_percent" size="4" value="82.2" disabled="true">%IV</span>
 			</div>
 			<div class="optionentry"><div class="optiondescription">Type of catches/encounters:</div>
 				<select id="encounter_type">
@@ -654,8 +676,18 @@
 			</div>
 
 			<div class="optionentry"><div class="optiondescription">Additional probability modifier:</div>
-				<input class="optiontextbox" id="rate_modifier" size="4" value="1">
-				<div class="optionsubdescription">Keep this set to 1 in most cases, or set it to the expected shiny rate, formatted as a decimal!</div>
+				<select id="ratemodifierselect">
+					<option value="1">Base catch probability (default)</option>
+					<option value="0.00222222">Wild shiny rate (1/450)</option>
+					<option value="0.01333333">Absol boss shiny rate (1/75)</option>
+					<option value="0.02222222">Aerodactyl boss shiny rate (1/45)</option>
+					<option value="0.02857142">Mawile boss shiny rate (1/35)</option>
+					<option value="0.05263157">Legendary boss shiny rate (1/19)</option>
+					<option value="0.04081632">Community Day shiny rate (1/24.5)</option>
+					<option value="custom">Custom rate</option>
+				</select>
+				<span class="inputbox"><input class="optiontextbox" id="rate_modifier" size="9" value="1" disabled="true"></span>
+				<div class="optionsubdescription">Keep this at the default (1) in most cases, or set to a specific shiny rate if you're looking for shinies.</div>
 			</div>
 			
 			<div class="optionentry"><div class="optiondescription">Number of above Pokemon needed:</div>
@@ -685,8 +717,9 @@
 				Enter your desired minimum attack IV, the minimum overall IV percentage,
 				and whether these are normal, weather-boosted, or raid encounters.
 				<br><br>
-				Looking for shiny Pokemon?  Enter your expected shiny rate under "Additional probability modifier".
-				Be sure to format the value as a decimal.
+				Looking for shiny Pokemon?  Use one of the predefined shiny rates
+				(based on <a href="https://thesilphroad.com/science/pokemon-go-deducing-shiny-rate/">Silph Road Research</a>) 
+				or set your own rate, formatted as a decimal.
 				<br><br>
 				Set your expectations too high, or just want to play around with the stats?
 				Change any parameter and click Calculate again!
