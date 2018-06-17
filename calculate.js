@@ -134,66 +134,83 @@ function calculate()
 	lvlp = (lvlnumerator/lvldenominator);
 	finalp = p*lvlp*ratemodifier;
 	
+	// Fill the data table, where x is the number of catches/encounters, y is the probability of successfully finding what we're looking for.
+	var i,j;
+	var prob;
+	var datapoints = 1000; //Don't calculate/chart more than 1000 data points.
+	var datainterval = Math.ceil(numcatches / datapoints);
+	var datarow;
+	
+	data = new google.visualization.DataTable();
+	
+	/* TODO
+	// Discard any data drawn previously
+	data.removeRows(0,data.getNumberOfRows());
+	data.removeColumns(0,data.getNumberOfColumns());
+	*/
+	
 	if (chartmode === "single")
 	{
 		chart = new google.visualization.LineChart(		//Should we be creating a new one each time?
 			document.getElementById('visualization'));
 		options.isStacked = false;
+		data.addColumn('number', 'Encounters');
+		data.addColumn('number', 'Probability');
+		
+		// i is the number of catches/encounters.
+		for (i = 0; i <= numcatches; i+= datainterval)
+		{
+			// binomcdf(k,n,p) gives us the chances of getting k or fewer successes after n trials with p probability.
+			// Since we want the chances of getting k or more successes, we do (1-binomcdf(k-1,n,p).
+			prob = (1-binomcdf(pokemontoget-1,i,(finalp)));
+			data.addRow([i,prob]);
+		}
 	}
 	else if (chartmode === "area")
 	{
 		chart = new google.visualization.AreaChart(		//Should we be creating a new one each time?
 			document.getElementById('visualization'));
-		//options.isStacked = true;
-	}
-	
-	data = new google.visualization.DataTable();
-	
-	// Discard any data drawn previously
-	data.removeRows(0,data.getNumberOfRows());
-	data.removeColumns(0,data.getNumberOfColumns());
-	
-	data.addColumn('number', 'Encounters');
-	
-	if (chartmode === "single")
-	{
+		options.isStacked = true;
 		
-		lastdatacolumn = pokemontoget;
-	}
-	else if (chartmode === "area")
-	{
-		lastdatacolumn = 1;
-	}
-	
-	var j;
-	for (j = pokemontoget; j >= lastdatacolumn; j--)
-	{
-		data.addColumn('number', 'Probability of ' + j + ' successes');
-	}
-	
-	// Fill the data table, where x is the number of catches/encounters, y is the probability of successfully finding what we're looking for.
-	var i;
-	var prob;
-	var datapoints = 1000; //Don't calculate/chart more than 1000 data points.
-	var datainterval = Math.ceil(numcatches / datapoints);
-	var datarow;
-	// i is the number of catches/encounters.
-	for (i = 0; i <= numcatches; i+= datainterval)
-	{
-		datarow = [];
-		
-		datarow.push(i);
-		
-		for (j = pokemontoget; j >= lastdatacolumn; j--)
+		data.addColumn('number', 'Encounters');
+		for (j = pokemontoget; j >= 1; j--)
 		{
-			// binomcdf(k,n,p) gives us the chances of getting k or fewer successes after n trials with p probability.
-			// Since we want the chances of getting k or more successes, we do (1-binomcdf(k-1,n,p).
-			prob = (1-binomcdf(j-1,i,(finalp)));
-			datarow.push(prob);
+			data.addColumn('number', 'Probability of ' + j + ' successes');
 		}
 		
-		data.addRow(datarow);
+		var prob_prev;
+		var datarow;
+		// i is the number of catches/encounters.
+		for (i = 0; i <= numcatches; i+= datainterval)
+		{
+			prob_prev = 0;
+			datarow = [];
+			
+			datarow.push(i);
+			for (j = pokemontoget; j >= 1; j--)
+			{
+				prob = (1-binomcdf(j-1,i,(finalp)));
+				datarow.push(prob - prob_prev);
+				prob_prev = prob;
+			}
+			
+			data.addRow(datarow);
+		}
 	}
+	
+	//Set the chart title
+	options.title = "Chance of finding at least " + pokemontoget + " ";
+	if (ratemodifier != 1)
+	{
+		options.title += "shiny ";
+	}
+	options.title += "Pokemon above " + minivpercent + "% IV with min " + minattack + "ATK ";
+	if ((minlevel != 0) && (encountertype != "raid"))
+	{
+		options.title += "with level >" + minlevel + " ";
+	}
+	options.title += "after x " + encountertype + " catches/encounters";
+	
 	
 	//Print the final probability per encounter
 	document.getElementById("resultstext").innerHTML =	"On average, " + prnumerator + " of every " + prdenominator +
@@ -216,18 +233,6 @@ function calculate()
 													" = (" + p.toFixed(6) + "*" + lvlp.toFixed(6) + "*" + ratemodifier.toFixed(6) + ") = " + finalp.toFixed(8) +
 													" for 0<=n<=" + numcatches;
 							
-	//Set the chart title
-	options.title = "Chance of finding at least " + pokemontoget + " ";
-	if (ratemodifier != 1)
-	{
-		options.title += "shiny ";
-	}
-	options.title += "Pokemon above " + minivpercent + "% IV with min " + minattack + "ATK ";
-	if ((minlevel != 0) && (encountertype != "raid"))
-	{
-		options.title += "with level >" + minlevel + " ";
-	}
-	options.title += "after x " + encountertype + " catches/encounters";
 	
 	//Reset some options
 	options.vAxis.viewWindow = {min:0, max:1};
