@@ -14,6 +14,7 @@
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 	
 	<script type="text/javascript" src="binom.js"></script>
+	<script type="text/javascript" src="options.js"></script>
 	<script type="text/javascript" src="main.js"></script>
 	
 	<style type="text/css">
@@ -69,17 +70,17 @@
 		<div class="content">
 			<h1>IV Catch/Encounter Calculator + Grapher</h1>
 			<div class="optionentry"><div class="optiondescription">Minimum IV Percentage:</div>
-				<select id="appraisal">
+				<select id="appraisal" onchange="processOptions()">
 					<option value="best">Wonder /  Simply amazing / Battle with the best</option>
 					<option value="good">Certainly caught attention / Strong Pokemon / Really strong</option>
 					<option value="aboveaverage">Above Average / Decent Pokemon / Pretty decent</option>
 					<option value="bad">Not likely headway / Not great / Room for improvement</option>
 					<option value="other">Other</option>
 				</select>
-				<span class="inputbox"><input class="optiontextbox" id="min_iv_percent" size="4" value="82.2" disabled="true">%IV</span>
+				<span class="inputbox"><input class="optiontextbox" id="min_iv_percent" size="4" value="82.2" disabled="true" onchange="processOptions()">%IV</span>
 			</div>
 			<div class="optionentry"><div class="optiondescription">Minimum Attack IV:</div>
-				<select id="min_attack_iv">
+				<select id="min_attack_iv" onchange="processOptions()">
 					<option value=0>Any</option>
 					<option value=15>15</option>
 					<option value=14>14</option>
@@ -100,14 +101,14 @@
 				</select>
 			</div>
 			<div class="optionentry"><div class="optiondescription">Type of catches/encounters:</div>
-				<select id="encounter_type">
+				<select id="encounter_type" onchange="processOptions()">
 					<option value="normal">Normal wild Pokemon</option>
 					<option value="boosted">Weather boosted Pokemon</option>
 					<option value="raid">Raid Pokemon</option>
 				</select>
 			</div>
 			<div class="optionentry" id="min_level_div"><div class="optiondescription">Minimum Pokemon Level:</div>
-				<select id="min_level">
+				<select id="min_level" onchange="processOptions()">
 					<option value="any">Any</option>
 					<option id="pokelvl35" value=35 disabled="true">35</option>
 					<option id="pokelvl34" value=34 disabled="true">34</option>
@@ -148,7 +149,7 @@
 			</div>
 			<div class="optionentry" id="trainer_level_div">
 				<div class="optiondescription">Trainer Level:</div>
-				<select id="trainer_level" disabled="true">
+				<select id="trainer_level" disabled="true" onchange="processOptions()">
 					<option value=30>&ge;30</option>
 					<option value=29>29</option>
 					<option value=28>28</option>
@@ -183,7 +184,7 @@
 			</div>
 
 			<div class="optionentry"><div class="optiondescription">Additional probability modifier:</div>
-				<select id="ratemodifierselect">
+				<select id="ratemodifierselect" onchange="processOptions()">
 					<option value="1">Base catch probability (default)</option>
 					<option value="0.00222222">Wild shiny rate (1/450)</option>
 					<option value="0.01333333">Absol boss shiny rate (1/75)</option>
@@ -193,15 +194,15 @@
 					<option value="0.04081632">Community Day shiny rate (1/24.5)</option>
 					<option value="custom">Custom rate</option>
 				</select>
-				<span class="inputbox"><input class="optiontextbox" id="rate_modifier" size="9" value="1" disabled="true"></span>
+				<span class="inputbox"><input class="optiontextbox" id="rate_modifier" size="9" value="1" disabled="true" onchange="processOptions()"></span>
 				<div class="optionsubdescription">Keep this at the default (1) in most cases, or set to a specific shiny rate if you're looking for shinies.</div>
 			</div>
 			
 			<div class="optionentry"><div class="optiondescription">Number of above Pokemon needed:</div>
-				<input class="optiontextbox" id="pokemon_to_get" size="4" value="1">
+				<input class="optiontextbox" id="pokemon_to_get" size="4" value="1" onchange="processOptions()">
 				<br><br>
 				<div class="optiondescription">Chart mode:</div>
-				<select id="chart_mode">
+				<select id="chart_mode" onchange="processOptions()">
 					<option value="single">Simple chart (default)</option>
 					<option value="area">Stacked area</option>
 				</select>
@@ -210,7 +211,7 @@
 			</div>
 			
 			<div class="optionentry"><div class="optiondescription">Encounters to graph:</div>
-				<input class="optiontextbox" id="encounters_to_graph" size="5" value="300"><br>
+				<input class="optiontextbox" id="encounters_to_graph" size="5" value="300" onchange="processOptions()"><br>
 			</div>
 			
 			<div class="buttonsurround">
