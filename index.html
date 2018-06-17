@@ -93,12 +93,9 @@
 		
 		setChartArea();
 		
-		var chart = new google.visualization.LineChart(
-        document.getElementById('visualization'));
+		var chart;
 		
-		var data = new google.visualization.DataTable();
-		data.addColumn('number', 'Pokemon Caught');
-		data.addColumn('number', 'Probability');
+		var data;
 		
 		/* Initialize the IV table */
 		var iv = [];
@@ -319,6 +316,13 @@
 		  findLevelErrors();
 		}
 		
+		/* Chart Mode Selection -- onchange
+		 */
+		document.getElementById("chart_mode").onchange = function()
+		{
+		  findLevelErrors();
+		}
+		
 		var button = document.getElementById('b1');
 		
 		/* Process the button click -- calculate probability, populate data table, and draw the chart */
@@ -331,6 +335,8 @@
 			var pokemontoget = parseInt(document.getElementById("pokemon_to_get").value);
 			var numcatches = parseInt(document.getElementById("encounters_to_graph").value);
 			var minlevel = document.getElementById("min_level").value;
+			var chartmode = document.getElementById("chart_mode").value;
+			
 			if (minlevel === "any")
 			{
 			  minlevel = 0;
@@ -437,21 +443,65 @@
 			lvlp = (lvlnumerator/lvldenominator);
 			finalp = p*lvlp*ratemodifier;
 			
+			if (chartmode === "single")
+			{
+				chart = new google.visualization.LineChart(		//Should we be creating a new one each time?
+					document.getElementById('visualization'));
+				options.isStacked = false;
+			}
+			else if (chartmode === "area")
+			{
+				chart = new google.visualization.AreaChart(		//Should we be creating a new one each time?
+					document.getElementById('visualization'));
+				//options.isStacked = true;
+			}
+			
+			data = new google.visualization.DataTable();
+			
 			// Discard any data drawn previously
 			data.removeRows(0,data.getNumberOfRows());
+			data.removeColumns(0,data.getNumberOfColumns());
+			
+			data.addColumn('number', 'Encounters');
+			
+			if (chartmode === "single")
+			{
+				
+				lastdatacolumn = pokemontoget;
+			}
+			else if (chartmode === "area")
+			{
+				lastdatacolumn = 1;
+			}
+			
+			var j;
+			for (j = pokemontoget; j >= lastdatacolumn; j--)
+			{
+				data.addColumn('number', 'Probability of ' + j + ' successes');
+			}
 			
 			// Fill the data table, where x is the number of catches/encounters, y is the probability of successfully finding what we're looking for.
 			var i;
 			var prob;
 			var datapoints = 1000; //Don't calculate/chart more than 1000 data points.
 			var datainterval = Math.ceil(numcatches / datapoints);
+			var datarow;
 			// i is the number of catches/encounters.
 			for (i = 0; i <= numcatches; i+= datainterval)
 			{
-			    // binomcdf(k,n,p) gives us the chances of getting k or fewer successes after n trials with p probability.
-				// Since we want the chances of getting k or more successes, we do (1-binomcdf(k-1,n,p).
-			    prob = (1-binomcdf((pokemontoget - 1),i,(finalp)));
-				data.addRow([i,prob]);
+				datarow = [];
+				
+				datarow.push(i);
+				
+				for (j = pokemontoget; j >= lastdatacolumn; j--)
+				{
+					// binomcdf(k,n,p) gives us the chances of getting k or fewer successes after n trials with p probability.
+					// Since we want the chances of getting k or more successes, we do (1-binomcdf(k-1,n,p).
+					prob = (1-binomcdf(j-1,i,(finalp)));
+					datarow.push(prob);
+				}
+			    
+				data.addRow(datarow);
 			}
 			
 			//Print the final probability per encounter
@@ -692,6 +742,14 @@
 			
 			<div class="optionentry"><div class="optiondescription">Number of above Pokemon needed:</div>
 				<input class="optiontextbox" id="pokemon_to_get" size="4" value="1">
+				<br><br>
+				<div class="optiondescription">Chart mode:</div>
+				<select id="chart_mode">
+					<option value="single">Simple chart (default)</option>
+					<option value="area">Stacked area</option>
+				</select>
+				<div class="optionsubdescription">Use the simple chart to graph a single line showing the probability of getting just this number of Pokemon.
+													Use the stacked area chart to show the probabilities of multiple numbers of matching Pokemon up to the number above.</div>
 			</div>
 			
 			<div class="optionentry"><div class="optiondescription">Encounters to graph:</div>
