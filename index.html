@@ -89,7 +89,7 @@
 							<option value="any">Any</option>
 							<option value="other">Custom percentage</option>
 						</select>
-						<span class="inputbox"><input class="optiontextbox" id="min_iv_percent" size="4" disabled="true" onchange="processMinIvPercentOption()">%IV</span>
+						<span class="inputbox"><input class="optiontextbox" id="min_iv_percent" size="4" type="number" min="0" max="100" step="0.1" disabled="true" onchange="processMinIvPercentOption()">%IV</span>
 					</div>
 					<div class="optionentry"><div class="optiondescription">Minimum Attack IV:</div>
 						<select id="min_attack_iv" onchange="processOptions()">
