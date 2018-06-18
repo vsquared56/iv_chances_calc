@@ -31,9 +31,15 @@
 						border: 2px solid #BBBBBB;
 						padding: 1% 1% 1% 1%; 
 						margin: 1% 0 0 0; }
-		.optionentry { 	border: 2px solid #BBBBBB; 
-						margin: 1% 0 0 0; 
-						padding: 1% 1% 1% 1%; }
+		.options { }
+		.optioncategory { 	width: 100%; 
+							overflow: auto;
+							border: 2px solid #BBBBBB;
+							display:flex;
+							flex-wrap: wrap; }
+		.optionentry { 		padding: 1% 1% 1% 1%; 
+							border: 2px solid #BBBBBB;
+							flex-grow: 1;}
 		.optiontextbox { 	font-size:1em;
 							line-height:1.2em; }
 		.optiondescription { font-size:1em; 
@@ -73,152 +79,160 @@
 	<body>
 		<div class="content">
 			<h1>IV Catch/Encounter Calculator + Grapher</h1>
-			<div class="optionentry"><div class="optiondescription">Minimum IV Percentage:</div>
-				<select id="appraisal" onchange="processOptions()">
-					<option value="best">Wonder /  Simply amazing / Battle with the best</option>
-					<option value="good">Certainly caught attention / Strong Pokemon / Really strong</option>
-					<option value="aboveaverage">Above Average / Decent Pokemon / Pretty decent</option>
-					<option value="any">Any</option>
-					<option value="other">Custom percentage</option>
-				</select>
-				<span class="inputbox"><input class="optiontextbox" id="min_iv_percent" size="4" disabled="true" onchange="processMinIvPercentOption()">%IV</span>
+			<div class="options">
+				<div class="optioncategory">
+					<div class="optionentry"><div class="optiondescription">Minimum IV Percentage:</div>
+						<select id="appraisal" onchange="processOptions()">
+							<option value="best">Wonder /  Simply amazing / Battle with the best</option>
+							<option value="good">Certainly caught attention / Strong Pokemon / Really strong</option>
+							<option value="aboveaverage">Above Average / Decent Pokemon / Pretty decent</option>
+							<option value="any">Any</option>
+							<option value="other">Custom percentage</option>
+						</select>
+						<span class="inputbox"><input class="optiontextbox" id="min_iv_percent" size="4" disabled="true" onchange="processMinIvPercentOption()">%IV</span>
+					</div>
+					<div class="optionentry"><div class="optiondescription">Minimum Attack IV:</div>
+						<select id="min_attack_iv" onchange="processOptions()">
+							<option value="any">Any</option>
+							<option value=15>15</option>
+							<option value=14>14</option>
+							<option value=13>13</option>
+							<option value=12>12</option>
+							<option value=11>11</option>
+							<option value=10>10</option>
+							<option value=9>9</option>
+							<option value=8>8</option>
+							<option value=7>7</option>
+							<option value=6>6</option>
+							<option value=5>5</option>
+							<option value=4>4</option>
+							<option value=3>3</option>
+							<option value=2>2</option>
+							<option value=1>1</option>
+							<option value=0>0</option>
+						</select>
+					</div>
+				</div>
+				<div class="optioncategory">
+					<div class="optionentry"><div class="optiondescription">Type of catches/encounters:</div>
+						<select id="encounter_type" onchange="processOptions()">
+							<option value="normal">Normal wild Pokemon</option>
+							<option value="boosted">Weather boosted Pokemon</option>
+							<option value="raid">Raid Pokemon</option>
+						</select>
+					</div>
+					<div class="optionentry" id="min_level_div"><div class="optiondescription">Minimum Pokemon Level:</div>
+						<select id="min_level" onchange="processOptions()">
+							<option value="any">Any</option>
+							<option id="pokelvl35" value=35 disabled="true">35</option>
+							<option id="pokelvl34" value=34 disabled="true">34</option>
+							<option id="pokelvl33" value=33 disabled="true">33</option>
+							<option id="pokelvl32" value=32 disabled="true">32</option>
+							<option id="pokelvl31" value=31 disabled="true">31</option>
+							<option value=30>30</option>
+							<option value=29>29</option>
+							<option value=28>28</option>
+							<option value=27>27</option>
+							<option value=26>26</option>
+							<option value=25>25</option>
+							<option value=24>24</option>
+							<option value=23>23</option>
+							<option value=22>22</option>
+							<option value=21>21</option>
+							<option value=20>20</option>
+							<option value=19>19</option>
+							<option value=18>18</option>
+							<option value=17>17</option>
+							<option value=16>16</option>
+							<option value=15>15</option>
+							<option value=14>14</option>
+							<option value=13>13</option>
+							<option value=12>12</option>
+							<option value=11>11</option>
+							<option value=10>10</option>
+							<option value=9>9</option>
+							<option value=8>8</option>
+							<option value=7>7</option>
+							<option value=6>6</option>
+							<option id="pokelvl5" value=5>5</option>
+							<option id="pokelvl4" value=4>4</option>
+							<option id="pokelvl3" value=3>3</option>
+							<option id="pokelvl2" value=2>2</option>
+							<option id="pokelvl1" value=1>1</option>
+						</select>
+					</div>
+					<div class="optionentry" id="trainer_level_div">
+						<div class="optiondescription">Trainer Level:</div>
+						<select id="trainer_level" disabled="true" onchange="processOptions()">
+							<option value=30>&ge;30</option>
+							<option value=29>29</option>
+							<option value=28>28</option>
+							<option value=27>27</option>
+							<option value=26>26</option>
+							<option value=25>25</option>
+							<option value=24>24</option>
+							<option value=23>23</option>
+							<option value=22>22</option>
+							<option value=21>21</option>
+							<option value=20>20</option>
+							<option value=19>19</option>
+							<option value=18>18</option>
+							<option value=17>17</option>
+							<option value=16>16</option>
+							<option value=15>15</option>
+							<option value=14>14</option>
+							<option value=13>13</option>
+							<option value=12>12</option>
+							<option value=11>11</option>
+							<option value=10>10</option>
+							<option value=9>9</option>
+							<option value=8>8</option>
+							<option value=7>7</option>
+							<option value=6>6</option>
+							<option value=5>5</option>
+							<option value=4>4</option>
+							<option value=3>3</option>
+							<option value=2>2</option>
+							<option value=1>1</option>
+						</select>
+					</div>
+				</div>
+				
+				<div class="optioncategory">
+					<div class="optionentry"><div class="optiondescription">Additional probability modifier:</div>
+						<select id="ratemodifierselect" onchange="processOptions()">
+							<option value="1">Base catch probability (default)</option>
+							<option value="0.00222222">Wild shiny rate (1/450)</option>
+							<option value="0.01333333">Absol boss shiny rate (1/75)</option>
+							<option value="0.02222222">Aerodactyl boss shiny rate (1/45)</option>
+							<option value="0.02857142">Mawile boss shiny rate (1/35)</option>
+							<option value="0.05263157">Legendary boss shiny rate (1/19)</option>
+							<option value="0.04081632">Community Day shiny rate (1/24.5)</option>
+							<option value="custom">Custom rate</option>
+						</select>
+						<span class="inputbox"><input class="optiontextbox" id="rate_modifier" size="9" disabled="true" onchange="processRateModifierOption()">
+						= 1 / <input class="optiontextbox" id="rate_modifier_inv" size="5" disabled="true" onchange="processRateModifierInvOption()"></span>
+						<div class="optionsubdescription">Keep this at the default (1) in most cases, or set to a specific shiny rate if you're looking for shinies.</div>
+					</div>
+				</div>
+				
+				<div class="optioncategory">
+					<div class="optionentry"><div class="optiondescription">Number of above Pokemon needed:</div>
+						<input class="optiontextbox" id="pokemon_to_get" size="4" onchange="processOptions()">
+					</div>
+					<div class="optionentry" id="chartmodeoption"><div class="optiondescription">Chart mode:</div>
+						<select id="chart_mode" onchange="processOptions()">
+							<option value="single">Simple chart (default)</option>
+							<option value="area">Stacked area</option>
+						</select>
+						<div class="optionsubdescription">Use the simple chart to graph a single line showing the probability of getting just this number of Pokemon.
+															Use the stacked area chart to show the probabilities of multiple numbers of matching Pokemon up to the number above.</div>
+					</div>
+					<div class="optionentry"><div class="optiondescription">Encounters to graph:</div>
+						<input class="optiontextbox" id="encounters_to_graph" size="5" onchange="processEncountersToGraphOption()"><br>
+					</div>
+				</div>
 			</div>
-			<div class="optionentry"><div class="optiondescription">Minimum Attack IV:</div>
-				<select id="min_attack_iv" onchange="processOptions()">
-					<option value="any">Any</option>
-					<option value=15>15</option>
-					<option value=14>14</option>
-					<option value=13>13</option>
-					<option value=12>12</option>
-					<option value=11>11</option>
-					<option value=10>10</option>
-					<option value=9>9</option>
-					<option value=8>8</option>
-					<option value=7>7</option>
-					<option value=6>6</option>
-					<option value=5>5</option>
-					<option value=4>4</option>
-					<option value=3>3</option>
-					<option value=2>2</option>
-					<option value=1>1</option>
-					<option value=0>0</option>
-				</select>
-			</div>
-			<div class="optionentry"><div class="optiondescription">Type of catches/encounters:</div>
-				<select id="encounter_type" onchange="processOptions()">
-					<option value="normal">Normal wild Pokemon</option>
-					<option value="boosted">Weather boosted Pokemon</option>
-					<option value="raid">Raid Pokemon</option>
-				</select>
-			</div>
-			<div class="optionentry" id="min_level_div"><div class="optiondescription">Minimum Pokemon Level:</div>
-				<select id="min_level" onchange="processOptions()">
-					<option value="any">Any</option>
-					<option id="pokelvl35" value=35 disabled="true">35</option>
-					<option id="pokelvl34" value=34 disabled="true">34</option>
-					<option id="pokelvl33" value=33 disabled="true">33</option>
-					<option id="pokelvl32" value=32 disabled="true">32</option>
-					<option id="pokelvl31" value=31 disabled="true">31</option>
-					<option value=30>30</option>
-					<option value=29>29</option>
-					<option value=28>28</option>
-					<option value=27>27</option>
-					<option value=26>26</option>
-					<option value=25>25</option>
-					<option value=24>24</option>
-					<option value=23>23</option>
-					<option value=22>22</option>
-					<option value=21>21</option>
-					<option value=20>20</option>
-					<option value=19>19</option>
-					<option value=18>18</option>
-					<option value=17>17</option>
-					<option value=16>16</option>
-					<option value=15>15</option>
-					<option value=14>14</option>
-					<option value=13>13</option>
-					<option value=12>12</option>
-					<option value=11>11</option>
-					<option value=10>10</option>
-					<option value=9>9</option>
-					<option value=8>8</option>
-					<option value=7>7</option>
-					<option value=6>6</option>
-					<option id="pokelvl5" value=5>5</option>
-					<option id="pokelvl4" value=4>4</option>
-					<option id="pokelvl3" value=3>3</option>
-					<option id="pokelvl2" value=2>2</option>
-					<option id="pokelvl1" value=1>1</option>
-				</select>
-			</div>
-			<div class="optionentry" id="trainer_level_div">
-				<div class="optiondescription">Trainer Level:</div>
-				<select id="trainer_level" disabled="true" onchange="processOptions()">
-					<option value=30>&ge;30</option>
-					<option value=29>29</option>
-					<option value=28>28</option>
-					<option value=27>27</option>
-					<option value=26>26</option>
-					<option value=25>25</option>
-					<option value=24>24</option>
-					<option value=23>23</option>
-					<option value=22>22</option>
-					<option value=21>21</option>
-					<option value=20>20</option>
-					<option value=19>19</option>
-					<option value=18>18</option>
-					<option value=17>17</option>
-					<option value=16>16</option>
-					<option value=15>15</option>
-					<option value=14>14</option>
-					<option value=13>13</option>
-					<option value=12>12</option>
-					<option value=11>11</option>
-					<option value=10>10</option>
-					<option value=9>9</option>
-					<option value=8>8</option>
-					<option value=7>7</option>
-					<option value=6>6</option>
-					<option value=5>5</option>
-					<option value=4>4</option>
-					<option value=3>3</option>
-					<option value=2>2</option>
-					<option value=1>1</option>
-				</select>
-			</div>
-
-			<div class="optionentry"><div class="optiondescription">Additional probability modifier:</div>
-				<select id="ratemodifierselect" onchange="processOptions()">
-					<option value="1">Base catch probability (default)</option>
-					<option value="0.00222222">Wild shiny rate (1/450)</option>
-					<option value="0.01333333">Absol boss shiny rate (1/75)</option>
-					<option value="0.02222222">Aerodactyl boss shiny rate (1/45)</option>
-					<option value="0.02857142">Mawile boss shiny rate (1/35)</option>
-					<option value="0.05263157">Legendary boss shiny rate (1/19)</option>
-					<option value="0.04081632">Community Day shiny rate (1/24.5)</option>
-					<option value="custom">Custom rate</option>
-				</select>
-				<span class="inputbox"><input class="optiontextbox" id="rate_modifier" size="9" disabled="true" onchange="processRateModifierOption()">
-				= 1 / <input class="optiontextbox" id="rate_modifier_inv" size="5" disabled="true" onchange="processRateModifierInvOption()"></span>
-				<div class="optionsubdescription">Keep this at the default (1) in most cases, or set to a specific shiny rate if you're looking for shinies.</div>
-			</div>
-			
-			<div class="optionentry"><div class="optiondescription">Number of above Pokemon needed:</div>
-				<input class="optiontextbox" id="pokemon_to_get" size="4" onchange="processOptions()">
-				<br><br>
-				<div class="optiondescription">Chart mode:</div>
-				<select id="chart_mode" onchange="processOptions()">
-					<option value="single">Simple chart (default)</option>
-					<option value="area">Stacked area</option>
-				</select>
-				<div class="optionsubdescription">Use the simple chart to graph a single line showing the probability of getting just this number of Pokemon.
-													Use the stacked area chart to show the probabilities of multiple numbers of matching Pokemon up to the number above.</div>
-			</div>
-			
-			<div class="optionentry"><div class="optiondescription">Encounters to graph:</div>
-				<input class="optiontextbox" id="encounters_to_graph" size="5" onchange="processEncountersToGraphOption()"><br>
-			</div>
-			
 			<div class="buttonsurround">
 				<button class="calcbutton" type="button" id="b1" onclick="calculate()">Calculate</button>
 				<button class="resetbutton" type="button" id="b2" onclick="resetOptionDefaults()">Reset</button>
