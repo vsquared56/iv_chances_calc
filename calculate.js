@@ -154,6 +154,7 @@ function calculate()
 		chart = new google.visualization.LineChart(		//Should we be creating a new one each time?
 			document.getElementById('visualization'));
 		options.isStacked = false;
+		options.legend = { position :'none'};
 		data.addColumn('number', 'Encounters');
 		data.addColumn('number', 'Probability');
 		
@@ -171,8 +172,10 @@ function calculate()
 		chart = new google.visualization.AreaChart(		//Should we be creating a new one each time?
 			document.getElementById('visualization'));
 		options.isStacked = true;
+		options.legend = { position :'right'};
 		
 		data.addColumn('number', 'Encounters');
+		
 		for (j = pokemontoget; j >= 1; j--)
 		{
 			data.addColumn('number', 'Probability of ' + j + ' successes');

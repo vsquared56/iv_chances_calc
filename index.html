@@ -75,10 +75,10 @@
 					<option value="best">Wonder /  Simply amazing / Battle with the best</option>
 					<option value="good">Certainly caught attention / Strong Pokemon / Really strong</option>
 					<option value="aboveaverage">Above Average / Decent Pokemon / Pretty decent</option>
-					<option value="bad">Not likely headway / Not great / Room for improvement</option>
-					<option value="other">Other</option>
+					<option value="any">Any</option>
+					<option value="other">Custom percentage</option>
 				</select>
-				<span class="inputbox"><input class="optiontextbox" id="min_iv_percent" size="4" value="82.2" disabled="true" onchange="processOptions()">%IV</span>
+				<span class="inputbox"><input class="optiontextbox" id="min_iv_percent" size="4" value="82.2" disabled="true" onchange="processMinIvPercentOption()">%IV</span>
 			</div>
 			<div class="optionentry"><div class="optiondescription">Minimum Attack IV:</div>
 				<select id="min_attack_iv" onchange="processOptions()">
@@ -195,7 +195,8 @@
 					<option value="0.04081632">Community Day shiny rate (1/24.5)</option>
 					<option value="custom">Custom rate</option>
 				</select>
-				<span class="inputbox"><input class="optiontextbox" id="rate_modifier" size="9" value="1" disabled="true" onchange="processOptions()"></span>
+				<span class="inputbox"><input class="optiontextbox" id="rate_modifier" size="9" value="1" disabled="true" onchange="processRateModifierOption()">
+				= 1 / <input class="optiontextbox" id="rate_modifier_inv" size="5" value="1" disabled="true" onchange="processRateModifierInvOption()"></span>
 				<div class="optionsubdescription">Keep this at the default (1) in most cases, or set to a specific shiny rate if you're looking for shinies.</div>
 			</div>
 			
@@ -212,7 +213,7 @@
 			</div>
 			
 			<div class="optionentry"><div class="optiondescription">Encounters to graph:</div>
-				<input class="optiontextbox" id="encounters_to_graph" size="5" value="300" onchange="processOptions()"><br>
+				<input class="optiontextbox" id="encounters_to_graph" size="5" value="300" onchange="processEncountersToGraphOption()"><br>
 			</div>
 			
 			<div class="buttonsurround">

@@ -12,7 +12,6 @@ var options = {
 	},
 	
 	curveType: 'none',
-	legend: { position: 'none' },
 	tooltip: { trigger: 'selection' }
 };
 
