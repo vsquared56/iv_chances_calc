@@ -1,19 +1,14 @@
-function setUrlOptions(isGraphDrawn)
+function resetUrlOptions()
 {
 	var path = location.pathname;
-	
-	pageopts = {	appraisal:document.getElementById("appraisal").value,
-					minivpercent:document.getElementById("min_iv_percent").value,
-					minattackiv:document.getElementById("min_attack_iv").value,
-					encountertype:document.getElementById("encounter_type").value,
-					minlevel:document.getElementById("min_level").value,
-					trainerlevel:document.getElementById("trainer_level").value,
-					ratemodifierselect:document.getElementById("ratemodifierselect").value,
-					ratemodifier:document.getElementById("rate_modifier").value,
-					pokemontoget:document.getElementById("pokemon_to_get").value,
-					chartmode:document.getElementById("chart_mode").value,
-					encounterstograph:document.getElementById("encounters_to_graph").value};
+	history.replaceState(null, "", path);
+}
 
+function setUrlOptions(isGraphDrawn)
+{
+	getPageOptions();
+	
+	var path = location.pathname;
 	var hash = "#";			
 	
 	var i = 0;
@@ -54,27 +49,14 @@ function getUrlOptions()
 			opts[key] = val;
 		}
 	}
-	
-	var keyToHtmlId = {	appraisal:"appraisal",
-						minivpercent:"min_iv_percent",
-						minattackiv:"min_attack_iv",
-						encountertype:"encounter_type",
-						minlevel:"min_level",
-						trainerlevel:"trainer_level",
-						ratemodifierselect:"ratemodifierselect",
-						ratemodifier:"rate_modifier",
-						pokemontoget:"pokemon_to_get",
-						chartmode:"chart_mode",
-						encounterstograph:"encounters_to_graph"
-					};
-			
+
 	var calc = false;
 	
 	for (var k in opts)
 	{
-		if (keyToHtmlId[k])
+		if (pageopts[k])
 		{
-			document.getElementById(keyToHtmlId[k]).value = opts[k];
+			pageopts[k] = opts[k];
 		}
 		else if (k === "calc")
 		{
@@ -85,9 +67,11 @@ function getUrlOptions()
 		}
 		else
 		{
-			//Invalid option -- potentially write an error?
+			console.log("getUrlOptions(): invalid URL option -- " + k);
 		}
 	}
+	
+	setPageOptions();
 	processEncountersToGraphOption();  //Save the Encounters to Graph option or it'll get reset to default by processOptions()
 	processRateModifierOption();
 	

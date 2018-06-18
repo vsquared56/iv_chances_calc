@@ -149,7 +149,7 @@ function calculate()
 	var i,j;
 	var prob;
 	var datapoints = 1000; //Don't calculate/chart more than 1000 data points.
-	var datainterval = Math.ceil(numcatches / datapoints);
+	var datainterval = Math.ceil(numcatches / datapoints); //
 	var datarow;
 	
 	data = new google.visualization.DataTable();

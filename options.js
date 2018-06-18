@@ -7,6 +7,16 @@ var optCustomRateModifierSaved = false;
 var encountersToGraphDefaultNonRaid;
 var	encountersToGraphDefaultRaid;
 
+/* Global page options variables
+ * Update these from the html forms with getPageOptions()
+ * Update from the URL hash with getUrlOptions()
+ * Reset to defaults with resetOptionDefaults()
+ */
+var pageopts = {};
+
+// Initialize pageopts
+resetOptionDefaults();
+
 /* resetOptionDefaults()
  */
 function resetOptionDefaults()
@@ -19,17 +29,63 @@ function resetOptionDefaults()
 	encountersToGraphDefaultNonRaid = 300;
 	encountersToGraphDefaultRaid = 30;
 	
-	document.getElementById("appraisal").value = "best";
-	document.getElementById("min_attack_iv").value = "any";
-	document.getElementById("encounter_type").value = "normal";
-	document.getElementById("min_level").value = "any";
-	document.getElementById("trainer_level").value = 30;
-	document.getElementById("ratemodifierselect").value = 1;
-	document.getElementById("pokemon_to_get").value = 1;
-	document.getElementById("encounters_to_graph").value = encountersToGraphDefaultNonRaid;
-	document.getElementById("chart_mode").value = "single";
+	pageopts = {	appraisal:"best",
+					minivpercent:"82.2",
+					minattackiv:"any",
+					encountertype:"normal",
+					minlevel:"any",
+					trainerlevel:30,
+					ratemodifierselect:1,
+					ratemodifier:1,
+					pokemontoget:1,
+					chartmode:"single",
+					encounterstograph:encountersToGraphDefaultNonRaid
+				};
 	
-	processOptions();
+}
+				
+function getPageOptions()
+{
+	pageopts = {	appraisal:document.getElementById("appraisal").value,
+					minivpercent:document.getElementById("min_iv_percent").value,
+					minattackiv:document.getElementById("min_attack_iv").value,
+					encountertype:document.getElementById("encounter_type").value,
+					minlevel:document.getElementById("min_level").value,
+					trainerlevel:document.getElementById("trainer_level").value,
+					ratemodifierselect:document.getElementById("ratemodifierselect").value,
+					ratemodifier:document.getElementById("rate_modifier").value,
+					pokemontoget:document.getElementById("pokemon_to_get").value,
+					chartmode:document.getElementById("chart_mode").value,
+					encounterstograph:document.getElementById("encounters_to_graph").value};
+
+}
+
+function setPageOptions()
+{
+	var keyToHtmlId = {	appraisal:"appraisal",
+						minivpercent:"min_iv_percent",
+						minattackiv:"min_attack_iv",
+						encountertype:"encounter_type",
+						minlevel:"min_level",
+						trainerlevel:"trainer_level",
+						ratemodifierselect:"ratemodifierselect",
+						ratemodifier:"rate_modifier",
+						pokemontoget:"pokemon_to_get",
+						chartmode:"chart_mode",
+						encounterstograph:"encounters_to_graph"
+					};
+					
+	for (var k in pageopts)
+	{
+		if (keyToHtmlId[k])
+		{
+			document.getElementById(keyToHtmlId[k]).value = pageopts[k];
+		}
+		else
+		{
+			console.log("setPageOptions(): invalid option key -- " + k);
+		}
+	}
 }
 
 /* processEncountersToGraphOption()

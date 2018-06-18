@@ -47,6 +47,15 @@ window.onload = function()
 {
 }
 
+function resetClick()
+{
+	resetOptionDefaults();
+	resetUrlOptions();
+	setPageOptions();
+	processOptions();
+	
+}
+
 function init()
 {
 	resetOptionDefaults();
