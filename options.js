@@ -156,41 +156,37 @@ function processRateModifierInvOption()
  */
 function processOptions()
 {
-	var optAppraisal = document.getElementById("appraisal").value;
-	var optEncounterType = document.getElementById("encounter_type").value;
-	var optMinLevel = document.getElementById("min_level").value;
-	var optTrainerLevel = document.getElementById("trainer_level").value;
-	var optRateModifierSelect = document.getElementById("ratemodifierselect").value;
+	getPageOptions();
 	
 	/* Process appraisal selection
 	 * Change min_iv_percent to match selected value and disable/enable the text box as needed
 	 */
-	if(optAppraisal === "best")
+	if(pageopts.appraisal === "best")
 	{
-		document.getElementById("min_iv_percent").value = 82.2;
+		pageopts.minivpercent = 82.2;
 		document.getElementById("min_iv_percent").disabled = true;
 	}
-	else if(optAppraisal === "good")
+	else if(pageopts.appraisal === "good")
 	{
-		document.getElementById("min_iv_percent").value = 66.7;
+		pageopts.minivpercent = 66.7;
 		document.getElementById("min_iv_percent").disabled = true;
 	}
-	else if(optAppraisal === "aboveaverage")
+	else if(pageopts.appraisal === "aboveaverage")
 	{
-		document.getElementById("min_iv_percent").value = 51.1;
+		pageopts.minivpercent = 51.1;
 		document.getElementById("min_iv_percent").disabled = true;
 	}
-	else if(optAppraisal === "any")
+	else if(pageopts.appraisal === "any")
 	{
-		document.getElementById("min_iv_percent").value = 0;
+		pageopts.minivpercent = 0;
 		document.getElementById("min_iv_percent").disabled = true;
 	}
-	else if(optAppraisal === "other")
+	else if(pageopts.appraisal === "other")
 	{
 		document.getElementById("min_iv_percent").disabled = false;
 		if (optCustomMinIvPercentSaved)
 		{
-			document.getElementById("min_iv_percent").value = optCustomMinIvPercentSaved;
+			pageopts.minivpercent = optCustomMinIvPercentSaved;
 		}
 	}
 	  
@@ -199,15 +195,15 @@ function processOptions()
 	 * Enable or disable the minimum level and trainer level selections
 	 * Enable or disable the different Pokemon levels that become available in normal or boosted mode
 	 */
-	if(optEncounterType === "normal")
+	if(pageopts.encountertype === "normal")
 	{
 		if (optEncountersToGraphSavedNonRaid)
 		{
-			document.getElementById("encounters_to_graph").value = optEncountersToGraphSavedNonRaid;
+			pageopts.encounterstograph = optEncountersToGraphSavedNonRaid;
 		}
 		else
 		{
-			document.getElementById("encounters_to_graph").value = encountersToGraphDefaultNonRaid;
+			pageopts.encounterstograph = encountersToGraphDefaultNonRaid;
 		}
 		document.getElementById("min_level").disabled = false;
 		document.getElementById("trainer_level").disabled = false;
@@ -218,15 +214,15 @@ function processOptions()
 		document.getElementById("min_level_div").style.display = "block"; //Display the minimum Pokemon level / Trainer level div
 		document.getElementById("trainer_level_div").style.display = "block";
 	}
-	else if(optEncounterType === "boosted")
+	else if(pageopts.encountertype === "boosted")
 	{
 		if (optEncountersToGraphSavedNonRaid)
 		{
-			document.getElementById("encounters_to_graph").value = optEncountersToGraphSavedNonRaid;
+			pageopts.encounterstograph = optEncountersToGraphSavedNonRaid;
 		}
 		else
 		{
-			document.getElementById("encounters_to_graph").value = encountersToGraphDefaultNonRaid;
+			pageopts.encounterstograph = encountersToGraphDefaultNonRaid;
 		}
 		document.getElementById("min_level").disabled = false;
 		document.getElementById("trainer_level").disabled = false;
@@ -237,15 +233,15 @@ function processOptions()
 		document.getElementById("min_level_div").style.display = "block";
 		document.getElementById("trainer_level_div").style.display = "block";
 	}
-	else if(optEncounterType === "raid")
+	else if(pageopts.encountertype === "raid")
 	{
 		if (optEncountersToGraphSavedRaid)
 		{
-			document.getElementById("encounters_to_graph").value = optEncountersToGraphSavedRaid;
+			pageopts.encounterstograph = optEncountersToGraphSavedRaid;
 		}
 		else
 		{
-			document.getElementById("encounters_to_graph").value = encountersToGraphDefaultRaid;
+			pageopts.encounterstograph = encountersToGraphDefaultRaid;
 		}
 		document.getElementById("min_level").disabled = true;
 		document.getElementById("trainer_level").disabled = true;
@@ -257,7 +253,7 @@ function processOptions()
 	/* Process minimum Pokemon level selection
 	 * Disable the trainer level selection if the minimum Pokemon level is set to any.
 	 */
-	if(optMinLevel === "any")
+	if(pageopts.minlevel === "any")
 	{
 		document.getElementById("trainer_level").disabled = true;
 	}
@@ -270,13 +266,13 @@ function processOptions()
 	 * If the rate is set to custom, enable the text box to set a custom rate.
 	 * Otherwise, disable the text box and fill it with the selected value.
 	 */
-	if (optRateModifierSelect === "custom")
+	if (pageopts.ratemodifierselect === "custom")
 	{
 		document.getElementById("rate_modifier").disabled = false;
 		document.getElementById("rate_modifier_inv").disabled = false;
 		if (optCustomRateModifierSaved)
 		{
-			document.getElementById("rate_modifier").value = optCustomRateModifierSaved;
+			pageopts.ratemodifier = optCustomRateModifierSaved;
 			document.getElementById("rate_modifier_inv").value = (1/optCustomRateModifierSaved).toFixed(2);
 		}
 	}
@@ -284,30 +280,43 @@ function processOptions()
 	{
 		document.getElementById("rate_modifier").disabled = true;
 		document.getElementById("rate_modifier_inv").disabled = true;
-		document.getElementById("rate_modifier").value = optRateModifierSelect;
-		document.getElementById("rate_modifier_inv").value = (1/parseFloat(document.getElementById("rate_modifier").value)).toFixed(2);
+		pageopts.ratemodifier = pageopts.ratemodifierselect;
+		document.getElementById("rate_modifier_inv").value = (1/parseFloat(pageopts.ratemodifier)).toFixed(2);
 	}
 	
 	/* Error processing	*/
 	var errortext;
-	if (optEncounterType === "normal")
+	var minlevel;
+	
+	if (pageopts.minlevel === "any")
 	{
-		if (parseInt(optMinLevel) > parseInt(optTrainerLevel))
+		minlevel = 0;
+	}
+	else
+	{
+		minlevel = parseInt(pageopts.minlevel);
+	}
+	trainerlevel = parseInt(pageopts.trainerlevel);
+	
+	
+	if (pageopts.encountertype === "normal")
+	{
+		if (minlevel > trainerlevel)
 		{
 			errortext = "Minimum Pokemon level can't be greater than Trainer Level!  ";
 		}
-		if (parseInt(optMinLevel) > 30)
+		if (minlevel > 30)
 		{
 			errortext = "Minimum Pokemon level can't be greater than 30 unless weather boosted!  ";
 		}
 	}
-	else if (optEncounterType === "boosted")
+	else if (pageopts.encountertype === "boosted")
 	{
-		if (parseInt(optMinLevel) > (parseInt(optTrainerLevel) + 5))
+		if (minlevel > trainerlevel + 5)
 		{
 			errortext = "Minimum Pokemon level can't be greater than Trainer Level + 5 when weather boosted!  ";
 		}
-		if (parseInt(optMinLevel) < 6)
+		if (minlevel < 6)
 		{
 			errortext = "Minimum Pokemon level can't be less than 6 when weather boosted!  ";
 		}
@@ -324,6 +333,8 @@ function processOptions()
 			document.getElementById("error").innerHTML = "";
 			document.getElementById("b1").disabled = false;
 	}
+	
+	setPageOptions();
 }
 
 /* Enable or Disable any option elements between the low and high in the Pokemon level selection */
