@@ -20,7 +20,15 @@ for (i = 0; i < 16; i++) {
 function calculate()
 {
 	// Process input boxes
-	var minattack = parseInt(document.getElementById("min_attack_iv").value);
+	var minattack = document.getElementById("min_attack_iv").value;
+	if (minattack === "any")
+	{
+		minattack = 0;
+	}
+	else
+	{
+		minattack = parseInt(minattack);
+	}
 	var minivpercent = document.getElementById("min_iv_percent").value;
 	var encountertype = document.getElementById("encounter_type").value;
 	var pokemontoget = parseInt(document.getElementById("pokemon_to_get").value);

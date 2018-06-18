@@ -45,6 +45,8 @@ google.charts.setOnLoadCallback(init);
 
 function init()
 {
+	resetOptionDefaults();
+	
 	/* Set chart area.
 	 * Call this during init.
 	 * Don't call during button press to prevent virtual-keyboard size changes on mobile.

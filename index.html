@@ -78,11 +78,11 @@
 					<option value="any">Any</option>
 					<option value="other">Custom percentage</option>
 				</select>
-				<span class="inputbox"><input class="optiontextbox" id="min_iv_percent" size="4" value="82.2" disabled="true" onchange="processMinIvPercentOption()">%IV</span>
+				<span class="inputbox"><input class="optiontextbox" id="min_iv_percent" size="4" disabled="true" onchange="processMinIvPercentOption()">%IV</span>
 			</div>
 			<div class="optionentry"><div class="optiondescription">Minimum Attack IV:</div>
 				<select id="min_attack_iv" onchange="processOptions()">
-					<option value=0>Any</option>
+					<option value="any">Any</option>
 					<option value=15>15</option>
 					<option value=14>14</option>
 					<option value=13>13</option>
@@ -195,13 +195,13 @@
 					<option value="0.04081632">Community Day shiny rate (1/24.5)</option>
 					<option value="custom">Custom rate</option>
 				</select>
-				<span class="inputbox"><input class="optiontextbox" id="rate_modifier" size="9" value="1" disabled="true" onchange="processRateModifierOption()">
-				= 1 / <input class="optiontextbox" id="rate_modifier_inv" size="5" value="1" disabled="true" onchange="processRateModifierInvOption()"></span>
+				<span class="inputbox"><input class="optiontextbox" id="rate_modifier" size="9" disabled="true" onchange="processRateModifierOption()">
+				= 1 / <input class="optiontextbox" id="rate_modifier_inv" size="5" disabled="true" onchange="processRateModifierInvOption()"></span>
 				<div class="optionsubdescription">Keep this at the default (1) in most cases, or set to a specific shiny rate if you're looking for shinies.</div>
 			</div>
 			
 			<div class="optionentry"><div class="optiondescription">Number of above Pokemon needed:</div>
-				<input class="optiontextbox" id="pokemon_to_get" size="4" value="1" onchange="processOptions()">
+				<input class="optiontextbox" id="pokemon_to_get" size="4" onchange="processOptions()">
 				<br><br>
 				<div class="optiondescription">Chart mode:</div>
 				<select id="chart_mode" onchange="processOptions()">
@@ -213,11 +213,12 @@
 			</div>
 			
 			<div class="optionentry"><div class="optiondescription">Encounters to graph:</div>
-				<input class="optiontextbox" id="encounters_to_graph" size="5" value="300" onchange="processEncountersToGraphOption()"><br>
+				<input class="optiontextbox" id="encounters_to_graph" size="5" onchange="processEncountersToGraphOption()"><br>
 			</div>
 			
 			<div class="buttonsurround">
 				<button class="calcbutton" type="button" id="b1" onclick="calculate()">Calculate</button>
+				<button class="resetbutton" type="button" id="b2" onclick="resetOptionDefaults()">Reset</button>
 				<div id="error"></div>
 			</div>
 			

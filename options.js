@@ -1,12 +1,43 @@
+/* Global variables
+ */
+var optEncountersToGraphSavedNonRaid = false;
+var optEncountersToGraphSavedRaid = false;
+var optCustomMinIvPercentSaved = false;
+var optCustomRateModifierSaved = false;
+var encountersToGraphDefaultNonRaid;
+var	encountersToGraphDefaultRaid;
+
+/* resetOptionDefaults()
+ */
+function resetOptionDefaults()
+{
+	optEncountersToGraphSavedNonRaid = false;
+	optEncountersToGraphSavedRaid = false;
+	optCustomMinIvPercentSaved = false;
+	optCustomRateModifierSaved = false;
+	
+	encountersToGraphDefaultNonRaid = 300;
+	encountersToGraphDefaultRaid = 30;
+	
+	document.getElementById("appraisal").value = "best";
+	document.getElementById("min_attack_iv").value = "any";
+	document.getElementById("encounter_type").value = "normal";
+	document.getElementById("min_level").value = "any";
+	document.getElementById("trainer_level").value = 30;
+	document.getElementById("ratemodifierselect").value = 1;
+	document.getElementById("pokemon_to_get").value = 1;
+	document.getElementById("encounters_to_graph").value = encountersToGraphDefaultNonRaid;
+	document.getElementById("chart_mode").value = "single";
+	
+	processOptions();
+}
+
 /* processEncountersToGraphOption()
  * Save the state of the Encounters to Graph text box between different Encounter Type modes
  * The value is then recalled in processOptions()
  *
  * Called from onchange at <input id="encounters_to_graph">
  */
-var optEncountersToGraphSavedNonRaid = false;
-var optEncountersToGraphSavedRaid = false;
-
 function processEncountersToGraphOption()
 {
 	var optEncountersToGraph = document.getElementById("encounters_to_graph").value;
@@ -31,8 +62,6 @@ function processEncountersToGraphOption()
  *
  * Called from onchange at <input id="min_iv_percent">
  */
-var optCustomMinIvPercentSaved = false;
-
 function processMinIvPercentOption()
 {
 	optCustomMinIvPercentSaved = document.getElementById("min_iv_percent").value;
@@ -43,8 +72,6 @@ function processMinIvPercentOption()
  *
  * Called from onchange at <input id="rate_modifier">
  */
-var optCustomRateModifierSaved = false;
-
 function processRateModifierOption()
 {
 	optCustomRateModifierSaved = document.getElementById("rate_modifier").value;
@@ -56,13 +83,14 @@ function processRateModifierOption()
  *
  * Called from onchange at <input id="rate_modifier_inv">
  */
-var optCustomRateModifierInvSaved = false;
 
 function processRateModifierInvOption()
 {
-	optCustomRateModifierInvSaved = document.getElementById("rate_modifier_inv").value;
-	document.getElementById("rate_modifier").value = (1/parseFloat(document.getElementById("rate_modifier_inv").value)).toFixed(8);
+	var decvalue = (1/parseFloat(document.getElementById("rate_modifier_inv").value)).toFixed(8);
+	document.getElementById("rate_modifier").value = decvalue;
+	optCustomRateModifierSaved = decvalue;
 }
+
 
 /* processOptions()
  * Process various selection and input boxes on the pageX
@@ -123,7 +151,7 @@ function processOptions()
 		}
 		else
 		{
-			document.getElementById("encounters_to_graph").value = 300;
+			document.getElementById("encounters_to_graph").value = encountersToGraphDefaultNonRaid;
 		}
 		document.getElementById("min_level").disabled = false;
 		document.getElementById("trainer_level").disabled = false;
@@ -142,7 +170,7 @@ function processOptions()
 		}
 		else
 		{
-			document.getElementById("encounters_to_graph").value = 300;
+			document.getElementById("encounters_to_graph").value = encountersToGraphDefaultNonRaid;
 		}
 		document.getElementById("min_level").disabled = false;
 		document.getElementById("trainer_level").disabled = false;
@@ -161,7 +189,7 @@ function processOptions()
 		}
 		else
 		{
-			document.getElementById("encounters_to_graph").value = 30;
+			document.getElementById("encounters_to_graph").value = encountersToGraphDefaultRaid;
 		}
 		document.getElementById("min_level").disabled = true;
 		document.getElementById("trainer_level").disabled = true;
@@ -190,6 +218,11 @@ function processOptions()
 	{
 		document.getElementById("rate_modifier").disabled = false;
 		document.getElementById("rate_modifier_inv").disabled = false;
+		if (optCustomRateModifierSaved)
+		{
+			document.getElementById("rate_modifier").value = optCustomRateModifierSaved;
+			document.getElementById("rate_modifier_inv").value = (1/optCustomRateModifierSaved).toFixed(2);
+		}
 	}
 	else
 	{
