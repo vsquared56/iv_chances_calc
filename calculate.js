@@ -19,6 +19,9 @@ for (i = 0; i < 16; i++) {
 
 function calculate()
 {
+	//Save the options for this chart in the URL
+	setUrlOptions(true);
+	
 	// Process input boxes
 	var minattack = document.getElementById("min_attack_iv").value;
 	if (minattack === "any")

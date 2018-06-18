@@ -43,6 +43,10 @@ function drawChart() {
 google.charts.load('current', {'packages':['corechart']});
 google.charts.setOnLoadCallback(init);
 
+window.onload = function()
+{
+}
+
 function init()
 {
 	resetOptionDefaults();
@@ -85,4 +89,6 @@ function init()
 	}
 	
 	setChartArea();
+	
+	getUrlOptions();
 }
