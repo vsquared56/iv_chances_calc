@@ -36,6 +36,11 @@ function choose(n,k)
 	return prod/factorial(k);
 }
 
+function binompmf(k, n, p)
+{
+	return (choose (n, k) * Math.pow(p, k) * Math.pow((1 - p), (n - k)));
+}
+
 function binomcdf(k, n, p)
 {
 	var sum = 0;

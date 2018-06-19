@@ -166,6 +166,9 @@ function calculate()
 			document.getElementById('visualization'));
 		options.isStacked = false;
 		options.legend = { position :'none'};
+		options.hAxis = {title:'Number of catches/encounters'};
+		options.vAxis = {minValue:0, maxValue:1, format: 'percent'};
+		
 		data.addColumn('number', 'Encounters');
 		data.addColumn('number', 'Probability');
 		
@@ -177,6 +180,25 @@ function calculate()
 			prob = (1-binomcdf(pokemontoget-1,i,(finalp)));
 			data.addRow([i,prob]);
 		}
+		
+		//Set the chart title
+		options.title = "Chance of finding at least " + pokemontoget + " ";
+		if (ratemodifier != 1)
+		{
+			options.title += "shiny ";
+		}
+		options.title += "Pokemon above " + minivpercent + "% IV with min " + minattack + "ATK ";
+		if ((minlevel != 0) && (encountertype != "raid"))
+		{
+			options.title += "with level >" + minlevel + " ";
+		}
+		options.title += "after x " + encountertype + " catches/encounters";
+		
+		//Print some debug text
+		document.getElementById("debug").innerHTML = 	"Plotting 1-binomcdf(k,n,p) with k=" + (pokemontoget - 1) + ", p = (" + prnumerator +
+														"/" + prdenominator + ")*(" + lvlnumerator + "/" + lvldenominator + ")*" + ratemodifier +
+														" = (" + p.toFixed(6) + "*" + lvlp.toFixed(6) + "*" + ratemodifier.toFixed(6) + ") = " + finalp.toFixed(8) +
+														" for n=" + numcatches;
 	}
 	else if (chartmode === "area")
 	{
@@ -184,6 +206,8 @@ function calculate()
 			document.getElementById('visualization'));
 		options.isStacked = true;
 		options.legend = { position :'right'};
+		options.hAxis = {title:'Number of catches/encounters'};
+		options.vAxis = {minValue:0, maxValue:1, format: 'percent'};
 		
 		data.addColumn('number', 'Encounters');
 		
@@ -210,20 +234,97 @@ function calculate()
 			
 			data.addRow(datarow);
 		}
+		//Set the chart title
+		options.title = "Chance of finding 0 to " + pokemontoget + " ";
+		if (ratemodifier != 1)
+		{
+			options.title += "shiny ";
+		}
+		options.title += "Pokemon above " + minivpercent + "% IV with min " + minattack + "ATK ";
+		if ((minlevel != 0) && (encountertype != "raid"))
+		{
+			options.title += "with level >" + minlevel + " ";
+		}
+		options.title += "after x " + encountertype + " catches/encounters";
+		
+		//Print some debug text
+		document.getElementById("debug").innerHTML = 	"Plotting 1-binomcdf(k,n,p) with k=" + (pokemontoget - 1) + ", p = (" + prnumerator +
+														"/" + prdenominator + ")*(" + lvlnumerator + "/" + lvldenominator + ")*" + ratemodifier +
+														" = (" + p.toFixed(6) + "*" + lvlp.toFixed(6) + "*" + ratemodifier.toFixed(6) + ") = " + finalp.toFixed(8) +
+														" for 0<=n<=" + numcatches;
 	}
-	
-	//Set the chart title
-	options.title = "Chance of finding at least " + pokemontoget + " ";
-	if (ratemodifier != 1)
+	else if (chartmode === "pmf")
 	{
-		options.title += "shiny ";
+		chart = new google.visualization.ColumnChart(		//Should we be creating a new one each time?
+			document.getElementById('visualization'));
+		options.legend = { position :'none'};
+		options.hAxis = {title:'Number of catches/encounters matching criteria'};
+			
+		data.addColumn('string', 'Successful Encounters');
+		data.addColumn('number', 'Probability');
+		data.addColumn({type:'string', role:'style'});
+		
+		//First find the max number of successful encounters to chart
+		var maxencounters = 1;
+		while (binomcdf(maxencounters,numcatches,finalp) < 0.999)
+		{
+			maxencounters++;
+		}
+		
+		var maxprob = 0;
+		for (i = 0; i <= maxencounters; i++)
+		{
+			// binomcdf(k,n,p) gives us the chances of getting k or fewer successes after n trials with p probability.
+			// Since we want the chances of getting k or more successes, we do (1-binomcdf(k-1,n,p).
+			prob = binompmf(i,numcatches,finalp);
+			
+			if (i < pokemontoget)
+			{
+				color = "blue";
+			}
+			else
+			{
+				color = "green";
+			}
+			
+			if (prob > maxprob)
+			{
+				maxprob = prob;
+			}
+			
+			if (i < maxencounters)
+			{
+				data.addRow([String(i),prob,color]);
+			}
+			else
+			{
+				data.addRow([">=" + i,prob,color]);
+			}
+		}
+		
+		//Set the chart scale
+		options.vAxis = {gridlines: {count:-1}, minValue:0, maxValue:(Math.ceil(maxprob/0.1) * 0.1), format: 'percent'};
+		
+		//Set the chart title
+		options.title = "Chance of finding x ";
+		if (ratemodifier != 1)
+		{
+			options.title += "shiny ";
+		}
+		options.title += "Pokemon above " + minivpercent + "% IV with min " + minattack + "ATK ";
+		if ((minlevel != 0) && (encountertype != "raid"))
+		{
+			options.title += "with level >" + minlevel + " ";
+		}
+		options.title += "after " + numcatches + " " + encountertype + " catches/encounters";
+		
+		//Print some debug text
+		document.getElementById("debug").innerHTML = 	"Plotting binompmf(k,n,p) with 0<=k<=" + maxencounters + ", p = (" + prnumerator +
+														"/" + prdenominator + ")*(" + lvlnumerator + "/" + lvldenominator + ")*" + ratemodifier +
+														" = (" + p.toFixed(6) + "*" + lvlp.toFixed(6) + "*" + ratemodifier.toFixed(6) + ") = " + finalp.toFixed(8) +
+														" for n=" + numcatches;
 	}
-	options.title += "Pokemon above " + minivpercent + "% IV with min " + minattack + "ATK ";
-	if ((minlevel != 0) && (encountertype != "raid"))
-	{
-		options.title += "with level >" + minlevel + " ";
-	}
-	options.title += "after x " + encountertype + " catches/encounters";
+
 	
 	
 	//Print the final probability per encounter
@@ -241,15 +342,6 @@ function calculate()
 	}
 	document.getElementById("resultstext").innerHTML += "This gives a total probability of " + (p*lvlp*ratemodifier*100).toFixed(6) + "% per encounter.";
 	
-	//Print some debug text
-	document.getElementById("debug").innerHTML = 	"Plotting 1-binomcdf(k,n,p) with k=" + (pokemontoget - 1) + ", p = (" + prnumerator +
-													"/" + prdenominator + ")*(" + lvlnumerator + "/" + lvldenominator + ")*" + ratemodifier +
-													" = (" + p.toFixed(6) + "*" + lvlp.toFixed(6) + "*" + ratemodifier.toFixed(6) + ") = " + finalp.toFixed(8) +
-													" for 0<=n<=" + numcatches;
-							
-	
-	//Reset some options
-	options.vAxis.viewWindow = {min:0, max:1};
 	
 	//Draw the chart!
 	drawChart();

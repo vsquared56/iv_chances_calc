@@ -3,9 +3,6 @@ var options = {
 	
 	lineWidth: 4,
 	
-	hAxis: {title: 'Number of catches/encounters' },
-	vAxis: {minValue:0, maxValue:1, format: 'percent'}, // This is also reset at the bottom of the button onclick function
-	
 	animation: {
 		duration: 1000,
 		easing: 'in'

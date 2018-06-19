@@ -228,9 +228,11 @@
 						<select id="chart_mode" onchange="processOptions()">
 							<option value="single">Simple chart (default)</option>
 							<option value="area">Stacked area (beta)</option>
+							<option value="pmf">PMF for x encounters</option>
 						</select>
 						<div class="optionsubdescription">Use the simple chart to graph a single line showing the probability of getting just this number of Pokemon.
-															Use the stacked area chart to show the probabilities of multiple numbers of matching Pokemon up to the number above.</div>
+														  <br>Use the stacked area chart to show the probabilities of multiple numbers of matching Pokemon up to the number needed.
+														  <br>Use the PMF chart to show the expected number of successes for an exact number of encounters.</div>
 					</div>
 					<div class="optionentry"><div class="optiondescription">Encounters to graph:</div>
 						<input class="optiontextbox" id="encounters_to_graph" type="number" min="1" step="1" onchange="processEncountersToGraphOption()"><br>

@@ -524,7 +524,7 @@ function validateOptions(optionsSource)
 	}
 	
 	/* Validate Chart Mode Selection */
-	if (!isValid(pageopts.chartmode,["single","area"]))
+	if (!isValid(pageopts.chartmode,["single","area","pmf"]))
 	{
 		addError("Invalid Chart Mode selection.");
 	}
