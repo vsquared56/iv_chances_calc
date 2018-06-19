@@ -53,6 +53,7 @@ function resetClick()
 	
 }
 
+var width, height, heightpercent;
 function init()
 {
 	/* Set chart area.
@@ -60,7 +61,6 @@ function init()
 	 * Don't call during button press to prevent virtual-keyboard size changes on mobile.
 	 * Don't call on window resize?
 	 */
-	var width, height, heightpercent;
 	function setChartArea()
 	{
 		width = window.innerWidth;
@@ -72,7 +72,7 @@ function init()
 		}
 		else
 		{
-		  height = Math.max((height - 200),(width/2.5));
+		  height = Math.max((height - 300),(width/2.5));
 		}
 		
 		// Decrease chart area to fit the title if it spans two lines
@@ -88,6 +88,7 @@ function init()
 		  widthpercent = '90%';
 		}
 		
+		//Reset these in calculate() as well.
 		options.height = height;
 		options.chartArea = {width:widthpercent,height:heightpercent};
 	}

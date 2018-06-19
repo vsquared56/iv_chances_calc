@@ -138,7 +138,7 @@ function processRateModifierOption()
 {
 	getPageOptions();
 	optCustomRateModifierSaved = pageopts.ratemodifier;
-	pageopts.ratemodifierinv = (1/parseFloat(pageopts.ratemodifier)).toFixed(2);
+	pageopts.ratemodifierinv = (1/parseFloat(pageopts.ratemodifier)).toFixed(4);
 	
 	validateOptions();
 	setPageOptions();
@@ -295,7 +295,7 @@ function processOptions()
 		document.getElementById("rate_modifier").disabled = true;
 		document.getElementById("rate_modifier_inv").disabled = true;
 		pageopts.ratemodifierinv = pageopts.ratemodifierselect;
-		pageopts.ratemodifier = (1/parseFloat(pageopts.ratemodifierselect)).toFixed(9);
+		pageopts.ratemodifier = (1/parseFloat(pageopts.ratemodifierselect)).toFixed(6);
 	}
 	
 	validateOptions();
@@ -494,10 +494,10 @@ function validateOptions(optionsSource)
 	}
 	
 	/* Validate combination of Rate Modifier and Rate Modifier Inverse */
-	if ((pageopts.ratemodifier > (1.0001 / pageopts.ratemodifierinv)) ||
-		(pageopts.ratemodifier < (0.9999 / pageopts.ratemodifierinv)))
+	if ((pageopts.ratemodifier > (1.001 / pageopts.ratemodifierinv)) ||
+		(pageopts.ratemodifier < (0.999 / pageopts.ratemodifierinv)))
 	{
-		//The two values need to be inverses of each other, but allow some .01% leeway to account for float rounding
+		//The two values need to be inverses of each other, but allow some .1% leeway to account for float rounding
 		addError("Rate modifier and inverse do not match.");
 	}
 	
