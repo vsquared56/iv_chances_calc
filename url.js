@@ -71,15 +71,21 @@ function getUrlOptions()
 		}
 	}
 	
-	setPageOptions();
-	processEncountersToGraphOption();  //Save the Encounters to Graph option or it'll get reset to default by processOptions()
-	processRateModifierOption();
-	
-	processOptions();
-	
-	if (calc)
+	var err = validateOptions("url");
+	if (!err)
 	{
-		calculate();
+		setPageOptions();
+	
+		processEncountersToGraphOption();  //Save the Encounters to Graph option or it'll get reset to default by processOptions()
+		processRateModifierOption();
 		
+		processOptions();
+		
+		if (calc)
+		{
+			calculate();
+			
+		}
 	}
+	return err;
 }

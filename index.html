@@ -89,7 +89,7 @@
 							<option value="any">Any</option>
 							<option value="other">Custom percentage</option>
 						</select>
-						<span class="inputbox"><input class="optiontextbox" id="min_iv_percent" size="4" type="number" min="0" max="100" step="0.1" disabled="true" onchange="processMinIvPercentOption()">%IV</span>
+						<span class="inputbox"><input class="optiontextbox" id="min_iv_percent" size="4" type="number" min="0" max="100" step="0.1" disabled="true" value="82.2" onchange="processMinIvPercentOption()">%IV</span>
 					</div>
 					<div class="optionentry"><div class="optiondescription">Minimum Attack IV:</div>
 						<select id="min_attack_iv" onchange="processOptions()">
@@ -202,23 +202,23 @@
 					<div class="optionentry"><div class="optiondescription">Additional probability modifier:</div>
 						<select id="ratemodifierselect" onchange="processOptions()">
 							<option value="1">Base catch probability (default)</option>
-							<option value="0.00222222">Wild shiny rate (1/450)</option>
-							<option value="0.01333333">Absol boss shiny rate (1/75)</option>
-							<option value="0.02222222">Aerodactyl boss shiny rate (1/45)</option>
-							<option value="0.02857142">Mawile boss shiny rate (1/35)</option>
-							<option value="0.05263157">Legendary boss shiny rate (1/19)</option>
-							<option value="0.04081632">Community Day shiny rate (1/24.5)</option>
+							<option value="450">Wild shiny rate (1/450)</option>
+							<option value="75">Absol boss shiny rate (1/75)</option>
+							<option value="45">Aerodactyl boss shiny rate (1/45)</option>
+							<option value="35">Mawile boss shiny rate (1/35)</option>
+							<option value="19">Legendary boss shiny rate (1/19)</option>
+							<option value="24.5">Community Day shiny rate (1/24.5)</option>
 							<option value="custom">Custom rate</option>
 						</select>
 						<span class="inputbox"><input class="optiontextbox" id="rate_modifier" size="9" disabled="true" onchange="processRateModifierOption()">
-						= 1 / <input class="optiontextbox" id="rate_modifier_inv" size="5" disabled="true" onchange="processRateModifierInvOption()"></span>
+						= 1 / <input class="optiontextbox" id="rate_modifier_inv" size="5" type="number" min="1" step="1" disabled="true" onchange="processRateModifierInvOption()"></span>
 						<div class="optionsubdescription">Keep this at the default (1) in most cases, or set to a specific shiny rate if you're looking for shinies.</div>
 					</div>
 				</div>
 				
 				<div class="optioncategory">
 					<div class="optionentry"><div class="optiondescription">Number of above Pokemon needed:</div>
-						<input class="optiontextbox" id="pokemon_to_get" size="4" onchange="processOptions()">
+						<input class="optiontextbox" id="pokemon_to_get" size="4" type="number" min="1" step="1" onchange="processOptions()">
 					</div>
 					<div class="optionentry" id="chartmodeoption"><div class="optiondescription">Chart mode:</div>
 						<select id="chart_mode" onchange="processOptions()">
@@ -229,7 +229,7 @@
 															Use the stacked area chart to show the probabilities of multiple numbers of matching Pokemon up to the number above.</div>
 					</div>
 					<div class="optionentry"><div class="optiondescription">Encounters to graph:</div>
-						<input class="optiontextbox" id="encounters_to_graph" size="5" onchange="processEncountersToGraphOption()"><br>
+						<input class="optiontextbox" id="encounters_to_graph" size="5" type="number" min="1" step="1" onchange="processEncountersToGraphOption()"><br>
 					</div>
 				</div>
 			</div>

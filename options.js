@@ -35,8 +35,9 @@ function resetOptionDefaults()
 					encountertype:"normal",
 					minlevel:"any",
 					trainerlevel:30,
-					ratemodifierselect:1,
-					ratemodifier:1,
+					ratemodifierselect:"1",
+					ratemodifier:"1.000000000",
+					ratemodifierinv:1,
 					pokemontoget:1,
 					chartmode:"single",
 					encounterstograph:encountersToGraphDefaultNonRaid
@@ -54,6 +55,7 @@ function getPageOptions()
 					trainerlevel:document.getElementById("trainer_level").value,
 					ratemodifierselect:document.getElementById("ratemodifierselect").value,
 					ratemodifier:document.getElementById("rate_modifier").value,
+					ratemodifierinv:document.getElementById("rate_modifier_inv").value,
 					pokemontoget:document.getElementById("pokemon_to_get").value,
 					chartmode:document.getElementById("chart_mode").value,
 					encounterstograph:document.getElementById("encounters_to_graph").value};
@@ -70,6 +72,7 @@ function setPageOptions()
 						trainerlevel:"trainer_level",
 						ratemodifierselect:"ratemodifierselect",
 						ratemodifier:"rate_modifier",
+						ratemodifierinv:"rate_modifier_inv",
 						pokemontoget:"pokemon_to_get",
 						chartmode:"chart_mode",
 						encounterstograph:"encounters_to_graph"
@@ -96,20 +99,21 @@ function setPageOptions()
  */
 function processEncountersToGraphOption()
 {
-	var optEncountersToGraph = document.getElementById("encounters_to_graph").value;
-	var optEncounterType = document.getElementById("encounter_type").value;
+	getPageOptions();
 	
-	if(optEncounterType === "normal")
+	validateOptions();
+	
+	if(pageopts.encountertype === "normal")
 	{
-		optEncountersToGraphSavedNonRaid = optEncountersToGraph;
+		optEncountersToGraphSavedNonRaid = pageopts.encounterstograph;
 	}
-	else if(optEncounterType === "boosted")
+	else if(pageopts.encountertype === "boosted")
 	{
-		optEncountersToGraphSavedNonRaid = optEncountersToGraph;
+		optEncountersToGraphSavedNonRaid = pageopts.encounterstograph;
 	}
-	else if(optEncounterType === "raid")
+	else if(pageopts.encountertype === "raid")
 	{
-		optEncountersToGraphSavedRaid = optEncountersToGraph;
+		optEncountersToGraphSavedRaid = pageopts.encounterstograph;
 	}
 }
 
@@ -120,7 +124,9 @@ function processEncountersToGraphOption()
  */
 function processMinIvPercentOption()
 {
-	optCustomMinIvPercentSaved = document.getElementById("min_iv_percent").value;
+	getPageOptions();
+	optCustomMinIvPercentSaved = pageopts.minivpercent;
+	validateOptions();
 }
 
 /* processRateModifierOption()
@@ -130,8 +136,12 @@ function processMinIvPercentOption()
  */
 function processRateModifierOption()
 {
-	optCustomRateModifierSaved = document.getElementById("rate_modifier").value;
-	document.getElementById("rate_modifier_inv").value = (1/parseFloat(document.getElementById("rate_modifier").value)).toFixed(2);
+	getPageOptions();
+	optCustomRateModifierSaved = pageopts.ratemodifier;
+	pageopts.ratemodifierinv = (1/parseFloat(pageopts.ratemodifier)).toFixed(2);
+	
+	validateOptions();
+	setPageOptions();
 }
 
 /* processRateModifierInvOption()
@@ -142,9 +152,13 @@ function processRateModifierOption()
 
 function processRateModifierInvOption()
 {
-	var decvalue = (1/parseFloat(document.getElementById("rate_modifier_inv").value)).toFixed(8);
-	document.getElementById("rate_modifier").value = decvalue;
+	getPageOptions();
+	var decvalue = (1/parseFloat(pageopts.ratemodifierinv)).toFixed(8);
+	pageopts.ratemodifier = decvalue;
 	optCustomRateModifierSaved = decvalue;
+	
+	validateOptions();
+	setPageOptions();
 }
 
 
@@ -273,52 +287,276 @@ function processOptions()
 		if (optCustomRateModifierSaved)
 		{
 			pageopts.ratemodifier = optCustomRateModifierSaved;
-			document.getElementById("rate_modifier_inv").value = (1/optCustomRateModifierSaved).toFixed(2);
+			pageopts.ratemodifierinv = (1/optCustomRateModifierSaved).toFixed(2);
 		}
 	}
 	else
 	{
 		document.getElementById("rate_modifier").disabled = true;
 		document.getElementById("rate_modifier_inv").disabled = true;
-		pageopts.ratemodifier = pageopts.ratemodifierselect;
-		document.getElementById("rate_modifier_inv").value = (1/parseFloat(pageopts.ratemodifier)).toFixed(2);
+		pageopts.ratemodifierinv = pageopts.ratemodifierselect;
+		pageopts.ratemodifier = (1/parseFloat(pageopts.ratemodifierselect)).toFixed(9);
 	}
 	
-	/* Error processing	*/
-	var errortext;
-	var minlevel;
+	validateOptions();
+	setPageOptions();
+}
+
+function validateOptions(optionsSource)
+{
+	console.log("validateOptions()");
+	//console.trace();
 	
-	if (pageopts.minlevel === "any")
+	
+	var errortext = "";
+	var numErrors = 0;
+	function addError(err)
 	{
-		minlevel = 0;
+		if (numErrors === 0)
+		{
+			if (optionsSource == "url")
+			{
+				errortext += "Invalid URL Parameters:<br>"
+			}
+		}
+		errortext += err + "<br>";
+		numErrors++;
+	}
+	
+	function isValid(value, validvals)
+	{
+		valid = false;
+		for (var i = 0; i < validvals.length; i++)
+		{
+			if (value === validvals[i])
+			{
+				valid = true;
+			}
+		}
+		return valid;
+	}
+	
+	//Polyfill https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isInteger#Polyfill
+	Number.isInteger = Number.isInteger || function(value) {
+		return typeof value === 'number' && 
+		isFinite(value) && 
+		Math.floor(value) === value;
+	};
+	
+	/* Validate appraisal selection */
+	if (!isValid(pageopts.appraisal,["best","good","aboveaverage","any","other"]))
+	{
+		addError("Invalid Appraisal selection.");
+	}
+	
+	/* Validate Minimum IV Percent box */
+	if (isNaN(pageopts.minivpercent))
+	{
+		addError("Minimum IV Percentage must be a number.");
 	}
 	else
 	{
-		minlevel = parseInt(pageopts.minlevel);
-	}
-	trainerlevel = parseInt(pageopts.trainerlevel);
-	
-	
-	if (pageopts.encountertype === "normal")
-	{
-		if (minlevel > trainerlevel)
+		pageopts.minivpercent = parseFloat(pageopts.minivpercent);
+		
+		if (pageopts.minivpercent > 100 || pageopts.minivpercent < 0)
 		{
-			errortext = "Minimum Pokemon level can't be greater than Trainer Level!  ";
-		}
-		if (minlevel > 30)
-		{
-			errortext = "Minimum Pokemon level can't be greater than 30 unless weather boosted!  ";
+			addError("Minimum IV Percentage must be between 0 and 100.");
 		}
 	}
-	else if (pageopts.encountertype === "boosted")
+	
+	/* Validate combination of Minimum IV Percentage and Appraisal */
+	if (pageopts.appraisal !== "other")
 	{
-		if (minlevel > trainerlevel + 5)
+		if (((pageopts.appraisal === "best") && (pageopts.minivpercent != 82.2)) ||
+			((pageopts.appraisal === "good") && (pageopts.minivpercent != 66.7)) ||
+			((pageopts.appraisal === "aboveaverage") && (pageopts.minivpercent != 51.1)) ||
+			((pageopts.appraisal === "any") && (pageopts.minivpercent != 0)))
 		{
-			errortext = "Minimum Pokemon level can't be greater than Trainer Level + 5 when weather boosted!  ";
+			addError("Minimum IV Percent doesn't match Appraisal selection.");
 		}
-		if (minlevel < 6)
+	}
+	
+	/* Validate Minimum Attack IV */
+	if (isNaN(pageopts.minattackiv) && (pageopts.minattackiv !== "any"))
+	{
+		addError("Invalid Minimum Attack IV selection");
+	}
+	else if (pageopts.minattackiv !== "any")
+	{
+		pageopts.minattackiv = parseFloat(pageopts.minattackiv)
+		if (!Number.isInteger(pageopts.minattackiv))
 		{
-			errortext = "Minimum Pokemon level can't be less than 6 when weather boosted!  ";
+			addError("Minimum Attack IV selection must be an integer.");
+		}
+		if (pageopts.minattackiv > 15 || pageopts.minattackiv < 0)
+		{
+			addError("Minimum Attack IV selection must be between 0 and 15.");
+		}		
+	}
+	
+	/* Validate Encounter Type Selection */
+	if (!isValid(pageopts.encountertype,["normal","boosted","raid"]))
+	{
+		addError("Invalid Encounter Type selection!");
+	}
+	
+	/* Validate Minimum Pokemon Level Selection */
+	if (isNaN(pageopts.minlevel) && (pageopts.minlevel !== "any"))
+	{
+		addError("Invalid Pokemon Level selection!");
+	}
+	else if (pageopts.minlevel !== "any")
+	{
+		pageopts.minlevel = parseFloat(pageopts.minlevel);
+		if (!Number.isInteger(pageopts.minlevel))
+		{
+			addError("Minimum Pokemon Level selection must be an integer.");
+		}
+		if (pageopts.minlevel > 35 || pageopts.minlevel < 1)
+		{
+			addError("Minimum Pokemon Level selection must be between 1 and 35.");
+		}	
+	}
+	
+	/* Validate Trainer Level Selection */
+	if (isNaN(pageopts.trainerlevel) && (pageopts.trainerlevel !== "any"))
+	{
+		addError("Invalid Trainer Level selection!");
+	}
+	else
+	{
+		pageopts.trainerlevel = parseFloat(pageopts.trainerlevel);
+		if (!Number.isInteger(pageopts.trainerlevel))
+		{
+			addError("Trainer Level selection must be an integer.");
+		}
+		if (pageopts.trainerlevel > 30 || pageopts.trainerlevel < 1)
+		{
+			addError("Trainer Level selection must be between 1 and 30.");
+		}	
+	}
+	
+	/* Validate combination of trainer level and pokemon level */
+	if (pageopts.minlevel !== "any")
+	{
+		if (pageopts.encountertype === "normal")
+		{
+			if (pageopts.minlevel > pageopts.trainerlevel)
+			{
+				addError("Minimum Pokemon level can't be greater than Trainer Level.");
+			}
+			if (pageopts.minlevel > 30)
+			{
+				addError("Minimum Pokemon level can't be greater than 30 unless weather boosted.");
+			}
+		}
+		else if (pageopts.encountertype === "boosted")
+		{
+			if (pageopts.minlevel > pageopts.trainerlevel + 5)
+			{
+				addError("Minimum Pokemon level can't be greater than Trainer Level + 5 when weather boosted.");
+			}
+			if (pageopts.minlevel < 6)
+			{
+				addError("Minimum Pokemon level can't be less than 6 when weather boosted.");
+			}
+		}
+	}
+	
+	/* Validate Additional Probability Modifier selection */
+	if (!isValid(pageopts.ratemodifierselect,["1","450","75","45","35","19","24.5","custom"]))
+	{
+		addError("Invalid Probability Modifier selection.");
+	}
+	
+	/* Validate Rate Modifier box */
+	if (isNaN(pageopts.ratemodifier))
+	{
+		addError("Rate modifier must be a number.");
+	}
+	else
+	{
+		pageopts.ratemodifier = parseFloat(pageopts.ratemodifier);
+		if (pageopts.ratemodifier < 0 || pageopts.ratemodifier > 1)
+		{
+			addError("Rate modifier must be a decimal between 0 and 1.");
+		}	
+	}
+	
+	/* Validate Rate Modifier Inverse box */
+	if (isNaN(pageopts.ratemodifierinv))
+	{
+		addError("Rate modifier (inverse) must be a number.");
+	}
+	else
+	{
+		pageopts.ratemodifierinv = parseFloat(pageopts.ratemodifierinv);
+		if (pageopts.ratemodifierinv <= 0)
+		{
+			addError("Rate modifier (inverse) must be above 0.");
+		}	
+	}
+	
+	/* Validate combination of Rate Modifier and Rate Modifier Inverse */
+	if ((pageopts.ratemodifier > (1.0001 / pageopts.ratemodifierinv)) ||
+		(pageopts.ratemodifier < (0.9999 / pageopts.ratemodifierinv)))
+	{
+		//The two values need to be inverses of each other, but allow some .01% leeway to account for float rounding
+		addError("Rate modifier and inverse do not match.");
+	}
+	
+	/* Validate Number of Pokemon Needed box */
+	if (isNaN(pageopts.pokemontoget))
+	{
+		addError("Invalid Pokemon Number Needed.");
+	}
+	else
+	{
+		pageopts.pokemontoget = parseFloat(pageopts.pokemontoget);
+		if (!Number.isInteger(pageopts.pokemontoget))
+		{
+			addError("Number of Pokemon needed must be an integer.");
+		}
+		if (pageopts.pokemontoget < 1)
+		{
+			addError("Number of Pokemon needed must be greater than 0.");
+		}
+	}
+	
+	/* Validate Chart Mode Selection */
+	if (!isValid(pageopts.chartmode,["single","area"]))
+	{
+		addError("Invalid Chart Mode selection.");
+	}
+	
+	/* Validate combination of chart mode and number of Pokemon needed */
+	if (pageopts.chartmode === "area")
+	{
+		if (pageopts.pokemontoget > 16)
+		{
+			addError("Stacked area chart only supports  a maximum of 16 Pokemon needed.");
+		}
+	}
+	
+	/* Validate Encounters to graph box */
+	if (isNaN(pageopts.encounterstograph))
+	{
+		addError("Invalid encounters to graph.");
+	}
+	else
+	{
+		pageopts.encounterstograph = parseFloat(pageopts.encounterstograph);
+		if (!Number.isInteger(pageopts.encounterstograph))
+		{
+			addError("Number of encounters to graph must be an integer.");
+		}
+		if (pageopts.encounterstograph < 1)
+		{
+			addError("Number of encounters to graph must be 1 or more.");
+		}
+		else if (pageopts.encounterstograph > Number.MAX_SAFE_INTEGER)
+		{
+			addError("Number of encounters can't be bigger than " + Number.MAX_SAFE_INTEGER + ".");
 		}
 	}
 	
@@ -334,7 +572,7 @@ function processOptions()
 			document.getElementById("b1").disabled = false;
 	}
 	
-	setPageOptions();
+	return numErrors;
 }
 
 /* Enable or Disable any option elements between the low and high in the Pokemon level selection */

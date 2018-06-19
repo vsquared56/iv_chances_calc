@@ -59,6 +59,10 @@ function resetClick()
 function init()
 {
 	resetOptionDefaults();
+	if (getUrlOptions() == 0)
+	{
+		setPageOptions();
+	}
 	
 	/* Set chart area.
 	 * Call this during init.
@@ -99,5 +103,5 @@ function init()
 	
 	setChartArea();
 	
-	getUrlOptions();
+
 }
