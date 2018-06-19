@@ -43,7 +43,8 @@
 							border: 1px solid #BBBBBB;
 							flex-grow: 1;}
 		.optiontextbox { 	font-size:1em;
-							line-height:1.2em; }
+							line-height:1.2em; 
+							max-width: 5em;}
 		.optiondescription { font-size:1em; 
 							 padding: 0 0 1% 0; }
 		.optionsubdescription { font-size:0.75em; }
@@ -92,7 +93,7 @@
 							<option value="any">Any</option>
 							<option value="other">Custom percentage</option>
 						</select>
-						<span class="inputbox"><input class="optiontextbox" id="min_iv_percent" size="4" type="number" min="0" max="100" step="0.1" disabled="true" value="82.2" onchange="processMinIvPercentOption()">%IV</span>
+						<span class="inputbox"><input class="optiontextbox" id="min_iv_percent" type="number" min="0" max="100" step="0.1" disabled="true" value="82.2" onchange="processMinIvPercentOption()">%IV</span>
 					</div>
 					<div class="optionentry"><div class="optiondescription">Minimum Attack IV:</div>
 						<select id="min_attack_iv" onchange="processOptions()">
@@ -213,15 +214,15 @@
 							<option value="24.5">Community Day shiny rate (1/24.5)</option>
 							<option value="custom">Custom rate</option>
 						</select>
-						<span class="inputbox"><input class="optiontextbox" id="rate_modifier" size="9" disabled="true" onchange="processRateModifierOption()">
-						= 1 / <input class="optiontextbox" id="rate_modifier_inv" size="5" type="number" min="1" step="1" disabled="true" onchange="processRateModifierInvOption()"></span>
+						<span class="inputbox"><input class="optiontextbox" id="rate_modifier" type="number" min="0" max="1" step="0.01" disabled="true" onchange="processRateModifierOption()">
+						= 1 / <input class="optiontextbox" id="rate_modifier_inv" type="number" min="1" step="1" disabled="true" onchange="processRateModifierInvOption()"></span>
 						<div class="optionsubdescription">Keep this at the default (1) in most cases, or set to a specific shiny rate if you're looking for shinies.</div>
 					</div>
 				</div>
 				
 				<div class="optioncategory">
 					<div class="optionentry"><div class="optiondescription">Number of above Pokemon needed:</div>
-						<input class="optiontextbox" id="pokemon_to_get" size="4" type="number" min="1" step="1" onchange="processOptions()">
+						<input class="optiontextbox" id="pokemon_to_get" type="number" min="1" step="1" onchange="processOptions()">
 					</div>
 					<div class="optionentry" id="chartmodeoption"><div class="optiondescription">Chart mode:</div>
 						<select id="chart_mode" onchange="processOptions()">
@@ -232,7 +233,7 @@
 															Use the stacked area chart to show the probabilities of multiple numbers of matching Pokemon up to the number above.</div>
 					</div>
 					<div class="optionentry"><div class="optiondescription">Encounters to graph:</div>
-						<input class="optiontextbox" id="encounters_to_graph" size="5" type="number" min="1" step="1" onchange="processEncountersToGraphOption()"><br>
+						<input class="optiontextbox" id="encounters_to_graph" type="number" min="1" step="1" onchange="processEncountersToGraphOption()"><br>
 					</div>
 				</div>
 			</div>
