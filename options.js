@@ -556,7 +556,11 @@ function validateOptions(optionsSource)
 		}
 		else if (pageopts.encounterstograph > Number.MAX_SAFE_INTEGER)
 		{
-			addError("Number of encounters can't be bigger than " + Number.MAX_SAFE_INTEGER + ".");
+			addError("Number of encounters to graph can't be bigger than " + Number.MAX_SAFE_INTEGER + ".");
+		}
+		else if (pageopts.encounterstograph < pageopts.pokemontoget)
+		{
+			addError("Number of encounters to graph can't be smaller than the number of Pokemon needed.");
 		}
 	}
 	
