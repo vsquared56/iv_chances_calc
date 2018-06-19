@@ -167,7 +167,7 @@ function calculate()
 		options.isStacked = false;
 		options.legend = { position :'none'};
 		options.hAxis = {title:'Number of catches/encounters'};
-		options.vAxis = {minValue:0, maxValue:1, format: 'percent'};
+		options.vAxis = {gridlines: {count:-1}, minValue:0, maxValue:1, format: 'decimal', title: 'Probability (%)', titleTextStyle:{italic: false}};
 		
 		data.addColumn('number', 'Encounters');
 		data.addColumn('number', 'Probability');
@@ -177,7 +177,7 @@ function calculate()
 		{
 			// binomcdf(k,n,p) gives us the chances of getting k or fewer successes after n trials with p probability.
 			// Since we want the chances of getting k or more successes, we do (1-binomcdf(k-1,n,p).
-			prob = (1-binomcdf(pokemontoget-1,i,(finalp)));
+			prob = 100*(1-binomcdf(pokemontoget-1,i,(finalp)));
 			data.addRow([i,prob]);
 		}
 		
@@ -207,7 +207,7 @@ function calculate()
 		options.isStacked = true;
 		options.legend = { position :'right'};
 		options.hAxis = {title:'Number of catches/encounters'};
-		options.vAxis = {minValue:0, maxValue:1, format: 'percent'};
+		options.vAxis = {gridlines: {count:-1}, minValue:0, maxValue:1, format: 'decimal', title: 'Probability (%)', titleTextStyle:{italic: false}};
 		
 		data.addColumn('number', 'Encounters');
 		
@@ -227,7 +227,7 @@ function calculate()
 			datarow.push(i);
 			for (j = pokemontoget; j >= 1; j--)
 			{
-				prob = (1-binomcdf(j-1,i,(finalp)));
+				prob = 100*(1-binomcdf(j-1,i,(finalp)));
 				datarow.push(prob - prob_prev);
 				prob_prev = prob;
 			}
@@ -274,9 +274,7 @@ function calculate()
 		var maxprob = 0;
 		for (i = 0; i <= maxencounters; i++)
 		{
-			// binomcdf(k,n,p) gives us the chances of getting k or fewer successes after n trials with p probability.
-			// Since we want the chances of getting k or more successes, we do (1-binomcdf(k-1,n,p).
-			prob = binompmf(i,numcatches,finalp);
+			prob = 100*binompmf(i,numcatches,finalp);
 			
 			if (i < pokemontoget)
 			{
@@ -303,7 +301,7 @@ function calculate()
 		}
 		
 		//Set the chart scale
-		options.vAxis = {gridlines: {count:-1}, minValue:0, maxValue:(Math.ceil(maxprob/0.1) * 0.1), format: 'percent'};
+		options.vAxis = {gridlines: {count:-1}, minValue:0, maxValue:(Math.ceil(maxprob/0.1) * 0.1), format: 'decimal', title: 'Probability (%)', titleTextStyle:{italic: false}};
 		
 		//Set the chart title
 		options.title = "Chance of finding x ";
@@ -324,7 +322,77 @@ function calculate()
 														" = (" + p.toFixed(6) + "*" + lvlp.toFixed(6) + "*" + ratemodifier.toFixed(6) + ") = " + finalp.toFixed(8) +
 														" for n=" + numcatches;
 	}
-
+	else if (chartmode === "cdf")
+	{
+		chart = new google.visualization.ColumnChart(		//Should we be creating a new one each time?
+			document.getElementById('visualization'));
+		options.legend = { position :'none'};
+		options.hAxis = {title:'Number of catches/encounters matching criteria'};
+			
+		data.addColumn('string', 'Successful Encounters');
+		data.addColumn('number', 'Probability');
+		data.addColumn({type:'string', role:'style'});
+		
+		//First find the max number of successful encounters to chart
+		var maxencounters = 1;
+		while (binomcdf(maxencounters,numcatches,finalp) < 0.999)
+		{
+			maxencounters++;
+		}
+		
+		var maxprob = 0;
+		for (i = 1; i <= maxencounters; i++)
+		{
+			// binomcdf(k,n,p) gives us the chances of getting k or fewer successes after n trials with p probability.
+			// Since we want the chances of getting k or more successes, we do (1-binomcdf(k-1,n,p).
+			prob = 100*(1-binomcdf(i-1,numcatches,finalp));
+			
+			if (i < pokemontoget)
+			{
+				color = "blue";
+			}
+			else
+			{
+				color = "green";
+			}
+			
+			if (prob > maxprob)
+			{
+				maxprob = prob;
+			}
+			
+			if (i < maxencounters)
+			{
+				data.addRow([String(i),prob,color]);
+			}
+			else
+			{
+				data.addRow([">=" + i,prob,color]);
+			}
+		}
+		
+		//Set the chart scale
+		options.vAxis = {gridlines: {count:-1}, minValue:0, maxValue:(Math.ceil(maxprob/0.1) * 0.1), format: 'decimal', title: 'Probability (%)', titleTextStyle:{italic: false}};
+		
+		//Set the chart title
+		options.title = "Chance of finding at least x ";
+		if (ratemodifier != 1)
+		{
+			options.title += "shiny ";
+		}
+		options.title += "Pokemon above " + minivpercent + "% IV with min " + minattack + "ATK ";
+		if ((minlevel != 0) && (encountertype != "raid"))
+		{
+			options.title += "with level >" + minlevel + " ";
+		}
+		options.title += "after " + numcatches + " " + encountertype + " catches/encounters";
+		
+		//Print some debug text
+		document.getElementById("debug").innerHTML = 	"Plotting binompmf(k,n,p) with 0<=k<=" + maxencounters + ", p = (" + prnumerator +
+														"/" + prdenominator + ")*(" + lvlnumerator + "/" + lvldenominator + ")*" + ratemodifier +
+														" = (" + p.toFixed(6) + "*" + lvlp.toFixed(6) + "*" + ratemodifier.toFixed(6) + ") = " + finalp.toFixed(8) +
+														" for n=" + numcatches;
+	}
 	
 	
 	//Print the final probability per encounter

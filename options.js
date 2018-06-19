@@ -304,10 +304,6 @@ function processOptions()
 
 function validateOptions(optionsSource)
 {
-	console.log("validateOptions()");
-	//console.trace();
-	
-	
 	var errortext = "";
 	var numErrors = 0;
 	function addError(err)
@@ -524,7 +520,7 @@ function validateOptions(optionsSource)
 	}
 	
 	/* Validate Chart Mode Selection */
-	if (!isValid(pageopts.chartmode,["single","area","pmf"]))
+	if (!isValid(pageopts.chartmode,["single","area","pmf","cdf"]))
 	{
 		addError("Invalid Chart Mode selection.");
 	}
