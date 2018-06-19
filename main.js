@@ -58,12 +58,6 @@ function resetClick()
 
 function init()
 {
-	resetOptionDefaults();
-	if (getUrlOptions() == 0)
-	{
-		setPageOptions();
-	}
-	
 	/* Set chart area.
 	 * Call this during init.
 	 * Don't call during button press to prevent virtual-keyboard size changes on mobile.
@@ -102,6 +96,12 @@ function init()
 	}
 	
 	setChartArea();
+	
+	resetOptionDefaults();
+	if (getUrlOptions() == 0)
+	{
+		setPageOptions();
+	}
 	
 
 }
