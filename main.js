@@ -1,5 +1,5 @@
 //Chart options
-var options = {
+var chartOptions = {
 	
 	lineWidth: 4,
 	
@@ -34,7 +34,7 @@ function drawChart() {
 		button.disabled = false;
 	});
 	chartDrawn = true;
-	chart.draw(data, options);
+	chart.draw();
 }
 
 google.charts.load('current', {'packages':['corechart']});
@@ -54,8 +54,11 @@ function resetClick()
 }
 
 var width, height, heightpercent;
+var chart;
 function init()
 {
+	chart = new google.visualization.ChartWrapper({'containerId':'visualization'});
+	
 	/* Set chart area.
 	 * Call this during init.
 	 * Don't call during button press to prevent virtual-keyboard size changes on mobile.
@@ -89,8 +92,9 @@ function init()
 		}
 		
 		//Reset these in calculate() as well.
-		options.height = height;
-		options.chartArea = {width:widthpercent,height:heightpercent};
+		chartOptions.width = "90%";
+		chartOptions.height = height;
+		chartOptions.chartArea = {width:widthpercent,height:heightpercent};
 	}
 	
 	setChartArea();
@@ -100,6 +104,5 @@ function init()
 	{
 		setPageOptions();
 	}
-	
 
 }

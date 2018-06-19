@@ -164,13 +164,12 @@ function calculate()
 		
 		if (chartmode === "single")
 		{
-			chart = new google.visualization.LineChart(		//Should we be creating a new one each time?
-				document.getElementById('visualization'));
-			options.isStacked = false;
-			options.legend = { position :'none'};
-			options.hAxis = {title:'Number of catches/encounters'};
-			options.vAxis = {gridlines: {count:-1}, minValue:0, maxValue:100, format: 'decimal', title: 'Probability (%)', titleTextStyle:{italic: false}};
-			
+			chart.setChartType("LineChart");
+			chartOptions.isStacked = false;
+			chartOptions.legend = { position :'none'};
+			chartOptions.hAxis = {title:'Number of catches/encounters'};
+			chartOptions.vAxis = {gridlines: {count:-1}, minValue:0, maxValue:100, format: 'decimal', title: 'Probability (%)', titleTextStyle:{italic: false}};
+
 			data.addColumn('number', 'Encounters');
 			data.addColumn('number', 'Probability');
 			
@@ -184,18 +183,18 @@ function calculate()
 			}
 			
 			//Set the chart title
-			options.title = "Chance of finding at least " + pokemontoget + " ";
+			chartOptions.title = "Chance of finding at least " + pokemontoget + " ";
 			if (ratemodifier != 1)
 			{
-				options.title += "shiny ";
+				chartOptions.title += "shiny ";
 			}
-			options.title += "Pokemon above " + minivpercent + "% IV with min " + minattack + "ATK ";
+			chartOptions.title += "Pokemon above " + minivpercent + "% IV with min " + minattack + "ATK ";
 			if ((minlevel != 0) && (encountertype != "raid"))
 			{
-				options.title += "with level >" + minlevel + " ";
+				chartOptions.title += "with level >" + minlevel + " ";
 			}
-			options.title += "after x " + encountertype + " catches/encounters";
-			
+			chartOptions.title += "after x " + encountertype + " catches/encounters";
+							 
 			//Print some debug text
 			document.getElementById("debug").innerHTML = 	"Plotting 1-binomcdf(k,n,p) with k=" + (pokemontoget - 1) + "," +
 															"<br>p = (" + prnumerator + "/" + prdenominator + ")*(" + lvlnumerator + "/" + lvldenominator + ")*" + ratemodifier +
@@ -204,12 +203,11 @@ function calculate()
 		}
 		else if (chartmode === "area")
 		{
-			chart = new google.visualization.AreaChart(		//Should we be creating a new one each time?
-				document.getElementById('visualization'));
-			options.isStacked = true;
-			options.legend = { position :'right'};
-			options.hAxis = {title:'Number of catches/encounters'};
-			options.vAxis = {gridlines: {count:-1}, minValue:0, maxValue:100, format: 'decimal', title: 'Probability (%)', titleTextStyle:{italic: false}};
+			chart.setChartType("AreaChart");
+			chartOptions.isStacked = true;
+			chartOptions.legend = { position :'right'};
+			chartOptions.hAxis = {title:'Number of catches/encounters'};
+			chartOptions.vAxis = {gridlines: {count:-1}, minValue:0, maxValue:100, format: 'decimal', title: 'Probability (%)', titleTextStyle:{italic: false}};
 			
 			data.addColumn('number', 'Encounters');
 			
@@ -237,17 +235,17 @@ function calculate()
 				data.addRow(datarow);
 			}
 			//Set the chart title
-			options.title = "Chance of finding 0 to " + pokemontoget + " ";
+			chartOptions.title = "Chance of finding 0 to " + pokemontoget + " ";
 			if (ratemodifier != 1)
 			{
-				options.title += "shiny ";
+				chartOptions.title += "shiny ";
 			}
-			options.title += "Pokemon above " + minivpercent + "% IV with min " + minattack + "ATK ";
+			chartOptions.title += "Pokemon above " + minivpercent + "% IV with min " + minattack + "ATK ";
 			if ((minlevel != 0) && (encountertype != "raid"))
 			{
-				options.title += "with level >" + minlevel + " ";
+				chartOptions.title += "with level >" + minlevel + " ";
 			}
-			options.title += "after x " + encountertype + " catches/encounters";
+			chartOptions.title += "after x " + encountertype + " catches/encounters";
 			
 			//Print some debug text
 			document.getElementById("debug").innerHTML = 	"Plotting 1-binomcdf(k,n,p) with k=" + (pokemontoget - 1) + "," +
@@ -257,10 +255,9 @@ function calculate()
 		}
 		else if (chartmode === "pmf")
 		{
-			chart = new google.visualization.ColumnChart(		//Should we be creating a new one each time?
-				document.getElementById('visualization'));
-			options.legend = { position :'none'};
-			options.hAxis = {title:'Number of catches/encounters matching criteria'};
+			chart.setChartType("ColumnChart");
+			chartOptions.legend = { position :'none'};
+			chartOptions.hAxis = {title:'Number of catches/encounters matching criteria'};
 				
 			data.addColumn('string', 'Successful Encounters');
 			data.addColumn('number', 'Probability');
@@ -303,20 +300,20 @@ function calculate()
 			}
 			
 			//Set the chart scale
-			options.vAxis = {gridlines: {count:-1}, minValue:0, maxValue:(Math.ceil(maxprob/0.1) * 0.1), format: 'decimal', title: 'Probability (%)', titleTextStyle:{italic: false}};
+			chartOptions.vAxis = {gridlines: {count:-1}, minValue:0, maxValue:(Math.ceil(maxprob/0.1) * 0.1), format: 'decimal', title: 'Probability (%)', titleTextStyle:{italic: false}};
 			
 			//Set the chart title
-			options.title = "Chance of finding x ";
+			chartOptions.title = "Chance of finding x ";
 			if (ratemodifier != 1)
 			{
-				options.title += "shiny ";
+				chartOptions.title += "shiny ";
 			}
-			options.title += "Pokemon above " + minivpercent + "% IV with min " + minattack + "ATK ";
+			chartOptions.title += "Pokemon above " + minivpercent + "% IV with min " + minattack + "ATK ";
 			if ((minlevel != 0) && (encountertype != "raid"))
 			{
-				options.title += "with level >" + minlevel + " ";
+				chartOptions.title += "with level >" + minlevel + " ";
 			}
-			options.title += "after " + numcatches + " " + encountertype + " catches/encounters";
+			chartOptions.title += "after " + numcatches + " " + encountertype + " catches/encounters";
 			
 			//Print some debug text
 			document.getElementById("debug").innerHTML = 	"Plotting binompmf(k,n,p) with 0<=k<=" + maxencounters + "," +
@@ -327,10 +324,9 @@ function calculate()
 		}
 		else if (chartmode === "cdf")
 		{
-			chart = new google.visualization.ColumnChart(		//Should we be creating a new one each time?
-				document.getElementById('visualization'));
-			options.legend = { position :'none'};
-			options.hAxis = {title:'Number of catches/encounters matching criteria'};
+			chart.setChartType("ColumnChart");
+			chartOptions.legend = { position :'none'};
+			chartOptions.hAxis = {title:'Number of catches/encounters matching criteria'};
 				
 			data.addColumn('string', 'Successful Encounters');
 			data.addColumn('number', 'Probability');
@@ -375,20 +371,20 @@ function calculate()
 			}
 			
 			//Set the chart scale
-			options.vAxis = {gridlines: {count:-1}, minValue:0, maxValue:(Math.ceil(maxprob/0.1) * 0.1), format: 'decimal', title: 'Probability (%)', titleTextStyle:{italic: false}};
+			chartOptions.vAxis = {gridlines: {count:-1}, minValue:0, maxValue:(Math.ceil(maxprob/0.1) * 0.1), format: 'decimal', title: 'Probability (%)', titleTextStyle:{italic: false}};
 			
 			//Set the chart title
-			options.title = "Chance of finding at least x ";
+			chartOptions.title = "Chance of finding at least x ";
 			if (ratemodifier != 1)
 			{
-				options.title += "shiny ";
+				chartOptions.title += "shiny ";
 			}
-			options.title += "Pokemon above " + minivpercent + "% IV with min " + minattack + "ATK ";
+			chartOptions.title += "Pokemon above " + minivpercent + "% IV with min " + minattack + "ATK ";
 			if ((minlevel != 0) && (encountertype != "raid"))
 			{
-				options.title += "with level >" + minlevel + " ";
+				chartOptions.title += "with level >" + minlevel + " ";
 			}
-			options.title += "after " + numcatches + " " + encountertype + " catches/encounters";
+			chartOptions.title += "after " + numcatches + " " + encountertype + " catches/encounters";
 			
 			//Print some debug text
 			document.getElementById("debug").innerHTML = 	"Plotting binompmf(k,n,p) with 0<=k<=" + maxencounters + "," +
@@ -413,12 +409,16 @@ function calculate()
 		}
 		document.getElementById("resultstext").innerHTML += "This gives a total probability of " + (p*lvlp*ratemodifier*100).toFixed(6) + "% per encounter.";
 		
+
 		
-		options.height = height;
-		options.chartArea = {width:widthpercent,height:heightpercent};
+		chartOptions.height = height;
+		chartOptions.width = "90%";
+		chartOptions.chartArea = {width:widthpercent,height:heightpercent};
 		
-		//Clear any old charts
-		//document.getElementById('visualization').innerHTML = "";
+		chart.setDataTable(data);
+		chart.setOptions(chartOptions);
+		
+		console.log(chart.getOptions());
 		
 		//Draw the chart!
 		drawChart();
