@@ -33,6 +33,12 @@ function choose(n,k)
 		prod *= i;
 	}
 	
+	if (!isFinite(prod) || !isFinite(factorial(k)))
+	{
+		console.log("Overflow at choose n: " + n + " k: " + k + " p:" + prod + " f:" + factorial(k));
+		console.trace();
+	}
+	
 	return prod/factorial(k);
 }
 

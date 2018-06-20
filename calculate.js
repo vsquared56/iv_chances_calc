@@ -255,13 +255,27 @@ function calculate()
 		}
 		else if (chartmode === "pmf")
 		{
-			chart.setChartType("ColumnChart");
+			var charttype;
+			if(numcatches <= 1000)
+			{
+				chart.setChartType("ColumnChart");
+				data.addColumn('string', 'Successful Encounters');
+				data.addColumn('number', 'Probability');
+				data.addColumn({type:'string', role:'style'});
+				charttype="ColumnChart";
+			}
+			else
+			{
+				chart.setChartType("LineChart");
+				data.addColumn('string', 'Successful Encounters');
+				data.addColumn('number', 'Probability');
+				charttype="LineChart";
+			}
+
 			chartOptions.legend = { position :'none'};
 			chartOptions.hAxis = {title:'Number of catches/encounters matching criteria'};
 				
-			data.addColumn('string', 'Successful Encounters');
-			data.addColumn('number', 'Probability');
-			data.addColumn({type:'string', role:'style'});
+
 			
 			//First find the max number of successful encounters to chart
 			var maxencounters = 1;
@@ -289,13 +303,21 @@ function calculate()
 					maxprob = prob;
 				}
 				
-				if (i < maxencounters)
+				if (charttype === "LineChart")
 				{
-					data.addRow([String(i),prob,color]);
+					data.addRow([String(i),prob]);
 				}
-				else
+				else if (charttype === "ColumnChart")
 				{
-					data.addRow([">=" + i,prob,color]);
+					if (i < maxencounters)
+					{
+						data.addRow([String(i),prob,color]);
+					}
+					else
+					{
+						data.addRow([">=" + i,prob,color]);
+					}
+						
 				}
 			}
 			
@@ -417,8 +439,6 @@ function calculate()
 		
 		chart.setDataTable(data);
 		chart.setOptions(chartOptions);
-		
-		console.log(chart.getOptions());
 		
 		//Draw the chart!
 		drawChart();
