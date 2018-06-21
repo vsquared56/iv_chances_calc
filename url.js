@@ -4,7 +4,7 @@ function resetUrlOptions()
 	history.replaceState(null, "", path);
 }
 
-function setUrlOptions(isGraphDrawn)
+function getUrlOptionString(isGraphDrawn)
 {
 	getPageOptions();
 	
@@ -27,8 +27,13 @@ function setUrlOptions(isGraphDrawn)
 		hash += "&calc=true";
 	}
 	
+	return path+hash;
+}
+
+function setUrlOptions(isGraphDrawn)
+{	
 	state = {id:'iv_chances_calc_state',pageopts:pageopts}
-	history.replaceState(state, "", path + hash);
+	history.replaceState(state, "", getUrlOptionString(isGraphDrawn));
 }
 
 function getUrlOptions()

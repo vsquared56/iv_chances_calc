@@ -32,6 +32,9 @@ function drawChart() {
 	google.visualization.events.addListener(chart, 'ready',
 		function() {
 		button.disabled = false;
+		
+		//Turn off the loading spinner
+		document.getElementById("loadingspinner").style.display = "none";
 	});
 	chartDrawn = true;
 	chart.draw();
@@ -40,9 +43,12 @@ function drawChart() {
 google.charts.load('current', {'packages':['corechart']});
 google.charts.setOnLoadCallback(init);
 
+/*
 window.onload = function()
 {
 }
+*/
+
 
 function resetClick()
 {
@@ -51,6 +57,18 @@ function resetClick()
 	setPageOptions();
 	processOptions();
 	
+}
+
+function calculateClick()
+{
+	// Start the loading spinner
+	document.getElementById("loadingspinner").style.display = "block";
+	
+	// Set a timeout of 0 to push the calculation into the queue and let the spinner update on the page
+	setTimeout(function(){
+      	calculate();
+    }, 0);
+
 }
 
 var width, height, heightpercent;

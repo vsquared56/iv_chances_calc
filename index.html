@@ -16,7 +16,15 @@
 	<!-- Google Charts -->
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 	
-	<script type="text/javascript" src="binom.js"></script>
+	<!--
+	decimal.js -- An arbitrary-precision Decimal type for JavaScript.
+	https://github.com/MikeMcl/decimal.js
+	Copyright (c) 2019 Michael Mclaughlin
+	Licensed under the MIT License, available at lib/LICENCE.md.txt
+	-->
+	<script type="text/javascript" src="lib/decimal.min.js"></script>
+	
+	<script type="text/javascript" src="math.js"></script>
 	<script type="text/javascript" src="options.js"></script>
 	<script type="text/javascript" src="calculate.js"></script>
 	<script type="text/javascript" src="url.js"></script>
@@ -90,11 +98,28 @@
 					font-family: "Courier New", Courier, "Lucida Sans Typewriter", "Lucida Typewriter", monospace;
 					padding: 1% 1% 1% 1%; }
 		#visualization { width: 95%; }
+		
+		.buttonsurround { 	display: flex;
+							flex-wrap: wrap; 
+							align-items: center;}
+		#loadingspinner {	border: 0.5em solid #EEEEEE;
+							border-top: 0.5em solid #333333;
+							border-radius: 50%;
+							width: 1.5em;
+							height: 1.5em;
+							animation: spin 1s linear infinite;
+							
+							margin-left: 5%; 
+							
+							display: none;}
+		@keyframes spin {	0% { transform: rotate(0deg); }
+							100% { transform: rotate(360deg); }
+}
 	</style>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
 	<body>
-		<div class="title">IV Catch/Encounter Calculator + Grapher</div>
+		<div class="title" id="title">PokeProb -- IV Catch/Encounter Calculator + Grapher</div>
 		<div class="content">
 			<div class="contentcontainer">
 				<div class="options">
@@ -260,8 +285,9 @@
 					</div>
 					
 					<div class="buttonsurround">
-						<button class="calcbutton" type="button" id="b1" onclick="calculate()">Calculate</button>
+						<button class="calcbutton" type="button" id="b1" onclick="calculateClick()">Calculate</button>
 						<button class="resetbutton" type="button" id="b2" onclick="resetClick()">Reset</button>
+						<div id="loadingspinner"></div>
 						<div id="error"></div>
 					</div>
 					
@@ -269,9 +295,9 @@
 
 				<div class="results">
 					<div id="resultstext"></div>
-					<div id="debug"></div>
 					<br>
 					<div class="chart" id="visualization"></div>
+					<div id="debug"></div>
 				</div>
 				
 			</div>	

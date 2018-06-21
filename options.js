@@ -287,7 +287,7 @@ function processOptions()
 		if (optCustomRateModifierSaved)
 		{
 			pageopts.ratemodifier = optCustomRateModifierSaved;
-			pageopts.ratemodifierinv = (1/optCustomRateModifierSaved).toFixed(2);
+			pageopts.ratemodifierinv = (1/optCustomRateModifierSaved).toFixed(4);
 		}
 	}
 	else
@@ -295,7 +295,7 @@ function processOptions()
 		document.getElementById("rate_modifier").disabled = true;
 		document.getElementById("rate_modifier_inv").disabled = true;
 		pageopts.ratemodifierinv = pageopts.ratemodifierselect;
-		pageopts.ratemodifier = (1/parseFloat(pageopts.ratemodifierselect)).toFixed(6);
+		pageopts.ratemodifier = (1/parseFloat(pageopts.ratemodifierselect)).toFixed(8);
 	}
 	
 	validateOptions();
@@ -520,7 +520,7 @@ function validateOptions(optionsSource)
 	}
 	
 	/* Validate Chart Mode Selection */
-	if (!isValid(pageopts.chartmode,["single","area","pmf","cdf"]))
+	if (!isValid(pageopts.chartmode,["single","area","pmf","cdf","normalpdf","normalcdf"]))
 	{
 		addError("Invalid Chart Mode selection.");
 	}
