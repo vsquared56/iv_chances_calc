@@ -219,14 +219,14 @@ function processOptions()
 		{
 			pageopts.encounterstograph = encountersToGraphDefaultNonRaid;
 		}
-		document.getElementById("min_level").disabled = false;
-		document.getElementById("trainer_level").disabled = false;
+		document.getElementById("opt_minlevel").disabled = false;
+		document.getElementById("opt_trainerlevel").disabled = false;
 
 		changePokeLvlOption(31,35,"disabled");
 		changePokeLvlOption(1,5,"enabled");
 		
-		document.getElementById("min_level_div").style.display = "block"; //Display the minimum Pokemon level / Trainer level div
-		document.getElementById("trainer_level_div").style.display = "block";
+		document.getElementById("opt_minlevel").style.display = "block"; //Display the minimum Pokemon level / Trainer level div
+		document.getElementById("opt_trainerlevel").style.display = "block";
 	}
 	else if(pageopts.encountertype === "boosted")
 	{
@@ -238,14 +238,14 @@ function processOptions()
 		{
 			pageopts.encounterstograph = encountersToGraphDefaultNonRaid;
 		}
-		document.getElementById("min_level").disabled = false;
-		document.getElementById("trainer_level").disabled = false;
+		document.getElementById("opt_minlevel").disabled = false;
+		document.getElementById("opt_trainerlevel").disabled = false;
 		
 		changePokeLvlOption(31,35,"enabled");
 		changePokeLvlOption(1,5,"disabled");
 		
-		document.getElementById("min_level_div").style.display = "block";
-		document.getElementById("trainer_level_div").style.display = "block";
+		document.getElementById("opt_minlevel").style.display = "block";
+		document.getElementById("opt_minlevel").style.display = "block";
 	}
 	else if(pageopts.encountertype === "raid")
 	{
@@ -257,11 +257,11 @@ function processOptions()
 		{
 			pageopts.encounterstograph = encountersToGraphDefaultRaid;
 		}
-		document.getElementById("min_level").disabled = true;
-		document.getElementById("trainer_level").disabled = true;
+		document.getElementById("opt_minlevel").disabled = true;
+		document.getElementById("opt_minlevel").disabled = true;
 		
-		document.getElementById("min_level_div").style.display = "none";  //Hide the minimum Pokemon level / Trainer level div
-		document.getElementById("trainer_level_div").style.display = "none";
+		document.getElementById("opt_minlevel").style.display = "none";  //Hide the minimum Pokemon level / Trainer level div
+		document.getElementById("opt_minlevel").style.display = "none";
 	}
 	  
 	/* Process minimum Pokemon level selection
@@ -306,17 +306,58 @@ function validateOptions(optionsSource)
 {
 	var errortext = "";
 	var numErrors = 0;
-	function addError(err)
+	function addError(err,invalidoptionid)
 	{
-		if (numErrors === 0)
-		{
-			if (optionsSource == "url")
-			{
-				errortext += "Invalid URL Parameters:<br>"
-			}
-		}
-		errortext += err + "<br>";
+
+
+
+		errortext += `<li>${err}</li>`;
+		markOptionInvalid(invalidoptionid);
+		
 		numErrors++;
+	}
+	
+	function clearInvalidOptions()
+	{
+		optionEntryDivs = document.getElementsByClassName("optionentry");
+		var i;
+		
+		for (i=0; i < optionEntryDivs.length; i++)
+		{
+			optionEntryDivs[i].className = "optionentry";
+		}
+	}
+	
+	function processErrors()
+	{
+		// Display any error text
+		if (numErrors > 0)
+		{
+				
+				document.getElementById("b1").disabled = true;
+				document.getElementById("error").style.display = "block";
+				
+				if (optionsSource == "url")
+				{
+					errortext += document.getElementById("error").innerHTML = "<div class='errortext'><div class='errorheading'>Invalid URL Options:</div><ul>" + errortext + "</ul></div>";
+				}
+				else
+				{
+					errortext += document.getElementById("error").innerHTML = "<div class='errortext'><div class='errorheading'>Invalid Options:</div><ul>" + errortext + "</ul></div>";
+				}
+		}
+		else
+		{
+				document.getElementById("error").innerHTML = "";
+				document.getElementById("b1").disabled = false;
+				document.getElementById("error").style.display = "none";
+				clearInvalidOptions();
+		}
+	}
+	
+	function markOptionInvalid(elementid)
+	{
+		document.getElementById(elementid).className += " invalidoptionentry";
 	}
 	
 	function isValid(value, validvals)
@@ -342,13 +383,13 @@ function validateOptions(optionsSource)
 	/* Validate appraisal selection */
 	if (!isValid(pageopts.appraisal,["best","good","aboveaverage","any","other"]))
 	{
-		addError("Invalid Appraisal selection.");
+		addError("Invalid Appraisal selection.","opt_minivpercent");
 	}
 	
 	/* Validate Minimum IV Percent box */
 	if (isNaN(pageopts.minivpercent))
 	{
-		addError("Minimum IV Percentage must be a number.");
+		addError("Minimum IV Percentage must be a number.","opt_minivpercent");
 	}
 	else
 	{
@@ -356,7 +397,7 @@ function validateOptions(optionsSource)
 		
 		if (pageopts.minivpercent > 100 || pageopts.minivpercent < 0)
 		{
-			addError("Minimum IV Percentage must be between 0 and 100.");
+			addError("Minimum IV Percentage must be between 0 and 100.","opt_minivpercent");
 		}
 	}
 	
@@ -368,67 +409,67 @@ function validateOptions(optionsSource)
 			((pageopts.appraisal === "aboveaverage") && (pageopts.minivpercent != 51.1)) ||
 			((pageopts.appraisal === "any") && (pageopts.minivpercent != 0)))
 		{
-			addError("Minimum IV Percent doesn't match Appraisal selection.");
+			addError("Minimum IV Percent doesn't match Appraisal selection.","opt_minivpercent");
 		}
 	}
 	
 	/* Validate Minimum Attack IV */
 	if (isNaN(pageopts.minattackiv) && (pageopts.minattackiv !== "any"))
 	{
-		addError("Invalid Minimum Attack IV selection");
+		addError("Invalid Minimum Attack IV selection","opt_minattackiv");
 	}
 	else if (pageopts.minattackiv !== "any")
 	{
 		pageopts.minattackiv = parseFloat(pageopts.minattackiv)
 		if (!Number.isInteger(pageopts.minattackiv))
 		{
-			addError("Minimum Attack IV selection must be an integer.");
+			addError("Minimum Attack IV selection must be an integer.","opt_minattackiv");
 		}
 		if (pageopts.minattackiv > 15 || pageopts.minattackiv < 0)
 		{
-			addError("Minimum Attack IV selection must be between 0 and 15.");
+			addError("Minimum Attack IV selection must be between 0 and 15.","opt_minattackiv");
 		}		
 	}
 	
 	/* Validate Encounter Type Selection */
 	if (!isValid(pageopts.encountertype,["normal","boosted","raid"]))
 	{
-		addError("Invalid Encounter Type selection!");
+		addError("Invalid Encounter Type selection!","opt_encountertype");
 	}
 	
 	/* Validate Minimum Pokemon Level Selection */
 	if (isNaN(pageopts.minlevel) && (pageopts.minlevel !== "any"))
 	{
-		addError("Invalid Pokemon Level selection!");
+		addError("Invalid Pokemon Level selection!","opt_minlevel");
 	}
 	else if (pageopts.minlevel !== "any")
 	{
 		pageopts.minlevel = parseFloat(pageopts.minlevel);
 		if (!Number.isInteger(pageopts.minlevel))
 		{
-			addError("Minimum Pokemon Level selection must be an integer.");
+			addError("Minimum Pokemon Level selection must be an integer.","opt_minlevel");
 		}
 		if (pageopts.minlevel > 35 || pageopts.minlevel < 1)
 		{
-			addError("Minimum Pokemon Level selection must be between 1 and 35.");
+			addError("Minimum Pokemon Level selection must be between 1 and 35.","opt_minlevel");
 		}	
 	}
 	
 	/* Validate Trainer Level Selection */
 	if (isNaN(pageopts.trainerlevel) && (pageopts.trainerlevel !== "any"))
 	{
-		addError("Invalid Trainer Level selection!");
+		addError("Invalid Trainer Level selection!","opt_trainerlevel");
 	}
 	else
 	{
 		pageopts.trainerlevel = parseFloat(pageopts.trainerlevel);
 		if (!Number.isInteger(pageopts.trainerlevel))
 		{
-			addError("Trainer Level selection must be an integer.");
+			addError("Trainer Level selection must be an integer.","opt_trainerlevel");
 		}
 		if (pageopts.trainerlevel > 30 || pageopts.trainerlevel < 1)
 		{
-			addError("Trainer Level selection must be between 1 and 30.");
+			addError("Trainer Level selection must be between 1 and 30.","opt_trainerlevel");
 		}	
 	}
 	
@@ -439,22 +480,22 @@ function validateOptions(optionsSource)
 		{
 			if (pageopts.minlevel > pageopts.trainerlevel)
 			{
-				addError("Minimum Pokemon level can't be greater than Trainer Level.");
+				addError("Minimum Pokemon level can't be greater than Trainer Level.","opt_minlevel");
 			}
 			if (pageopts.minlevel > 30)
 			{
-				addError("Minimum Pokemon level can't be greater than 30 unless weather boosted.");
+				addError("Minimum Pokemon level can't be greater than 30 unless weather boosted.","opt_minlevel");
 			}
 		}
 		else if (pageopts.encountertype === "boosted")
 		{
 			if (pageopts.minlevel > pageopts.trainerlevel + 5)
 			{
-				addError("Minimum Pokemon level can't be greater than Trainer Level + 5 when weather boosted.");
+				addError("Minimum Pokemon level can't be greater than Trainer Level + 5 when weather boosted.","opt_minlevel");
 			}
 			if (pageopts.minlevel < 6)
 			{
-				addError("Minimum Pokemon level can't be less than 6 when weather boosted.");
+				addError("Minimum Pokemon level can't be less than 6 when weather boosted.","opt_minlevel");
 			}
 		}
 	}
@@ -462,34 +503,34 @@ function validateOptions(optionsSource)
 	/* Validate Additional Probability Modifier selection */
 	if (!isValid(pageopts.ratemodifierselect,["1","450","75","45","35","19","24.5","custom"]))
 	{
-		addError("Invalid Probability Modifier selection.");
+		addError("Invalid Probability Modifier selection.","opt_ratemodifier");
 	}
 	
 	/* Validate Rate Modifier box */
 	if (isNaN(pageopts.ratemodifier))
 	{
-		addError("Rate modifier must be a number.");
+		addError("Rate modifier must be a number.","opt_ratemodifier");
 	}
 	else
 	{
 		pageopts.ratemodifier = parseFloat(pageopts.ratemodifier);
 		if (pageopts.ratemodifier < 0 || pageopts.ratemodifier > 1)
 		{
-			addError("Rate modifier must be a decimal between 0 and 1.");
+			addError("Rate modifier must be a decimal between 0 and 1.","opt_ratemodifier");
 		}	
 	}
 	
 	/* Validate Rate Modifier Inverse box */
 	if (isNaN(pageopts.ratemodifierinv))
 	{
-		addError("Rate modifier (inverse) must be a number.");
+		addError("Rate modifier (inverse) must be a number.","opt_ratemodifier");
 	}
 	else
 	{
 		pageopts.ratemodifierinv = parseFloat(pageopts.ratemodifierinv);
 		if (pageopts.ratemodifierinv <= 0)
 		{
-			addError("Rate modifier (inverse) must be above 0.");
+			addError("Rate modifier (inverse) must be above 0.","opt_ratemodifier");
 		}	
 	}
 	
@@ -498,31 +539,31 @@ function validateOptions(optionsSource)
 		(pageopts.ratemodifier < (0.999 / pageopts.ratemodifierinv)))
 	{
 		//The two values need to be inverses of each other, but allow some .1% leeway to account for float rounding
-		addError("Rate modifier and inverse do not match.");
+		addError("Rate modifier and inverse do not match.","opt_ratemodifier");
 	}
 	
 	/* Validate Number of Pokemon Needed box */
 	if (isNaN(pageopts.pokemontoget))
 	{
-		addError("Invalid Pokemon Number Needed.");
+		addError("Invalid Pokemon Number Needed.","opt_pokemontoget");
 	}
 	else
 	{
 		pageopts.pokemontoget = parseFloat(pageopts.pokemontoget);
 		if (!Number.isInteger(pageopts.pokemontoget))
 		{
-			addError("Number of Pokemon needed must be an integer.");
+			addError("Number of Pokemon needed must be an integer.","opt_pokemontoget");
 		}
 		if (pageopts.pokemontoget < 1)
 		{
-			addError("Number of Pokemon needed must be greater than 0.");
+			addError("Number of Pokemon needed must be greater than 0.","opt_pokemontoget");
 		}
 	}
 	
 	/* Validate Chart Mode Selection */
 	if (!isValid(pageopts.chartmode,["single","area","pmf","cdf","normalpdf","normalcdf"]))
 	{
-		addError("Invalid Chart Mode selection.");
+		addError("Invalid Chart Mode selection.","opt_chartmode");
 	}
 	
 	/* Validate combination of chart mode and number of Pokemon needed */
@@ -530,56 +571,44 @@ function validateOptions(optionsSource)
 	{
 		if (pageopts.pokemontoget > 16)
 		{
-			addError("Simple chart only supports  a maximum of 16 Pokemon needed.");
+			addError("Simple chart only supports  a maximum of 16 Pokemon needed.","opt_pokemontoget");
 		}
 	}
 	if (pageopts.chartmode === "area")
 	{
 		if (pageopts.pokemontoget > 16)
 		{
-			addError("Stacked area chart only supports  a maximum of 16 Pokemon needed.");
+			addError("Stacked area chart only supports  a maximum of 16 Pokemon needed.","opt_pokemontoget");
 		}
 	}
 	
 	/* Validate Encounters to graph box */
 	if (isNaN(pageopts.encounterstograph))
 	{
-		addError("Invalid encounters to graph.");
+		addError("Invalid encounters to graph.","opt_encounterstograph");
 	}
 	else
 	{
 		pageopts.encounterstograph = parseFloat(pageopts.encounterstograph);
 		if (!Number.isInteger(pageopts.encounterstograph))
 		{
-			addError("Number of encounters to graph must be an integer.");
+			addError("Number of encounters to graph must be an integer.","opt_encounterstograph");
 		}
 		if (pageopts.encounterstograph < 1)
 		{
-			addError("Number of encounters to graph must be 1 or more.");
+			addError("Number of encounters to graph must be 1 or more.","opt_encounterstograph");
 		}
 		else if (pageopts.encounterstograph > Number.MAX_SAFE_INTEGER)
 		{
-			addError("Number of encounters to graph can't be bigger than " + Number.MAX_SAFE_INTEGER + ".");
+			addError("Number of encounters to graph can't be bigger than " + Number.MAX_SAFE_INTEGER + ".","opt_encounterstograph");
 		}
 		else if (pageopts.encounterstograph < pageopts.pokemontoget)
 		{
-			addError("Number of encounters to graph can't be smaller than the number of Pokemon needed.");
+			addError("Number of encounters to graph can't be smaller than the number of Pokemon needed.","opt_encounterstograph");
 		}
 	}
 	
-	// Display any error text
-	if (errortext)
-	{
-			document.getElementById("error").innerHTML = "<div class='errortext'>" + errortext + "</div>";
-			document.getElementById("b1").disabled = true;
-			document.getElementById("error").style.display = "block";
-	}
-	else
-	{
-			document.getElementById("error").innerHTML = "";
-			document.getElementById("b1").disabled = false;
-			document.getElementById("error").style.display = "none";
-	}
+	processErrors();
 	
 	return numErrors;
 }

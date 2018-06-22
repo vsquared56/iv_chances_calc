@@ -42,7 +42,7 @@
 			<div class="contentcontainer">
 				<div class="options">
 					<div class="optioncategory">
-						<div class="optionentry"><div class="optiondescription">Minimum IV Percentage:</div>
+						<div class="optionentry" id="opt_minivpercent"><div class="optiondescription">Minimum IV Percentage:</div>
 							<select id="appraisal" onchange="processOptions()">
 								<option value="best">Wonder /  Simply amazing / Battle with the best</option>
 								<option value="good">Certainly caught attention / Strong Pokemon / Really strong</option>
@@ -52,7 +52,7 @@
 							</select>
 							<span class="inputbox"><input class="optiontextbox" id="min_iv_percent" type="number" min="0" max="100" step="0.1" disabled="true" value="82.2" onchange="processMinIvPercentOption()">%IV</span>
 						</div>
-						<div class="optionentry"><div class="optiondescription">Minimum Attack IV:</div>
+						<div class="optionentry" id="opt_minattackiv"><div class="optiondescription">Minimum Attack IV:</div>
 							<select id="min_attack_iv" onchange="processOptions()">
 								<option value="any">Any</option>
 								<option value=15>15</option>
@@ -75,14 +75,14 @@
 						</div>
 					</div>
 					<div class="optioncategory">
-						<div class="optionentry"><div class="optiondescription">Type of catches/encounters:</div>
+						<div class="optionentry" id="opt_encountertype"><div class="optiondescription">Type of catches/encounters:</div>
 							<select id="encounter_type" onchange="processOptions()">
 								<option value="normal">Normal wild Pokemon</option>
 								<option value="boosted">Weather boosted Pokemon</option>
 								<option value="raid">Raid Pokemon</option>
 							</select>
 						</div>
-						<div class="optionentry" id="min_level_div"><div class="optiondescription">Minimum Pokemon Level:</div>
+						<div class="optionentry" id="opt_minlevel"><div class="optiondescription">Minimum Pokemon Level:</div>
 							<select id="min_level" onchange="processOptions()">
 								<option value="any">Any</option>
 								<option id="pokelvl35" value=35 disabled="true">35</option>
@@ -122,7 +122,7 @@
 								<option id="pokelvl1" value=1>1</option>
 							</select>
 						</div>
-						<div class="optionentry" id="trainer_level_div">
+						<div class="optionentry" id="opt_trainerlevel">
 							<div class="optiondescription">Trainer Level:</div>
 							<select id="trainer_level" disabled="true" onchange="processOptions()">
 								<option value=30>&ge;30</option>
@@ -160,7 +160,7 @@
 					</div>
 					
 					<div class="optioncategory">
-						<div class="optionentry"><div class="optiondescription">Additional probability modifier:</div>
+						<div class="optionentry" id="opt_ratemodifier"><div class="optiondescription">Additional probability modifier:</div>
 							<select id="ratemodifierselect" onchange="processOptions()">
 								<option value="1">Base catch probability (default)</option>
 								<option value="450">Wild shiny rate (1/450)</option>
@@ -178,10 +178,10 @@
 					</div>
 					
 					<div class="optioncategory">
-						<div class="optionentry"><div class="optiondescription">Number of above Pokemon needed:</div>
+						<div class="optionentry" id="opt_pokemontoget"><div class="optiondescription">Number of above Pokemon needed:</div>
 							<input class="optiontextbox" id="pokemon_to_get" type="number" min="1" step="1" onchange="processOptions()">
 						</div>
-						<div class="optionentry" id="chartmodeoption"><div class="optiondescription">Chart mode:</div>
+						<div class="optionentry" id="opt_chartmode"><div class="optiondescription">Chart mode:</div>
 							<select id="chart_mode" onchange="processOptions()">
 								<option value="single">Simple chart (default)</option>
 								<option value="area">Stacked area (beta)</option>
@@ -197,7 +197,7 @@
 								</ul>
 							</div>
 						</div>
-						<div class="optionentry"><div class="optiondescription">Encounters to graph:</div>
+						<div class="optionentry" id="opt_encounterstograph"><div class="optiondescription">Encounters to graph:</div>
 							<input class="optiontextbox" id="encounters_to_graph" type="number" min="1" step="1" onchange="processEncountersToGraphOption()"><br>
 						</div>
 					</div>

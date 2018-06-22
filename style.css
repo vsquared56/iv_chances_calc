@@ -61,13 +61,16 @@ body {	background-color:#DDDDDD; }
 .buttonsurround {	border: 2px solid #666666;
 					margin: 0 1% 1% 0; 
 					overflow: hidden; }
-					
+		
+.invalidoptionentry { background-color: #EE4444; }
+		
 #error { 	background-color: #EE4444; 
 			float: left; 
 			padding: 1% 0 1% 0; 
 			width: 100%;
-			display: none;}
+			display: none;}			
 			
+.errorheading { font-size: 1.3em; }			
 .errortext { padding: 2% 2% 2% 2%; 
 			 font-size: 1em; }
 
