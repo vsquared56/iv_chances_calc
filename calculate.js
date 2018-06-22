@@ -273,8 +273,8 @@ function calculate()
 			chartOptions.hAxis = {title:'Number of catches/encounters matching criteria'};
 				
 			//Plot 5 standard deviations away from the mean
-			minencounters = Math.max(0,Math.ceil((calcopts.encounterstograph*finalp) - 5*Math.sqrt(calcopts.encounterstograph*finalp*(1-finalp))));
-			maxencounters = Math.floor((calcopts.encounterstograph*finalp) + 5*Math.sqrt(calcopts.encounterstograph*finalp*(1-finalp)));
+			minencounters = Math.max(0,Math.floor((calcopts.encounterstograph*finalp) - 5*Math.sqrt(calcopts.encounterstograph*finalp*(1-finalp))));
+			maxencounters = Math.ceil((calcopts.encounterstograph*finalp) + 5*Math.sqrt(calcopts.encounterstograph*finalp*(1-finalp)));
 			
 			datapoints = 100; //Don't calculate/chart more than 100 data points.
 
@@ -351,8 +351,8 @@ function calculate()
 				
 
 			//Plot 5 standard deviations away from the mean
-			minencounters = Math.max(1,Math.ceil((calcopts.encounterstograph*finalp) - 5*Math.sqrt(calcopts.encounterstograph*finalp*(1-finalp))));
-			maxencounters = Math.floor((calcopts.encounterstograph*finalp) + 5*Math.sqrt(calcopts.encounterstograph*finalp*(1-finalp)));
+			minencounters = Math.max(1,Math.floor((calcopts.encounterstograph*finalp) - 5*Math.sqrt(calcopts.encounterstograph*finalp*(1-finalp))));
+			maxencounters = Math.ceil((calcopts.encounterstograph*finalp) + 5*Math.sqrt(calcopts.encounterstograph*finalp*(1-finalp)));
 			
 			datapoints = 100; //Don't calculate/chart more than 100 data points.
 			
@@ -444,8 +444,8 @@ function calculate()
 			chartOptions.hAxis = {title:'Number of catches/encounters matching criteria'};
 				
 			//Plot 5 standard deviations away from the mean
-			minencounters = Math.max(0,Math.ceil((calcopts.encounterstograph*finalp) - 5*Math.sqrt(calcopts.encounterstograph*finalp*(1-finalp))));
-			maxencounters = Math.floor((calcopts.encounterstograph*finalp) + 5*Math.sqrt(calcopts.encounterstograph*finalp*(1-finalp)));
+			minencounters = Math.max(0,Math.floor((calcopts.encounterstograph*finalp) - 5*Math.sqrt(calcopts.encounterstograph*finalp*(1-finalp))));
+			maxencounters = Math.ceil((calcopts.encounterstograph*finalp) + 5*Math.sqrt(calcopts.encounterstograph*finalp*(1-finalp)));
 			
 			datapoints = 100; //Don't calculate/chart more than 100 data points.
 			
@@ -527,8 +527,8 @@ function calculate()
 			chartOptions.hAxis = {title:'Number of catches/encounters matching criteria'};
 				
 			//Plot 5 standard deviations away from the mean
-			minencounters = Math.max(1,Math.ceil((calcopts.encounterstograph*finalp) - 5*Math.sqrt(calcopts.encounterstograph*finalp*(1-finalp))));
-			maxencounters = Math.floor((calcopts.encounterstograph*finalp) + 5*Math.sqrt(calcopts.encounterstograph*finalp*(1-finalp)));
+			minencounters = Math.max(1,Math.floor((calcopts.encounterstograph*finalp) - 5*Math.sqrt(calcopts.encounterstograph*finalp*(1-finalp))));
+			maxencounters = Math.ceil((calcopts.encounterstograph*finalp) + 5*Math.sqrt(calcopts.encounterstograph*finalp*(1-finalp)));
 			
 			datapoints = 100; //Don't calculate/chart more than 100 data points.
 			
