@@ -26,7 +26,7 @@ window.addEventListener('resize', function(){
 	});
 
 function drawChart() {
-// Disabling the button while the chart is drawing.
+	// Disable the button while the chart is drawing.
 	var button = document.getElementById('b1');
 	button.disabled = true;
 	google.visualization.events.addListener(chart, 'ready',
@@ -36,6 +36,12 @@ function drawChart() {
 		//Turn off the loading spinner
 		document.getElementById("loadingspinner").style.display = "none";
 	});
+	
+	//Clear the chart if it has been drawn already
+	if (chart.getChart())
+	{
+		chart.getChart().clearChart();
+	}
 	chartDrawn = true;
 	chart.draw();
 }

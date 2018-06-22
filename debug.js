@@ -226,11 +226,52 @@ function randomize()
 	}
 	
 	pageopts.trainerlevel = getRandomInt(0,30);
-	pageopts.ratemodifierselect = "custom";
 	
-	x = getRandomArbitrary(0,1)
-	pageopts.ratemodifier = x;
-	pageopts.ratemodifierinv = 1/x;
+	x = getRandomInt(0,10);
+	if (x === 0)
+	{
+		pageopts.ratemodifierselect = "450";
+		pageopts.ratemodifierinv = pageopts.ratemodifierselect;
+		pageopts.ratemodifier = 1/pageopts.ratemodifierselect;
+	}
+	else if (x === 1)
+	{
+		pageopts.ratemodifierselect = "75";
+		pageopts.ratemodifierinv = pageopts.ratemodifierselect;
+		pageopts.ratemodifier = 1/pageopts.ratemodifierselect;
+	}
+	else if (x === 2)
+	{
+		pageopts.ratemodifierselect = "45";
+		pageopts.ratemodifierinv = pageopts.ratemodifierselect;
+		pageopts.ratemodifier = 1/pageopts.ratemodifierselect;
+	}
+	else if (x === 3)
+	{
+		pageopts.ratemodifierselect = "35";
+		pageopts.ratemodifierinv = pageopts.ratemodifierselect;
+		pageopts.ratemodifier = 1/pageopts.ratemodifierselect;
+	}
+	else if (x === 4)
+	{
+		pageopts.ratemodifierselect = "19";
+		pageopts.ratemodifierinv = pageopts.ratemodifierselect;
+		pageopts.ratemodifier = 1/pageopts.ratemodifierselect;
+	}
+	else if (x === 5)
+	{
+		pageopts.ratemodifierselect = "24.5";
+		pageopts.ratemodifierinv = pageopts.ratemodifierselect;
+		pageopts.ratemodifier = 1/pageopts.ratemodifierselect;
+	}
+	else
+	{
+		x = getRandomArbitrary(0,1)
+		pageopts.ratemodifierselect = "custom";
+	
+		pageopts.ratemodifier = x;
+		pageopts.ratemodifierinv = 1/x;
+	}
 	
 	x = getRandomInt(0,3)
 	if (x === 0)
@@ -272,12 +313,14 @@ function runTest(comment)
 {
 	console.log("Running test: " + comment);
 	console.log(pageopts);
-	document.getElementById("testresults").innerHTML += `<br><br><span style="background-color:black;color:white">Running test: ${comment}</span><br>`+
+
+	setPageOptions();
+	document.getElementById("testresults").innerHTML += `<br><br><span style="background-color:black;color:white">` +
+														`Running <a style="color:white" href="${getUrlOptionString(true)}">test: ${comment}</a></span><br>`+
 	                                                    `Chart mode:${pageopts.chartmode} Appraisal:${pageopts.appraisal} MinIVPercent:${pageopts.minivpercent} `+
                                                         `MinAttackIv:${pageopts.minattackiv} EncounterType:${pageopts.encountertype} MinLevel:${pageopts.minlevel} `+
 														`TrainerLevel:${pageopts.trainerlevel} RateModiferSelect:${pageopts.ratemodifierselect} RateModifier:${pageopts.ratemodifier} `+
 														`RateModifierInv:${pageopts.ratemodifierinv} PokemonToGet:${pageopts.pokemontoget} EncountersToGraph:${pageopts.encounterstograph}<br>`;
-	setPageOptions();
 	var starttime = performance.now();
 	calculate();
 
