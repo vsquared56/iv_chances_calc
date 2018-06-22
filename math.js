@@ -123,8 +123,12 @@ function binomcdf(k, n, p, begin)
 	
 	var i;
 	var x,y,z;
+	if (!begin)
+	{
+		begin = 0;
+	}
 	
-	if (p > 0.5)
+	if ((k > (n/2)) && (p > 0.5)) //Useful in CDF chart with very high p
 	{
 		return 1-binomcdf(n-k-1,n,1-p,0); //Return the complement for p>0.5
 	}
