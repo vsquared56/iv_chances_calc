@@ -1,13 +1,14 @@
 window.onload = function()
 {
 	document.getElementById("title").innerHTML = "DEBUG";
-	document.body.style.backgroundColor = "#FF6666";
-	document.getElementsByClassName("content")[0].style.backgroundColor = "#FF6666";
+	document.body.style.backgroundColor = "yellow";
+	document.getElementsByClassName("content")[0].style.backgroundColor = "yellow";
 	document.getElementById("chart_mode").innerHTML += `<option value="normalpdf">Normal PDF</option><option value="normalcdf">Normal CDF</option>`;
 	document.getElementsByClassName("options")[0].innerHTML = `<div class="optioncategory"><div class="optionentry"><div class="optiondescription">DEBUG</div>` +
-							                                  `<button type="button" id="b3" onclick="testClick()">Test</button>` +
-															  `<button type="button" id="b4" onclick="randomizevalid()">Random Valid Options</button>` +
-															  `<button type="button" id="b5" onclick="randomizeoptions()">Randomize Options</button>` +
+							                                  `<button type="button" onclick="runCalcTest()">Test Calculations</button>` +
+															  `<button type="button" onclick="runMathTest()">Test Math</button>` +
+															  `<button type="button" onclick="randomizevalid()">Random Valid Options</button>` +
+															  `<button type="button" onclick="randomizeoptions()">Randomize Options</button>` +
 															  `</div></div>` +
                                                               document.getElementsByClassName("options")[0].innerHTML;
 	document.getElementsByClassName("content")[0].innerHTML += `<div id="testresults" style="font-family: 'Courier New', Courier"></div>`;
@@ -40,8 +41,35 @@ function randomizeoptions()
 function randomize()
 {
 	var x;
-	pageopts.appraisal = "other"
-	pageopts.minivpercent = getRandomArbitrary(0,100);
+
+	
+	x = getRandomInt(0,10)
+	if (x === 0)
+	{
+		pageopts.appraisal = "best";
+		pageopts.minivpercent = 82.2;
+	}
+	else if (x === 1)
+	{
+		pageopts.appraisal = "good";
+		pageopts.minivpercent = 66.7;
+	}
+	else if (x === 2)
+	{
+		pageopts.appraisal = "aboveaverage";
+		pageopts.minivpercent = 51.1;
+	}
+	else if (x === 3)
+	{
+		pageopts.appraisal = "any";
+		pageopts.minivpercent = 0;
+	}
+	else
+	{
+		pageopts.appraisal = "other"
+		pageopts.minivpercent = getRandomArbitrary(0,100);
+	}
+
 	
 	x = getRandomInt(0,16);
 	{
@@ -113,7 +141,7 @@ function randomize()
 
 
 
-function testClick()
+function runCalcTest()
 {
 	pageopts = {	appraisal:"best",
 					minivpercent:"82.2",
@@ -131,17 +159,53 @@ function testClick()
 	resetOptionDefaults();
 
 	runTest();
-	testValue(0,0);
-	testValue(10,33.712604034834634);
-	testValue(100,98.36201626393432);
+	testValueData(0,1,0);
+	testValueData(10,1,33.712604034834634);
+	testValueData(100,1,98.36201626393432);
 	
 	pageopts.appraisal = "good";
 	pageopts.minivpercent = "66.7";
 
 	runTest();
-	testValue(0,0);
-	testValue(10,83.7228209606438);
-	testValue(100,99.99999869445632);
+	testValueData(0,1,0);
+	testValueData(10,1,83.7228209606438);
+	testValueData(100,1,99.99999869445632);
+}
+
+function runMathTest()
+{
+	document.getElementById("testresults").innerHTML += `<br><br><span style="background-color:black;color:white">Running math test:</span><br>`;
+	
+	testValue(choose(5,0).toNumber(),1,"Choose(5,0)"); //Confirmed value
+	testValue(choose(5,1).toNumber(),5,"Choose(5,1)"); //Confirmed value
+	testValue(choose(5,5).toNumber(),1,"Choose(5,5)"); //Confirmed value
+	testValue(choose(10,5).toNumber(),252,"Choose(10,5)"); //Confirmed value
+	testValue(choose(100,25).toString(),"2.4251926972033712102e+23","Choose(100,25)"); //Confirmed value
+	testValue(choose(100,50).toString(),"1.0089134454556419332e+29","Choose(100,50)"); //Confirmed value
+	testValue(choose(100,75).toString(),"2.4251926972033712102e+23","Choose(100,75)"); //Confirmed value
+	testValue(choose(100,100).toNumber(),1,"Choose(100,100)"); //Confirmed value
+	testValue(choose(1000000,500000).toString(),"7.899578772276971003e+301026","Choose(1 000 000,500 000)"); //WolframAlpha gives 7.8995787722769708417702379031791126849833959830 × 10^301026
+	
+	testValue(binompmf(0,100,0.5),7.888609052210118e-31,"binompmf(0,100,0.5)"); //WolframAlpha gives 7.889 * 10^-31
+	testValue(binompmf(50,100,0.5),0.07958923738717877,"binompmf(50,100,0.5)"); //WolframAlpha gives 0.0795892
+	testValue(binompmf(100,100,0.5),7.888609052210118e-31,"binompmf(100,100,0.5)"); //WolframAlpha gives 7.889 * 10^-31
+	
+	testValue(binompmf(0,1000,0.001),0.36769542477096406 ,"binompmf(0,1000,0.001)"); //WolframAlpha gives 0.367695
+	testValue(binompmf(100,1000,0.001),2.5947993889513444e-161 ,"binompmf(100,1000,0.001)"); //WolframAlpha gives 2.595 * 10^-161
+	testValue(binompmf(500,1000,0.001),0,"binompmf(500,1000,0.001)"); //WolframAlpha gives 1.639 * 10^-1201
+	testValue(binompmf(900,1000,0.001),0,"binompmf(900,1000,0.001)"); //WolframAlpha gives 5.777 * 10^-2561
+	testValue(binompmf(1000,1000,0.001),0,"binompmf(1000,1000,0.001)"); //WolframAlpha gives 1 * 10^-3000
+	
+	testValue(binompmf(0,1000,0.999),0,"binompmf(0,1000,0.999)"); //WolframAlpha gives 1 * 10^-3000
+	testValue(binompmf(100,1000,0.999),0,"binompmf(100,1000,0.999)"); //WolframAlpha gives 5.777 * 10^-2561
+	testValue(binompmf(500,1000,0.999),0 ,"binompmf(500,1000,0.999)"); //WolframAlpha gives 1.639 * 10^-1201
+	testValue(binompmf(900,1000,0.999),2.5947993889515778e-161  ,"binompmf(500,1000,0.999)"); //WolframAlpha gives 2.595 * 10^-161
+	testValue(binompmf(1000,1000,0.999),0.36769542477096406,"binompmf(1000,1000,0.999)"); //WolframAlpha gives 0.367695
+	
+	testValue(binompmf(24000,100000,0.25),6.078655149933904e-15 ,"binompmf(24 000,100 000,0.25)"); //WolframAlpha gives 6.079 * 10^-15
+	testValue(binompmf(25000,100000,0.25),0.0029134519607611348,"binompmf(25 000,100 000,0.25)"); //WolframAlpha gives 0.00291345
+	testValue(binompmf(26000,100000,0.25),9.510758150443336e-15 ,"binompmf(26 000,100 000,0.25)"); //WolframAlpha gives 9.511 * 10^-15
+
 }
 
 function runTest()
@@ -160,9 +224,14 @@ function runTest()
 
 }
 
-function testValue(row,expected)
+function testValueData(row,column,expected)
 {
-	if (data.getValue(row,1) === expected)
+	testValue(data.getValue(row,column),expected,`at row ${row.toString().padStart(4,"0")} col ${column.toString().padStart(2,"0")} `);
+}
+
+function testValue(value,expected,description)
+{
+	if (value === expected)
 	{
 		var testresult = `<span style="background-color:green;color:white;"> PASS </span>`;
 	}
@@ -170,5 +239,5 @@ function testValue(row,expected)
 	{
 		var testresult = `<span style="background-color:red;color:white"> FAIL </span>`
 	}
-	document.getElementById("testresults").innerHTML += `Test value at row ${row.toString().padStart(4,"0")} -- ${testresult} Result:${data.getValue(row,1)} Expected:${expected}<br>`;
+	document.getElementById("testresults").innerHTML += `${testresult} Test value ${description} --  Result:${value} Expected:${expected}<br>`;
 }

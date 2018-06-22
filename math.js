@@ -17,12 +17,7 @@ function factorial(n)
 	  return prod;
 }
 
-/*function choose(n, k)
-{
-	return factorial(n)/(factorial(k)*factorial(n-k));
-}
-*/
-function bigfactorial(n)
+function factorial(n)
 {
 	if (n === 0)
 	{
@@ -42,7 +37,7 @@ function bigfactorial(n)
 }
 
 
-function bigchoose(n,k)
+function choose(n,k)
 {
 	var i;
 	
@@ -52,7 +47,7 @@ function bigchoose(n,k)
 		prod = new Decimal(prod).times(i);
 	}
 
-	return new Decimal(prod).dividedBy(bigfactorial(k));
+	return new Decimal(prod).dividedBy(factorial(k));
 }
 
 
@@ -83,6 +78,7 @@ function bigchoose2(n,k)
 }
 */
 
+/*
 function choose(n,k)
 {
 	var i,prod;
@@ -101,6 +97,7 @@ function choose(n,k)
 	
 	return prod/factorial(k);
 }
+*/
 
 function binompmf(k, n, p)
 {
@@ -113,7 +110,7 @@ function binompmf(k, n, p)
 		return binompmf(n-k,n,1-p); //Return the complement of the pmf for k>n/2
 	}
 	
-	var x = new Decimal(bigchoose(n, k));
+	var x = new Decimal(choose(n, k));
 	var y = new Decimal(p).toPower(k);
 	var z = new Decimal(1-p).toPower(n-k);
 	
@@ -135,7 +132,7 @@ function binomcdf(k, n, p, begin)
 	for (i = begin; i <= Math.floor(k); i++)
 	{
 		/*
-		var x = new Decimal(bigchoose(n, i));
+		var x = new Decimal(choose(n, i));
 		var y = new Decimal(p).toPower(i);
 		var z = new Decimal(1-p).toPower(n-i);
 		

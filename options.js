@@ -526,6 +526,13 @@ function validateOptions(optionsSource)
 	}
 	
 	/* Validate combination of chart mode and number of Pokemon needed */
+	if (pageopts.chartmode === "single")
+	{
+		if (pageopts.pokemontoget > 16)
+		{
+			addError("Simple chart only supports  a maximum of 16 Pokemon needed.");
+		}
+	}
 	if (pageopts.chartmode === "area")
 	{
 		if (pageopts.pokemontoget > 16)
@@ -565,11 +572,13 @@ function validateOptions(optionsSource)
 	{
 			document.getElementById("error").innerHTML = "<div class='errortext'>" + errortext + "</div>";
 			document.getElementById("b1").disabled = true;
+			document.getElementById("error").style.display = "block";
 	}
 	else
 	{
 			document.getElementById("error").innerHTML = "";
 			document.getElementById("b1").disabled = false;
+			document.getElementById("error").style.display = "none";
 	}
 	
 	return numErrors;
