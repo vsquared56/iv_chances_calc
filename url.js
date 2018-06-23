@@ -88,7 +88,13 @@ function getUrlOptions()
 		
 		if (calc)
 		{
-			calculate();
+			// Start the loading spinner
+			document.getElementById("loadingoverlay").style.display = "flex";
+	
+			// Set a timeout of 0 to push the calculation into the queue and let the spinner update on the page
+			setTimeout(function(){
+				calculate();
+			}, 1000);
 			
 		}
 	}

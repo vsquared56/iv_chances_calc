@@ -33,8 +33,9 @@ function drawChart() {
 		function() {
 		button.disabled = false;
 		
-		//Turn off the loading spinner
-		document.getElementById("loadingspinner").style.display = "none";
+		//Turn off the loading spinners
+		document.getElementById("calculatingspinner").style.display = "none";
+		document.getElementById("loadingoverlay").style.display = "none";
 	});
 	
 	//Clear the chart if it has been drawn already
@@ -68,7 +69,7 @@ function resetClick()
 function calculateClick()
 {
 	// Start the loading spinner
-	document.getElementById("loadingspinner").style.display = "block";
+	document.getElementById("calculatingspinner").style.display = "block";
 	
 	// Set a timeout of 0 to push the calculation into the queue and let the spinner update on the page
 	setTimeout(function(){

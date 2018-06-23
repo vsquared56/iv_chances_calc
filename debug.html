@@ -205,7 +205,7 @@
 					<div class="buttonsurround">
 						<button class="calcbutton" type="button" id="b1" onclick="calculateClick()">Calculate</button>
 						<button class="resetbutton" type="button" id="b2" onclick="resetClick()">Reset</button>
-						<div id="loadingspinner"></div>
+						<div id="calculatingspinner"></div>
 						<div id="error"></div>
 					</div>
 					
@@ -238,6 +238,12 @@
 			</div>
 			<div id="share"></div>
 			<div class="footer">By <a href="https://sil.ph/VSquared56">VSquared56</a></div>
+		</div>
+		<div id="loadingoverlay">
+			<div id="loadingcontainer">
+				<div id="loadingtext">Processing preset options...</div>
+				<div id="loadingspinner"></div>
+			</div>
 		</div>
 	</body>
 </html>
