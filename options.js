@@ -578,7 +578,11 @@ function validateOptions(optionsSource)
 	{
 		if (pageopts.pokemontoget > 16)
 		{
-			addError("Stacked area chart only supports  a maximum of 16 Pokemon needed.","opt_pokemontoget");
+			addError("Stacked area chart only supports a maximum of 16 Pokemon needed.","opt_pokemontoget");
+		}
+		else if(pageopts.pokemontoget === 1)
+		{
+			addError("The stacked area chart must have more than 1 matching Pokemon needed.","opt_pokemontoget");
 		}
 	}
 	

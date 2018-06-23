@@ -36,6 +36,9 @@ function drawChart() {
 		//Turn off the loading spinners
 		document.getElementById("calculatingspinner").style.display = "none";
 		document.getElementById("loadingoverlay").style.display = "none";
+		
+		document.getElementById('description').style.display = "none";
+		document.getElementById('results').style.display = "block";
 	});
 	
 	//Clear the chart if it has been drawn already
