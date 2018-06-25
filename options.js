@@ -304,7 +304,7 @@ PageOptionIntOrAny.prototype.setValue = function(v)
 	}
 }
 
-var pageOpts = {	appraisal: new PageOptionString("Appraisal","appraisal","select","best",["best","good","aboveaverage","any"]),
+var pageOpts = {	appraisal: new PageOptionString("Appraisal","appraisal","select","best",["best","good","aboveaverage","any","other"]),
 					minivpercent: new PageOptionFloat("Minimum IV Percentage","min_iv_percent","textbox",82.2,"inclusivemin",0,"inclusivemax",100),
 					minattackiv: new PageOptionIntOrAny("Minimum Attack IV","min_attack_iv","select","any","inclusivemin",0,"inclusivemax",15),
 					encountertype: new PageOptionString("Encounter Type","encounter_type","select","normal",["normal","raid","boosted"]),
@@ -392,6 +392,8 @@ function processMinIvPercentOption()
 	getPageOptions();
 	optCustomMinIvPercentSaved = pageOpts.minivpercent.value;
 	validateOptions();
+	setPageOptions();
+	processOptions();
 }
 
 /* processRateModifierOption()
