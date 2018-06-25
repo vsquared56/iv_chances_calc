@@ -195,13 +195,14 @@
 							</div>
 						</div>
 						<div class="optionentry" id="opt_encounterstograph"><div class="optiondescription">Encounters to graph:</div>
-							<input class="optiontextbox" id="encounters_to_graph" type="number" min="1" step="1" onchange="processEncountersToGraphOption()"><br>
+							<input class="optiontextbox" id="encounters_to_graph" type="number" min="1" step="1" onchange="processEncountersToGraphOption()">
+							<button class="autoencounterstographbutton" id="autoencounterstographbutton" type="button" onclick="autoEncountersToGraphClick()">Auto</button>
 						</div>
 					</div>
 					
 					<div class="buttonsurround">
-						<button class="calcbutton" type="button" id="b1" onclick="calculateClick()">Calculate</button>
-						<button class="resetbutton" type="button" id="b2" onclick="resetClick()">Reset</button>
+						<button class="calcbutton" type="button" id="calcbutton" onclick="calculateClick()">Calculate</button>
+						<button class="resetbutton" type="button" id="resetbutton" onclick="resetClick()">Reset</button>
 						<div id="calculatingspinner"></div>
 						<div id="error"></div>
 					</div>
