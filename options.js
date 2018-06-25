@@ -7,14 +7,6 @@ var optCustomRateModifierSaved = false;
 var encountersToGraphDefaultNonRaid;
 var	encountersToGraphDefaultRaid;
 
-/* Global page options variables
- * Update these from the html forms with getPageOptions()
- * Update from the URL hash with getUrlOptions()
- * Reset to defaults with resetOptionDefaults()
- */
-var pageopts = {};  //Deprecated
-
-
 
 function PageOption(name,optionType,pageElement,pageElementType)
 {
@@ -327,7 +319,7 @@ var pageOpts = {	appraisal: new PageOptionString("Appraisal","appraisal","select
 					autoencounterstograph: new PageOptionBool("Auto Encounters to Graph","auto_encounters_to_graph","checkbox",true)
 				};
 
-// Initialize pageopts
+// Initialize pageOpts
 resetOptionDefaults();
 
 /* resetOptionDefaults()
@@ -346,23 +338,6 @@ function resetOptionDefaults()
 	{
 		pageOpts[k].setValue(pageOpts[k].defaultVal);
 	}
-	
-	//Deprecated below
-	pageopts = {	appraisal:"best",
-					minivpercent:"82.2",
-					minattackiv:"any",
-					encountertype:"normal",
-					minlevel:"any",
-					trainerlevel:30,
-					ratemodifierselect:"1",
-					ratemodifier:"1.000000000",
-					ratemodifierinv:1,
-					pokemontoget:1,
-					chartmode:"single",
-					encounterstograph:encountersToGraphDefaultNonRaid,
-					autoencounterstograph:true
-				};
-	
 }
 				
 function getPageOptions()
@@ -371,66 +346,10 @@ function getPageOptions()
 	{
 		pageOpts[k].getFromPage();
 	}
-	
-	//Deprecated below
-	/*
-	pageopts = {	appraisal:document.getElementById("appraisal").value,
-					minivpercent:document.getElementById("min_iv_percent").value,
-					minattackiv:document.getElementById("min_attack_iv").value,
-					encountertype:document.getElementById("encounter_type").value,
-					minlevel:document.getElementById("min_level").value,
-					trainerlevel:document.getElementById("trainer_level").value,
-					ratemodifierselect:document.getElementById("ratemodifierselect").value,
-					ratemodifier:document.getElementById("rate_modifier").value,
-					ratemodifierinv:document.getElementById("rate_modifier_inv").value,
-					pokemontoget:document.getElementById("pokemon_to_get").value,
-					chartmode:document.getElementById("chart_mode").value,
-					encounterstograph:document.getElementById("encounters_to_graph").value,
-					autoencounterstograph:document.getElementById("auto_encounters_to_graph").checked };
-					*/
-
 }
 
 function setPageOptions()
 {
-	/*
-	//For HTML Elements set with .value
-	var keyToHtmlIdValue = {	appraisal:"appraisal",
-								minivpercent:"min_iv_percent",
-								minattackiv:"min_attack_iv",
-								encountertype:"encounter_type",
-								minlevel:"min_level",
-								trainerlevel:"trainer_level",
-								ratemodifierselect:"ratemodifierselect",
-								ratemodifier:"rate_modifier",
-								ratemodifierinv:"rate_modifier_inv",
-								pokemontoget:"pokemon_to_get",
-								chartmode:"chart_mode",
-								encounterstograph:"encounters_to_graph",
-							};
-							
-	//For HTML Elements set with .checked						
-	var keyToHtmlIdChecked = { autoencounterstograph:"auto_encounters_to_graph" };
-					
-	for (var k in pageopts)
-	{
-		if (keyToHtmlIdValue[k])
-		{
-			document.getElementById(keyToHtmlIdValue[k]).value = pageopts[k];
-		}
-		else if (keyToHtmlIdChecked[k])
-		{
-			document.getElementById(keyToHtmlIdChecked[k]).checked = (pageopts[k] === 'true' || pageopts[k] === true);
-		}
-		else
-		{
-			console.log("setPageOptions(): invalid option key -- " + k);
-		}
-	}
-	
-	//Deprecated above
-	*/
-	
 	for (var k in pageOpts)
 	{
 		pageOpts[k].writeToPage();
