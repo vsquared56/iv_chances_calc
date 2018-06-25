@@ -47,6 +47,8 @@ body {	background-color:#DDDDDD;
 					 
 .optionsubdescription { font-size:0.75em; }
 
+#autoencounterstograph { white-space:nowrap; }
+
 .inputbox { 	white-space:nowrap; 
 				font-size:1em; }
 				
@@ -64,6 +66,7 @@ body {	background-color:#DDDDDD;
 		
 .invalidoptionentry { background-color: #EE4444; }
 		
+
 #error { 	background-color: #EE4444; 
 			float: left; 
 			padding: 1% 0 1% 0; 
