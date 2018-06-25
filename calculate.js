@@ -659,7 +659,7 @@ function calculate()
 
 		if (calcopts.ratemodifier != 1)
 		{
-			var titleShiny = "shiny";
+			var titleShiny = `shiny (1 in ${(1/calcopts.ratemodifier).toFixed(1)})`;
 		}
 		if ((calcopts.minlevel != 0) && (calcopts.encountertype != "raid"))
 		{

@@ -488,6 +488,7 @@ function processRateModifierOption()
 	
 	validateOptions();
 	setPageOptions();
+	processOptions();
 }
 
 /* processRateModifierInvOption()
@@ -505,6 +506,7 @@ function processRateModifierInvOption()
 	
 	validateOptions();
 	setPageOptions();
+	processOptions();
 }
 
 
