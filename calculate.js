@@ -140,20 +140,18 @@ function calculatePerEncounterProb()
 
 function calculateAutoEncountersToGraph()
 {
-	//getCalcOptions();
-	//calculatePerEncounterProb();
-	
+	getCalcOptions();
+	calculatePerEncounterProb();
+		
 	var encounters = 10;
-	/*
-	do
+	
+	while(100*(1-binomcdf(calcopts.pokemontoget-1,encounters,(calcresults.final_prob),0)) < 99.5)
 	{
-		prob = 100*(1-binomcdf(calcopts.pokemontoget-1,encounters,(calcresults.final_prob),0));
+		console.log(`enc: ${encounters} inc ${Math.pow(10,Math.floor(Math.log10(encounters)))} prob ${100*(1-binomcdf(calcopts.pokemontoget-1,encounters,(calcresults.final_prob),0))} coptg ${calcopts.pokemontoget} crfp ${calcresults.final_prob}`);
 		
 		encounters += Math.pow(10,Math.floor(Math.log10(encounters))); //Add the nearest lower power of 10 (10 for x<100, 100 for x<1000, etc)
 	}
-	while (prob < 99.5)
-		*/
-	
+
 	return encounters;
 }
 

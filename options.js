@@ -29,6 +29,96 @@ function resetOptionDefaults()
 	encountersToGraphDefaultNonRaid = 300;
 	encountersToGraphDefaultRaid = 30;
 	
+	pageopts = {	appraisal: {	value: "best",
+									defaultval: "best",
+									type: "string",
+									validvals: ["best","good","aboveaverage","any"],
+									pageelement: "appraisal",
+									pageelementtype: "select"},
+					minivpercent: {	value: 82.2,
+									defaultval: 82.2,
+									type:"float",
+									validmin:"0",
+									validmintype:"inclusive",
+									validmax:"100",
+									validmaxtype:"inclusive",
+									pagelement:"min_iv_percent",
+									pageelementtype:"textbox"},
+					minattackiv: {	value: "any",
+									defaultval: "any",
+									type: "string",
+									validvals: ["any","0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15"],
+									pageelement: "min_attack_iv",
+									pageelementtype: "select" },
+					encountertype: {	value: "normal",
+										defaultval: "normal",
+										type: "string",
+										validvals: ["normal","raid","boosted"],
+										pageelement: "encounter_type",
+										pageelementtype: "select" },
+					minlevel: {	value: "any",
+								defaultval: "any",
+								type: "string",
+								validvals: ["any","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18",
+											"19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35"],
+								pagelement: "min_level",
+								pageelementtype: "select" },
+					trainerlevel: {	value: "30",
+									defaultval: "30",
+									type: "string",
+									validvals: ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15",
+												"16","17","18","19","20","21","22","23","24","25","26","27","28","29","30"],
+									pagelement: "trainer_level",
+									pageelementtype: "select" },
+					ratemodifierselect: {	value: "1",
+											defaultval: "1",
+											type: "string",
+											validvals: ["1","450","75","45","35","19","24.5","custom"],
+											pageelement: "ratemodifierselect",
+											pageelementtype: "select" },
+					ratemodifier: { value: 1,
+									defaultval: 1,
+									type: "float",
+									validmin: 0,
+									validmintype: "exclusive",
+									validmax: 1,
+									validmaxtype: "inclusive",
+									pageelement: "rate_modifier",
+									pageelementtype: "textbox" },
+					ratemodifierinv: {	value: 1,
+										defaultval: 1,
+										type: "float",
+										validmin: 0,
+										validmintype: "exclusive",
+										pageelement: "rate_modifier_inv",
+										pageelementtype: "textbox" },
+					pokemontoget: { value:1,
+									defaultval: 1,
+									type: "int",
+									validmin: 1,
+									validmintype: "inclusive",
+									pageelement: "pokemon_to_get",
+									pageelementtype: "textbox" },
+					chartmode: {	value: "single",
+									defaultval: "single",
+									type: "string",
+									validvals: ["single","area","pmf","cdf","normalpdf","normalcdf"],
+									pageelement: "chart_mode",
+									pageelementtype: "select" },
+					encounterstograph: {	value: encountersToGraphDefaultNonRaid,
+											defaultval: encountersToGraphDefaultNonRaid,
+											type: "int",
+											validmin: 1,
+											validmintype: "inclusive",
+											pageelement: "encounters_to_graph",
+											pageelementtype: "textbox" },
+					autoencounterstograph: {	value: true,
+												defaultval: true,
+												type: "bool",
+												pageelement: "auto_encounters_to_graph",
+												pageelementtype: "checkbox" }
+				};
+	
 	pageopts = {	appraisal:"best",
 					minivpercent:"82.2",
 					minattackiv:"any",
@@ -40,7 +130,8 @@ function resetOptionDefaults()
 					ratemodifierinv:1,
 					pokemontoget:1,
 					chartmode:"single",
-					encounterstograph:encountersToGraphDefaultNonRaid
+					encounterstograph:encountersToGraphDefaultNonRaid,
+					autoencounterstograph:true
 				};
 	
 }
@@ -58,31 +149,40 @@ function getPageOptions()
 					ratemodifierinv:document.getElementById("rate_modifier_inv").value,
 					pokemontoget:document.getElementById("pokemon_to_get").value,
 					chartmode:document.getElementById("chart_mode").value,
-					encounterstograph:document.getElementById("encounters_to_graph").value};
+					encounterstograph:document.getElementById("encounters_to_graph").value,
+					autoencounterstograph:document.getElementById("auto_encounters_to_graph").checked };
 
 }
 
 function setPageOptions()
 {
-	var keyToHtmlId = {	appraisal:"appraisal",
-						minivpercent:"min_iv_percent",
-						minattackiv:"min_attack_iv",
-						encountertype:"encounter_type",
-						minlevel:"min_level",
-						trainerlevel:"trainer_level",
-						ratemodifierselect:"ratemodifierselect",
-						ratemodifier:"rate_modifier",
-						ratemodifierinv:"rate_modifier_inv",
-						pokemontoget:"pokemon_to_get",
-						chartmode:"chart_mode",
-						encounterstograph:"encounters_to_graph"
-					};
+	//For HTML Elements set with .value
+	var keyToHtmlIdValue = {	appraisal:"appraisal",
+								minivpercent:"min_iv_percent",
+								minattackiv:"min_attack_iv",
+								encountertype:"encounter_type",
+								minlevel:"min_level",
+								trainerlevel:"trainer_level",
+								ratemodifierselect:"ratemodifierselect",
+								ratemodifier:"rate_modifier",
+								ratemodifierinv:"rate_modifier_inv",
+								pokemontoget:"pokemon_to_get",
+								chartmode:"chart_mode",
+								encounterstograph:"encounters_to_graph",
+							};
+							
+	//For HTML Elements set with .checked						
+	var keyToHtmlIdChecked = { autoencounterstograph:"auto_encounters_to_graph" };
 					
 	for (var k in pageopts)
 	{
-		if (keyToHtmlId[k])
+		if (keyToHtmlIdValue[k])
 		{
-			document.getElementById(keyToHtmlId[k]).value = pageopts[k];
+			document.getElementById(keyToHtmlIdValue[k]).value = pageopts[k];
+		}
+		else if (keyToHtmlIdChecked[k])
+		{
+			document.getElementById(keyToHtmlIdChecked[k]).checked = (pageopts[k] === 'true' || pageopts[k] === true);
 		}
 		else
 		{
@@ -299,15 +399,15 @@ function processOptions()
 	}
 	
 	/* Process Chart Mode select
-	 * Enable the autoencounterstographbutton for single and area chart modes
+	 * Enable the autoencounterstograph checkbox for single and area chart modes
 	 */
 	if (pageopts.chartmode === "single" || pageopts.chartmode === "area")
 	{
-		document.getElementById("autoencounterstographbutton").style.visibility = "visible";
+		document.getElementById("autoencounterstograph").style.display = "inline";
 	}
 	else
 	{
-		document.getElementById("autoencounterstographbutton").style.visibility = "hidden";
+		document.getElementById("autoencounterstograph").style.display = "none";
 	}
 	
 	validateOptions();

@@ -89,7 +89,8 @@ function autoEncountersToGraphClick()
 	{
 		if (pageopts.chartmode === "single" || pageopts.chartmode === "area")
 		{
-			pageopts.encounterstograph = calculateAutoEncountersToGraph();
+			var autoEncountersToGraphValue = calculateAutoEncountersToGraph(); //Can't do this in a single line (pageopts.encounterstograph = calculateAutoEncountersToGraph()
+			pageopts.encounterstograph = autoEncountersToGraphValue; //...because pageopts is reset deep within calculateAutoEncountersToGraph().
 			setPageOptions();
 		}
 	}
