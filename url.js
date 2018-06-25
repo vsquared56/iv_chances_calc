@@ -12,13 +12,13 @@ function getUrlOptionString(isGraphDrawn)
 	var hash = "#";			
 	
 	var i = 0;
-	for (var key in pageopts)
+	for (var key in pageOpts)
 	{
 		if (i != 0)
 		{
 			hash += "&"
 		}
-		hash += key + "=" + pageopts[key];
+		hash += key + "=" + pageOpts[key].value;
 		i++;
 	}
 
@@ -32,7 +32,7 @@ function getUrlOptionString(isGraphDrawn)
 
 function setUrlOptions(isGraphDrawn)
 {	
-	state = {id:'iv_chances_calc_state',pageopts:pageopts}
+	state = {id:'iv_chances_calc_state',options:pageOpts}
 	history.replaceState(state, "", getUrlOptionString(isGraphDrawn));
 }
 
@@ -59,9 +59,38 @@ function getUrlOptions()
 	
 	for (var k in opts)
 	{
-		if (pageopts[k])
+		if (pageOpts[k])
 		{
-			pageopts[k] = opts[k];
+			if (pageOpts[k].optionType === "bool")
+			{
+				pageOpts[k].setValue(Boolean(opts[k]));
+			}
+			else if (pageOpts[k].optionType === "int")
+			{
+				if (opts[k] === "any")
+				{
+					pageOpts[k].setValue("any");
+				}
+				else
+				{
+					pageOpts[k].setValue(parseInt(opts[k]));
+				}
+			}
+			else if (pageOpts[k].optionType === "float")
+			{
+				if (opts[k] === "any")
+				{
+					pageOpts[k].setValue("any");
+				}
+				else
+				{
+					pageOpts[k].setValue(parseFloat(opts[k]));
+				}
+			}
+			else if (pageOpts[k].optionType === "string")
+			{
+				pageOpts[k].setValue(opts[k].toString());
+			}
 		}
 		else if (k === "calc")
 		{

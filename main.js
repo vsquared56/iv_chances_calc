@@ -81,21 +81,6 @@ function calculateClick()
 
 }
 
-function autoEncountersToGraphClick()
-{
-	getPageOptions();
-	
-	if (!validateOptions());
-	{
-		if (pageopts.chartmode === "single" || pageopts.chartmode === "area")
-		{
-			var autoEncountersToGraphValue = calculateAutoEncountersToGraph(); //Can't do this in a single line (pageopts.encounterstograph = calculateAutoEncountersToGraph()
-			pageopts.encounterstograph = autoEncountersToGraphValue; //...because pageopts is reset deep within calculateAutoEncountersToGraph().
-			setPageOptions();
-		}
-	}
-}
-
 var width, height, heightpercent;
 var chart;
 function init()

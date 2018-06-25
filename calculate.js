@@ -20,17 +20,16 @@ var calcopts;
 
 function getCalcOptions()
 {
-	getPageOptions();
-	calcopts = { minivpercent:parseFloat(pageopts.minivpercent),
+	calcopts = { minivpercent:parseFloat(pageOpts.minivpercent.value),
 				 miniv:0,
-				 minattackiv:((pageopts.minattackiv === "any") ? 0 : parseInt(pageopts.minattackiv)),
-				 encountertype:pageopts.encountertype,
-				 minlevel:((pageopts.minlevel === "any") ? 0 : parseInt(pageopts.minlevel)),
-				 trainerlevel:parseInt(pageopts.trainerlevel),
-				 ratemodifier:parseFloat(pageopts.ratemodifier),
-				 pokemontoget:parseInt(pageopts.pokemontoget),
-				 chartmode:pageopts.chartmode,
-				 encounterstograph:parseInt(pageopts.encounterstograph)
+				 minattackiv:((pageOpts.minattackiv.value === "any") ? 0 : parseInt(pageOpts.minattackiv.value)),
+				 encountertype:pageOpts.encountertype.value,
+				 minlevel:((pageOpts.minlevel.value === "any") ? 0 : parseInt(pageOpts.minlevel.value)),
+				 trainerlevel:parseInt(pageOpts.trainerlevel.value),
+				 ratemodifier:parseFloat(pageOpts.ratemodifier.value),
+				 pokemontoget:parseInt(pageOpts.pokemontoget.value),
+				 chartmode:pageOpts.chartmode.value,
+				 encounterstograph:parseInt(pageOpts.encounterstograph.value)
 			   };
 			   
 	if (calcopts.encountertype === "normal")
@@ -147,8 +146,6 @@ function calculateAutoEncountersToGraph()
 	
 	while(100*(1-binomcdf(calcopts.pokemontoget-1,encounters,(calcresults.final_prob),0)) < 99.5)
 	{
-		console.log(`enc: ${encounters} inc ${Math.pow(10,Math.floor(Math.log10(encounters)))} prob ${100*(1-binomcdf(calcopts.pokemontoget-1,encounters,(calcresults.final_prob),0))} coptg ${calcopts.pokemontoget} crfp ${calcresults.final_prob}`);
-		
 		encounters += Math.pow(10,Math.floor(Math.log10(encounters))); //Add the nearest lower power of 10 (10 for x<100, 100 for x<1000, etc)
 	}
 
@@ -157,7 +154,7 @@ function calculateAutoEncountersToGraph()
 
 function calculate()
 {
-
+	getPageOptions();
 	if (!validateOptions());
 	{
 		getCalcOptions();
