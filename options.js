@@ -298,6 +298,18 @@ function processOptions()
 		pageopts.ratemodifier = (1/parseFloat(pageopts.ratemodifierselect)).toFixed(8);
 	}
 	
+	/* Process Chart Mode select
+	 * Enable the autoencounterstographbutton for single and area chart modes
+	 */
+	if (pageopts.chartmode === "single" || pageopts.chartmode === "area")
+	{
+		document.getElementById("autoencounterstographbutton").style.visibility = "visible";
+	}
+	else
+	{
+		document.getElementById("autoencounterstographbutton").style.visibility = "hidden";
+	}
+	
 	validateOptions();
 	setPageOptions();
 }
@@ -334,7 +346,7 @@ function validateOptions(optionsSource)
 		if (numErrors > 0)
 		{
 				
-				document.getElementById("b1").disabled = true;
+				document.getElementById("calcbutton").disabled = true;
 				document.getElementById("error").style.display = "block";
 				
 				if (optionsSource == "url")
@@ -349,7 +361,7 @@ function validateOptions(optionsSource)
 		else
 		{
 				document.getElementById("error").innerHTML = "";
-				document.getElementById("b1").disabled = false;
+				document.getElementById("calcbutton").disabled = false;
 				document.getElementById("error").style.display = "none";
 				clearInvalidOptions();
 		}

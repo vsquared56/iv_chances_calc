@@ -27,7 +27,7 @@ window.addEventListener('resize', function(){
 
 function drawChart() {
 	// Disable the button while the chart is drawing.
-	var button = document.getElementById('b1');
+	var button = document.getElementById('calcbutton');
 	button.disabled = true;
 	google.visualization.events.addListener(chart, 'ready',
 		function() {
@@ -76,6 +76,20 @@ function calculateClick()
       	calculate();
     }, 0);
 
+}
+
+function autoEncountersToGraphClick()
+{
+	getPageOptions();
+	
+	if (!validateOptions());
+	{
+		if (pageopts.chartmode === "single" || pageopts.chartmode === "area")
+		{
+			pageopts.encounterstograph = calculateAutoEncountersToGraph();
+			setPageOptions();
+		}
+	}
 }
 
 var width, height, heightpercent;

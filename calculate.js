@@ -16,127 +16,163 @@ for (i = 0; i < 16; i++) {
 	}
 }
 
+var calcopts;
+
+function getCalcOptions()
+{
+	getPageOptions();
+	calcopts = { minivpercent:parseFloat(pageopts.minivpercent),
+				 miniv:0,
+				 minattackiv:((pageopts.minattackiv === "any") ? 0 : parseInt(pageopts.minattackiv)),
+				 encountertype:pageopts.encountertype,
+				 minlevel:((pageopts.minlevel === "any") ? 0 : parseInt(pageopts.minlevel)),
+				 trainerlevel:parseInt(pageopts.trainerlevel),
+				 ratemodifier:parseFloat(pageopts.ratemodifier),
+				 pokemontoget:parseInt(pageopts.pokemontoget),
+				 chartmode:pageopts.chartmode,
+				 encounterstograph:parseInt(pageopts.encounterstograph)
+			   };
+			   
+	if (calcopts.encountertype === "normal")
+	{
+		calcopts.miniv = 0;
+	}
+	else if (calcopts.encountertype === "boosted")
+	{
+		calcopts.miniv = 4;
+	}
+	else if (calcopts.encountertype === "raid")
+	{
+		calcopts.miniv = 10;
+	}
+}
+
+var calcresults;
+function calculatePerEncounterProb()
+{
+	getCalcOptions();
+	
+	calcresults = { ivnumerator: 0,
+					ivdenominator: 0,
+					iv_prob: 0,
+					lvlnumerator: 1,
+					lvldenominator: 1,
+					lvl_prob: 0
+					}
+	/* Calculate the number of potential matches (and the total possible matches) given the input minattackiv, minivpercent, and miniv */
+	
+	// Loop through the entire iv table, counting the chance any single encounter will fit our criteria
+	for (i = 0; i < iv.length; i++)
+	{
+		// If it matches ATK and IV% criteria, and fits the type of encounter (miniv), we want it.
+		if ((iv[i].atk >= calcopts.minattackiv) &&
+			(iv[i].percent >= calcopts.minivpercent) &&
+			(iv[i].lowestiv >= calcopts.miniv))
+		{
+			calcresults.ivnumerator++;
+		}
+		// Divide by the total number of possible encounters (those matching the encounter type, miniv)
+		if (iv[i].lowestiv >= calcopts.miniv)
+		{
+			calcresults.ivdenominator++;
+		}
+	}
+	calcresults.iv_prob = (calcresults.ivnumerator / calcresults.ivdenominator);
+	
+	// Calculate level modifier
+	calcresults.lvlnumerator = 1;
+	calcresults.lvldenominator = 1;
+	
+	//min lvl of 0 means 'any'
+	if (calcopts.minlevel == 0)
+	{
+	  calcresults.lvlnumerator = 1;
+	  calcresults.lvldenominator = 1;
+	}
+	else if (calcopts.encountertype === "boosted")
+	{
+	  if (calcopts.trainerlevel >= calcopts.minlevel - 5)
+	  {
+		calcresults.lvlnumerator = 1;
+		if (calcopts.trainerlevel >= 30)
+		{
+		  calcresults.lvldenominator = 30;
+		  calcresults.lvlnumerator = 36 - calcopts.minlevel;
+		}
+		else
+		{
+		  calcresults.lvldenominator = calcopts.trainerlevel;
+		  calcresults.lvlnumerator = calcopts.trainerlevel + 6 - calcopts.minlevel;
+		}
+	  }
+	  else
+	  {
+		calcresults.lvlnumerator = 0;
+		calcresults.lvldenominator = 1;
+	  }
+	}
+	else if (calcopts.encountertype === "normal")
+	{
+	  if (calcopts.trainerlevel >= calcopts.minlevel)
+	  {
+		calcresults.lvlnumerator = 1;
+		if (calcopts.trainerlevel >= 30)
+		{
+		  calcresults.lvldenominator = 30;
+		  calcresults.lvlnumerator = 31 - calcopts.minlevel;
+		}
+		else
+		{
+		  calcresults.lvldenominator = calcopts.trainerlevel;
+		  calcresults.lvlnumerator = calcopts.trainerlevel + 1 - calcopts.minlevel;
+		}
+	  }
+	  else
+	  {
+		calcresults.lvlnumerator = 0;
+		calcresults.lvldenominator = 1;
+	  }
+	}
+	
+	calcresults.lvl_prob = (calcresults.lvlnumerator/calcresults.lvldenominator);
+	calcresults.final_prob = calcresults.iv_prob*calcresults.lvl_prob*calcopts.ratemodifier;
+}
+
+function calculateAutoEncountersToGraph()
+{
+	//getCalcOptions();
+	//calculatePerEncounterProb();
+	
+	var encounters = 10;
+	/*
+	do
+	{
+		prob = 100*(1-binomcdf(calcopts.pokemontoget-1,encounters,(calcresults.final_prob),0));
+		
+		encounters += Math.pow(10,Math.floor(Math.log10(encounters))); //Add the nearest lower power of 10 (10 for x<100, 100 for x<1000, etc)
+	}
+	while (prob < 99.5)
+		*/
+	
+	return encounters;
+}
+
 function calculate()
 {
+
 	if (!validateOptions());
 	{
+		getCalcOptions();
+		
 		//Save the options for this chart in the URL
 		setUrlOptions(true);
-		
-		getPageOptions();
-		
-		var calcopts = { minivpercent:parseFloat(pageopts.minivpercent),
-		                 minattackiv:((pageopts.minattackiv === "any") ? 0 : parseInt(pageopts.minattackiv)),
-		                 encountertype:pageopts.encountertype,
-		                 minlevel:((pageopts.minlevel === "any") ? 0 : parseInt(pageopts.minlevel)),
-		                 trainerlevel:parseInt(pageopts.trainerlevel),
-		                 ratemodifier:parseFloat(pageopts.ratemodifier),
-		                 pokemontoget:parseInt(pageopts.pokemontoget),
-		                 chartmode:pageopts.chartmode,
-		                 encounterstograph:parseInt(pageopts.encounterstograph)
-				       };
 		
 		var titleopts = { findingwhat: "", //Chance of finding __ Pokemon...
 		                  afterwhat: ""    //...after ___ normal catches/encounters
 		                };
 		
-		/* First find the probability for any single encounter */
-		var miniv = 0;
-		if (calcopts.encountertype === "normal")
-		{
-		  miniv = 0;
-		}
-		else if (calcopts.encountertype === "boosted")
-		{
-		  miniv = 4;
-		}
-		else if (calcopts.encountertype === "raid")
-		{
-		  miniv = 10;
-		}
+		calculatePerEncounterProb()
 		
-
-		/* Calculate the number of potential matches (and the total possible matches) given the input minattackiv, minivpercent, and miniv */
-		var prnumerator = 0;
-		var prdenominator = 0;
-		var p = 1;
-		
-		// Loop through the entire iv table, counting the chance any single encounter will fit our criteria
-		for (i = 0; i < iv.length; i++)
-		{
-			// If it matches ATK and IV% criteria, and fits the type of encounter (miniv), we want it.
-			if ((iv[i].atk >= calcopts.minattackiv) &&
-			    (iv[i].percent >= calcopts.minivpercent) &&
-				(iv[i].lowestiv >= miniv))
-			{
-				prnumerator++;
-			}
-			// Divide by the total number of possible encounters (those matching the encounter type, miniv)
-			if (iv[i].lowestiv >= miniv)
-			{
-				prdenominator++;
-			}
-		}
-		p = (prnumerator / prdenominator);
-		
-		// Calculate level modifier
-		var lvlnumerator, lvldenominator, lvlp;
-		lvlnumerator = 1;
-		lvldenominator = 1;
-		
-		//min lvl of 0 means 'any'
-		if (calcopts.minlevel == 0)
-		{
-		  lvlnumerator = 1;
-		  lvldenominator = 1;
-		}
-		else if (calcopts.encountertype === "boosted")
-		{
-		  if (calcopts.trainerlevel >= calcopts.minlevel - 5)
-		  {
-			lvlnumerator = 1;
-			if (calcopts.trainerlevel >= 30)
-			{
-			  lvldenominator = 30;
-			  lvlnumerator = 36 - calcopts.minlevel;
-			}
-			else
-			{
-			  lvldenominator = calcopts.trainerlevel;
-			  lvlnumerator = calcopts.trainerlevel + 6 - calcopts.minlevel;
-			}
-		  }
-		  else
-		  {
-			lvlnumerator = 0;
-			lvldenominator = 1;
-		  }
-		}
-		else if (calcopts.encountertype === "normal")
-		{
-		  if (calcopts.trainerlevel >= calcopts.minlevel)
-		  {
-			lvlnumerator = 1;
-			if (calcopts.trainerlevel >= 30)
-			{
-			  lvldenominator = 30;
-			  lvlnumerator = 31 - calcopts.minlevel;
-			}
-			else
-			{
-			  lvldenominator = calcopts.trainerlevel;
-			  lvlnumerator = calcopts.trainerlevel + 1 - calcopts.minlevel;
-			}
-		  }
-		  else
-		  {
-			lvlnumerator = 0;
-			lvldenominator = 1;
-		  }
-		}
-		
-		lvlp = (lvlnumerator/lvldenominator);
-		finalp = p*lvlp*calcopts.ratemodifier;
 		
 		/* Switch to using a normal approximation if the Binomial distribution would be difficult to calculate */
 		if (calcopts.chartmode === "pmf")
@@ -147,8 +183,8 @@ function calculate()
 			}
 			else if (calcopts.encounterstograph > 10000)
 			{
-				minencounters = Math.max(0,Math.ceil((calcopts.encounterstograph*finalp) - 5*Math.sqrt(calcopts.encounterstograph*finalp*(1-finalp))));
-				maxencounters = Math.floor((calcopts.encounterstograph*finalp) + 5*Math.sqrt(calcopts.encounterstograph*finalp*(1-finalp)));
+				minencounters = Math.max(0,Math.ceil((calcopts.encounterstograph*calcresults.final_prob) - 5*Math.sqrt(calcopts.encounterstograph*calcresults.final_prob*(1-calcresults.final_prob))));
+				maxencounters = Math.floor((calcopts.encounterstograph*calcresults.final_prob) + 5*Math.sqrt(calcopts.encounterstograph*calcresults.final_prob*(1-calcresults.final_prob)));
 				if ((maxencounters - minencounters) > 100)
 				{
 					calcopts.chartmode = "normalpdf";
@@ -163,8 +199,8 @@ function calculate()
 			}
 			else if (calcopts.encounterstograph > 500)
 			{
-				minencounters = Math.max(0,Math.ceil((calcopts.encounterstograph*finalp) - 5*Math.sqrt(calcopts.encounterstograph*finalp*(1-finalp))));
-				maxencounters = Math.floor((calcopts.encounterstograph*finalp) + 5*Math.sqrt(calcopts.encounterstograph*finalp*(1-finalp)));
+				minencounters = Math.max(0,Math.ceil((calcopts.encounterstograph*calcresults.final_prob) - 5*Math.sqrt(calcopts.encounterstograph*calcresults.final_prob*(1-calcresults.final_prob))));
+				maxencounters = Math.floor((calcopts.encounterstograph*calcresults.final_prob) + 5*Math.sqrt(calcopts.encounterstograph*calcresults.final_prob*(1-calcresults.final_prob)));
 				if (minencounters > 100 && (maxencounters-minencounters) > 30 )
 				{
 					calcopts.chartmode = "normalcdf";
@@ -205,7 +241,7 @@ function calculate()
 			{
 				// binomcdf(k,n,p) gives us the chances of getting k or fewer successes after n trials with p probability.
 				// Since we want the chances of getting k or more successes, we do (1-binomcdf(k-1,n,p).
-				prob = 100*(1-binomcdf(calcopts.pokemontoget-1,i,(finalp),0));
+				prob = 100*(1-binomcdf(calcopts.pokemontoget-1,i,(calcresults.final_prob),0));
 				data.addRow([i,prob]);
 			}
 			
@@ -215,9 +251,9 @@ function calculate()
 							 
 			//Print some debug text
 			document.getElementById("debug").innerHTML = 	`Plotting 1-binomcdf(k,n,p) with k=${calcopts.pokemontoget - 1},` +
-			                                                `<br>p=(${prnumerator}/${prdenominator})*(${lvlnumerator}/${lvldenominator})*${calcopts.ratemodifier}=` +
-															`(${p.toFixed(6)}*${lvlp.toFixed(6)}*${calcopts.ratemodifier.toFixed(6)})=${finalp.toFixed(8)}` +
-															`<br>for n=${calcopts.encounterstograph}`;
+			                                                `<br>p=(${calcresults.ivnumerator}/${calcresults.ivdenominator})*(${calcresults.lvlnumerator}/${calcresults.lvldenominator})*${calcopts.ratemodifier}=` +
+															`(${calcresults.iv_prob.toFixed(6)}*${calcresults.lvl_prob.toFixed(6)}*${calcopts.ratemodifier.toFixed(6)})=${calcresults.final_prob.toFixed(8)}` +
+															`<br>for 0<=n<=${calcopts.encounterstograph}`;
 		}
 		/* Area chart */
 		else if (calcopts.chartmode === "area")
@@ -249,7 +285,7 @@ function calculate()
 				datarow.push(i);
 				for (j = calcopts.pokemontoget; j >= 1; j--)
 				{
-					prob = 100*(1-binomcdf(j-1,i,(finalp),0));
+					prob = 100*(1-binomcdf(j-1,i,(calcresults.final_prob),0));
 					datarow.push(prob - prob_prev_series);
 					prob_prev_series = prob;
 				}
@@ -262,9 +298,9 @@ function calculate()
 			
 			//Print some debug text
 			document.getElementById("debug").innerHTML = 	`Plotting 1-binomcdf(k,n,p) with k=${calcopts.pokemontoget - 1},` +
-			                                                `<br>p=(${prnumerator}/${prdenominator})*(${lvlnumerator}/${lvldenominator})*${calcopts.ratemodifier}=` +
-															`(${p.toFixed(6)}*${lvlp.toFixed(6)}*${calcopts.ratemodifier.toFixed(6)})=${finalp.toFixed(8)}` +
-															`<br>for n=${calcopts.encounterstograph}`;
+			                                                `<br>p=(${calcresults.ivnumerator}/${calcresults.ivdenominator})*(${calcresults.lvlnumerator}/${calcresults.lvldenominator})*${calcopts.ratemodifier}=` +
+															`(${calcresults.iv_prob.toFixed(6)}*${calcresults.lvl_prob.toFixed(6)}*${calcopts.ratemodifier.toFixed(6)})=${calcresults.final_prob.toFixed(8)}` +
+															`<br>for 0<=n<=${calcopts.encounterstograph}`;
 		}
 		/* PMF Chart */
 		else if (calcopts.chartmode === "pmf")
@@ -273,8 +309,8 @@ function calculate()
 			chartOptions.hAxis = {title:'Number of catches/encounters matching criteria'};
 				
 			//Plot 5 standard deviations away from the mean
-			minencounters = Math.max(0,Math.floor((calcopts.encounterstograph*finalp) - 5*Math.sqrt(calcopts.encounterstograph*finalp*(1-finalp))));
-			maxencounters = Math.ceil((calcopts.encounterstograph*finalp) + 5*Math.sqrt(calcopts.encounterstograph*finalp*(1-finalp)));
+			minencounters = Math.max(0,Math.floor((calcopts.encounterstograph*calcresults.final_prob) - 5*Math.sqrt(calcopts.encounterstograph*calcresults.final_prob*(1-calcresults.final_prob))));
+			maxencounters = Math.ceil((calcopts.encounterstograph*calcresults.final_prob) + 5*Math.sqrt(calcopts.encounterstograph*calcresults.final_prob*(1-calcresults.final_prob)));
 			
 			datapoints = 100; //Don't calculate/chart more than 100 data points.
 
@@ -302,7 +338,7 @@ function calculate()
 			
 			for (i = minencounters; i <= maxencounters; i+= datainterval)
 			{
-				prob = 100*binompmf(i,calcopts.encounterstograph,finalp);
+				prob = 100*binompmf(i,calcopts.encounterstograph,calcresults.final_prob);
 				if (charttype === "ColumnChart")
 				{
 					if (i < calcopts.pokemontoget)
@@ -339,8 +375,8 @@ function calculate()
 			
 			//Print some debug text
 			document.getElementById("debug").innerHTML = 	`Plotting binompmf(k,n,p) with 0<=k<=${maxencounters},` +
-															`<br>p = (${prnumerator}/${prdenominator})*(${lvlnumerator}/${lvldenominator})*${calcopts.ratemodifier}=` +
-															`(${p.toFixed(6)}*${lvlp.toFixed(6)}*${calcopts.ratemodifier.toFixed(6)})=${finalp.toFixed(8)}` +
+															`<br>p = (${calcresults.ivnumerator}/${calcresults.ivdenominator})*(${calcresults.lvlnumerator}/${calcresults.lvldenominator})*${calcopts.ratemodifier}=` +
+															`(${calcresults.iv_prob.toFixed(6)}*${calcresults.lvl_prob.toFixed(6)}*${calcopts.ratemodifier.toFixed(6)})=${calcresults.final_prob.toFixed(8)}` +
 															`<br>for n=${calcopts.encounterstograph}`;
 		}
 		/* CDF chart */
@@ -351,8 +387,8 @@ function calculate()
 				
 
 			//Plot 5 standard deviations away from the mean
-			minencounters = Math.max(1,Math.floor((calcopts.encounterstograph*finalp) - 5*Math.sqrt(calcopts.encounterstograph*finalp*(1-finalp))));
-			maxencounters = Math.ceil((calcopts.encounterstograph*finalp) + 5*Math.sqrt(calcopts.encounterstograph*finalp*(1-finalp)));
+			minencounters = Math.max(1,Math.floor((calcopts.encounterstograph*calcresults.final_prob) - 5*Math.sqrt(calcopts.encounterstograph*calcresults.final_prob*(1-calcresults.final_prob))));
+			maxencounters = Math.ceil((calcopts.encounterstograph*calcresults.final_prob) + 5*Math.sqrt(calcopts.encounterstograph*calcresults.final_prob*(1-calcresults.final_prob)));
 			
 			datapoints = 100; //Don't calculate/chart more than 100 data points.
 			
@@ -380,22 +416,22 @@ function calculate()
 			
 			//Print some debug text
 			document.getElementById("debug").innerHTML = 	`Plotting 1-binomcdf(k,n,p) with 0<=k<=${maxencounters},` +
-															`<br>p = (${prnumerator}/${prdenominator})*(${lvlnumerator}/${lvldenominator})*${calcopts.ratemodifier}=` +
-															`(${p.toFixed(6)}*${lvlp.toFixed(6)}*${calcopts.ratemodifier.toFixed(6)}) = ${finalp.toFixed(8)}` +
+															`<br>p = (${calcresults.ivnumerator}/${calcresults.ivdenominator})*(${calcresults.lvlnumerator}/${calcresults.lvldenominator})*${calcopts.ratemodifier}=` +
+															`(${calcresults.iv_prob.toFixed(6)}*${calcresults.lvl_prob.toFixed(6)}*${calcopts.ratemodifier.toFixed(6)}) = ${calcresults.final_prob.toFixed(8)}` +
 															`<br>for n=${calcopts.encounterstograph}`;
 			
 			//Toss the extreme left tail (anything less than 10 standard deviations left of the mean)
-			var begin = Math.max(0,Math.floor((calcopts.encounterstograph*finalp)-10*Math.sqrt(calcopts.encounterstograph*finalp*(1-finalp))));
+			var begin = Math.max(0,Math.floor((calcopts.encounterstograph*calcresults.final_prob)-10*Math.sqrt(calcopts.encounterstograph*calcresults.final_prob*(1-calcresults.final_prob))));
 			begin = 0;
 			if (begin != 0)
 			{
-				document.getElementById("debug").innerHTML += (`<br>binomcdf: ignoring extreme left tail below ${begin} of size << ${(begin+1)*binompmf(begin,calcopts.encounterstograph,finalp)}`);
+				document.getElementById("debug").innerHTML += (`<br>binomcdf: ignoring extreme left tail below ${begin} of size << ${(begin+1)*binompmf(begin,calcopts.encounterstograph,calcresults.final_prob)}`);
 			}
 			
 			
 			for (i = minencounters; i <= maxencounters; i+= datainterval)
 			{
-				prob = 100*(1-binomcdf(i-1,calcopts.encounterstograph,finalp,begin));
+				prob = 100*(1-binomcdf(i-1,calcopts.encounterstograph,calcresults.final_prob,begin));
 			
 				if (charttype === "ColumnChart")
 				{
@@ -444,9 +480,9 @@ function calculate()
 			chartOptions.hAxis = {title:'Number of catches/encounters matching criteria'};
 				
 			//Plot 5 standard deviations away from the mean
-			minencounters = Math.max(0,Math.floor((calcopts.encounterstograph*finalp) - 5*Math.sqrt(calcopts.encounterstograph*finalp*(1-finalp))));
+			minencounters = Math.max(0,Math.floor((calcopts.encounterstograph*calcresults.final_prob) - 5*Math.sqrt(calcopts.encounterstograph*calcresults.final_prob*(1-calcresults.final_prob))));
 			maxencounters = Math.min(calcopts.encounterstograph,
-									 Math.ceil((calcopts.encounterstograph*finalp) + 5*Math.sqrt(calcopts.encounterstograph*finalp*(1-finalp))));
+									 Math.ceil((calcopts.encounterstograph*calcresults.final_prob) + 5*Math.sqrt(calcopts.encounterstograph*calcresults.final_prob*(1-calcresults.final_prob))));
 			
 			datapoints = 100; //Don't calculate/chart more than 100 data points.
 			
@@ -477,8 +513,8 @@ function calculate()
 			{
 				//The binomial distribution can be approximated by the normal distribution with mean n*p and variance n*p*(1-p)
 				//Apply a continuity correction to get binompmf(x,n,p) ~= normalcdf(x+0.5,mean=np,variance=np(1-p))-normalcdf(x-0.5,np,np(1-p))
-				prob = 100*((normalcdf(i+0.5,(calcopts.encounterstograph*finalp),(calcopts.encounterstograph*finalp*(1-finalp))) -
-							normalcdf(i-0.5,(calcopts.encounterstograph*finalp),(calcopts.encounterstograph*finalp*(1-finalp)))));
+				prob = 100*((normalcdf(i+0.5,(calcopts.encounterstograph*calcresults.final_prob),(calcopts.encounterstograph*calcresults.final_prob*(1-calcresults.final_prob))) -
+							normalcdf(i-0.5,(calcopts.encounterstograph*calcresults.final_prob),(calcopts.encounterstograph*calcresults.final_prob*(1-calcresults.final_prob)))));
 			
 				if (charttype === "ColumnChart")
 				{
@@ -516,10 +552,10 @@ function calculate()
 			//Print some debug text
 			document.getElementById("debug").innerHTML = 	`Using a Gaussian approximation of the binomial distribution...` +
 			                                                `<br>Plotting normalpdf(x,μ,σ²) with 0<=x<=${maxencounters},` +
-															`<br>μ=n*p=${calcopts.encounterstograph}*(${prnumerator}/${prdenominator})*(${lvlnumerator}/${lvldenominator})*${calcopts.ratemodifier}=` +
-															`${calcopts.encounterstograph}*(${p.toFixed(6)}*${lvlp.toFixed(6)}*${calcopts.ratemodifier.toFixed(6)})=${(calcopts.encounterstograph*finalp.toFixed(8))}` +
-															`<br>σ²=n*p*(1-p)=${(calcopts.encounterstograph*finalp*(1-finalp)).toFixed(4)}` +
-															`<br>with np=${(calcopts.encounterstograph*finalp).toFixed(4)} n(1-p)=${(calcopts.encounterstograph*(1-finalp)).toFixed(4)}`;
+															`<br>μ=n*p=${calcopts.encounterstograph}*(${calcresults.ivnumerator}/${calcresults.ivdenominator})*(${calcresults.lvlnumerator}/${calcresults.lvldenominator})*${calcopts.ratemodifier}=` +
+															`${calcopts.encounterstograph}*(${calcresults.iv_prob.toFixed(6)}*${calcresults.lvl_prob.toFixed(6)}*${calcopts.ratemodifier.toFixed(6)})=${(calcopts.encounterstograph*calcresults.final_prob.toFixed(8))}` +
+															`<br>σ²=n*p*(1-p)=${(calcopts.encounterstograph*calcresults.final_prob*(1-calcresults.final_prob)).toFixed(4)}` +
+															`<br>with np=${(calcopts.encounterstograph*calcresults.final_prob).toFixed(4)} n(1-p)=${(calcopts.encounterstograph*(1-calcresults.final_prob)).toFixed(4)}`;
 		}
 		/* Gaussian CDF chart */
 		else if (calcopts.chartmode === "normalcdf")
@@ -528,9 +564,9 @@ function calculate()
 			chartOptions.hAxis = {title:'Number of catches/encounters matching criteria'};
 				
 			//Plot 5 standard deviations away from the mean
-			minencounters = Math.max(1,Math.floor((calcopts.encounterstograph*finalp) - 5*Math.sqrt(calcopts.encounterstograph*finalp*(1-finalp))));
+			minencounters = Math.max(1,Math.floor((calcopts.encounterstograph*calcresults.final_prob) - 5*Math.sqrt(calcopts.encounterstograph*calcresults.final_prob*(1-calcresults.final_prob))));
 			maxencounters = Math.min(calcopts.encounterstograph,
-									 Math.ceil((calcopts.encounterstograph*finalp) + 5*Math.sqrt(calcopts.encounterstograph*finalp*(1-finalp))));
+									 Math.ceil((calcopts.encounterstograph*calcresults.final_prob) + 5*Math.sqrt(calcopts.encounterstograph*calcresults.final_prob*(1-calcresults.final_prob))));
 			
 			datapoints = 100; //Don't calculate/chart more than 100 data points.
 			
@@ -562,7 +598,7 @@ function calculate()
 			{
 				//The binomial distribution can be approximated by the normal distribution with mean n*p and variance n*p*(1-p)
 				//Apply a continuity correction to get binomcdf(x,n,p) ~= normalcdf(x-0.5,mean=np,variance=np(1-p))
-				prob = 100*(1-normalcdf(i-0.5,(calcopts.encounterstograph*finalp),(calcopts.encounterstograph*finalp*(1-finalp))));
+				prob = 100*(1-normalcdf(i-0.5,(calcopts.encounterstograph*calcresults.final_prob),(calcopts.encounterstograph*calcresults.final_prob*(1-calcresults.final_prob))));
 			
 				if (charttype === "ColumnChart")
 				{
@@ -599,26 +635,26 @@ function calculate()
 			//Print some debug text
 			document.getElementById("debug").innerHTML = 	`Using a Gaussian approximation of the binomial distribution...` +
 			                                                `Plotting normalcdf(x,μ,σ²) with 0<=x<=${maxencounters},` +
-															`<br>μ=n*p=${calcopts.encounterstograph}*(${prnumerator}/${prdenominator})*(${lvlnumerator}/${lvldenominator})*${calcopts.ratemodifier}=` +
-															`${calcopts.encounterstograph}*(${p.toFixed(6)}*${lvlp.toFixed(6)}*${calcopts.ratemodifier.toFixed(6)})=${(calcopts.encounterstograph*finalp.toFixed(8))}` +
-															`<br>σ²=n*p*(1-p)=${(calcopts.encounterstograph*finalp*(1-finalp)).toFixed(4)}` +
-															`<br>with np=${(calcopts.encounterstograph*finalp).toFixed(4)} n(1-p)=${(calcopts.encounterstograph*(1-finalp)).toFixed(4)}`;
+															`<br>μ=n*p=${calcopts.encounterstograph}*(${calcresults.ivnumerator}/${calcresults.ivdenominator})*(${calcresults.lvlnumerator}/${calcresults.lvldenominator})*${calcopts.ratemodifier}=` +
+															`${calcopts.encounterstograph}*(${calcresults.iv_prob.toFixed(6)}*${calcresults.lvl_prob.toFixed(6)}*${calcopts.ratemodifier.toFixed(6)})=${(calcopts.encounterstograph*calcresults.final_prob.toFixed(8))}` +
+															`<br>σ²=n*p*(1-p)=${(calcopts.encounterstograph*calcresults.final_prob*(1-calcresults.final_prob)).toFixed(4)}` +
+															`<br>with np=${(calcopts.encounterstograph*calcresults.final_prob).toFixed(4)} n(1-p)=${(calcopts.encounterstograph*(1-calcresults.final_prob)).toFixed(4)}`;
 		}
 		
 	/* Finished calculating for all charts */
 		
 		//Print the final probability per encounter
-		document.getElementById("resultstext").innerHTML =	`On average, ${prnumerator} of every ${prdenominator} Pokemon (${(p*100).toFixed(2)}%) will match the IV criteria...<br>`;
+		document.getElementById("resultstext").innerHTML =	`On average, ${calcresults.ivnumerator} of every ${calcresults.ivdenominator} Pokemon (${(calcresults.iv_prob*100).toFixed(2)}%) will match the IV criteria...<br>`;
 		if (calcopts.minlevel != 0)
 		{
-			document.getElementById("resultstext").innerHTML += `Also, ${lvlnumerator}/${lvldenominator} (${(lvlp*100).toFixed(2)}%) of those will match the level requirements...<br>`;
+			document.getElementById("resultstext").innerHTML += `Also, ${calcresults.lvlnumerator}/${calcresults.lvldenominator} (${(calcresults.lvl_prob*100).toFixed(2)}%) of those will match the level requirements...<br>`;
 		}
 															
 		if (calcopts.ratemodifier != 1)
 		{
 		document.getElementById("resultstext").innerHTML += `Finally, there's a manual rate modifier (shiny rate) of ${calcopts.ratemodifier.toFixed(4)}<br>`;
 		}
-		document.getElementById("resultstext").innerHTML += `This gives a total probability of ${(p*lvlp*calcopts.ratemodifier*100).toFixed(6)}% per encounter.`;
+		document.getElementById("resultstext").innerHTML += `This gives a total probability of ${(calcresults.iv_prob*calcresults.lvl_prob*calcopts.ratemodifier*100).toFixed(6)}% per encounter.`;
 		
 		//Set the chart title
 		var titleShiny = "";
