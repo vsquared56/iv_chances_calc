@@ -23,19 +23,6 @@ window.onload = function()
 
 function runCalcTest()
 {
-	pageopts = {	appraisal:"best",
-					minivpercent:"82.2",
-					minattackiv:"any",
-					encountertype:"normal",
-					minlevel:"any",
-					trainerlevel:30,
-					ratemodifierselect:"1",
-					ratemodifier:"1.000000000",
-					ratemodifierinv:1,
-					pokemontoget:1,
-					chartmode:"single",
-					encounterstograph:encountersToGraphDefaultNonRaid
-				};
 	resetOptionDefaults();
 
 	runTest();
@@ -43,8 +30,8 @@ function runCalcTest()
 	testValueData(10,1,33.712604034834634);
 	testValueData(100,1,98.36201626393432);
 	
-	pageopts.appraisal = "good";
-	pageopts.minivpercent = "66.7";
+	pageOpts.appraisal.value = "good";
+	pageOpts.minivpercent.value = "66.7";
 
 	runTest();
 	testValueData(0,1,0);
@@ -53,43 +40,43 @@ function runCalcTest()
 	
 	/* Probability = 1 test for different chart modes */
 	resetOptionDefaults();
-	pageopts.appraisal = "any";
-	pageopts.minivpercent = 0;
+	pageOpts.appraisal.value = "any";
+	pageOpts.minivpercent.value = 0;
 	runTest("Simple chart performance with p=1, other options defaults");
 	testValueData(0,1,0);
 	testValueData(1,1,100);
 	testValueData(2,1,100);
 	testValueData(150,1,100);
 	testValueData(300,1,100);
-	pageopts.chartmode = "area";
+	pageOpts.chartmode.value = "area";
 	runTest("Area chart performance with p=1, other options defaults");
 	testValueData(0,1,0);
 	testValueData(1,1,100);
 	testValueData(2,1,100);
 	testValueData(50,1,100);
 	testValueData(100,1,100);
-	pageopts.chartmode = "pmf";
+	pageOpts.chartmode.value = "pmf";
 	runTest("PMF chart performance with p=1, other options defaults");
 	testValueData(0,1,100);
-	pageopts.chartmode = "cdf";
+	pageOpts.chartmode.value = "cdf";
 	runTest("CDF chart performance with p=1, other options defaults");
 	testValueData(0,1,100);
-	pageopts.chartmode = "normalpdf";
+	pageOpts.chartmode.value = "normalpdf";
 	runTest("Normal PDF chart performance with p=1, other options defaults");
 	testValueData(0,1,100);
-	pageopts.chartmode = "normalcdf";
+	pageOpts.chartmode.value = "normalcdf";
 	runTest("Normal CDF chart performance with p=1, other options defaults");
 	testValueData(0,1,100);
 	
 	/* CDF chart test with very high probability near 1 */
 	resetOptionDefaults();
-	pageopts.appraisal = "any";
-	pageopts.minivpercent = 0;
-	pageopts.ratemodifierselect = "custom";
-	pageopts.ratemodifier = 0.999;
-	pageopts.ratemodifierinv = 1.001;
-	pageopts.encounterstograph = 1000;
-	pageopts.chartmode = "cdf"
+	pageOpts.appraisal.value = "any";
+	pageOpts.minivpercent.value = 0;
+	pageOpts.ratemodifierselect.value = "custom";
+	pageOpts.ratemodifier.value = 0.999;
+	pageOpts.ratemodifierinv.value = 1.001;
+	pageOpts.encounterstograph.value = 1000;
+	pageOpts.chartmode.value = "cdf"
 	runTest("CDF chart performance with p=0.999, graph 1000 encounters");
 }
 
@@ -164,28 +151,28 @@ function randomize()
 	x = getRandomInt(0,10)
 	if (x === 0)
 	{
-		pageopts.appraisal = "best";
-		pageopts.minivpercent = 82.2;
+		pageOpts.appraisal.value = "best";
+		pageOpts.minivpercent.value = 82.2;
 	}
 	else if (x === 1)
 	{
-		pageopts.appraisal = "good";
-		pageopts.minivpercent = 66.7;
+		pageOpts.appraisal.value = "good";
+		pageOpts.minivpercent.value = 66.7;
 	}
 	else if (x === 2)
 	{
-		pageopts.appraisal = "aboveaverage";
-		pageopts.minivpercent = 51.1;
+		pageOpts.appraisal.value = "aboveaverage";
+		pageOpts.minivpercent.value = 51.1;
 	}
 	else if (x === 3)
 	{
-		pageopts.appraisal = "any";
-		pageopts.minivpercent = 0;
+		pageOpts.appraisal.value = "any";
+		pageOpts.minivpercent.value = 0;
 	}
 	else
 	{
-		pageopts.appraisal = "other"
-		pageopts.minivpercent = getRandomArbitrary(0,100);
+		pageOpts.appraisal.value = "other"
+		pageOpts.minivpercent.value = getRandomArbitrary(0,100);
 	}
 
 	
@@ -193,109 +180,109 @@ function randomize()
 	{
 		if (x === 16)
 		{
-			pageopts.minattackiv = "any";
+			pageOpts.minattackiv.value = "any";
 		}
 		else
 		{
-			pageopts.minattackiv = x;
+			pageOpts.minattackiv.value = x;
 		}
 	}
 	
 	x = getRandomInt(0,2);
 	if (x === 0)
 	{
-		pageopts.encountertype = "normal";
+		pageOpts.encountertype.value = "normal";
 	}
 	else if (x === 1)
 	{
-		pageopts.encountertype = "boosted";
+		pageOpts.encountertype.value = "boosted";
 	}
 	else if (x === 2)
 	{
-		pageopts.encountertype = "raid";
+		pageOpts.encountertype.value = "raid";
 	}
 	
 	x = getRandomInt(0,35);
 	if (x === 0)
 	{
-		pageopts.minlevel = "any";
+		pageOpts.minlevel.value = "any";
 	}
 	else
 	{
-		pageopts.minlevel = x;
+		pageOpts.minlevel.value = x;
 	}
 	
-	pageopts.trainerlevel = getRandomInt(0,30);
+	pageOpts.trainerlevel.value = getRandomInt(0,30);
 	
 	x = getRandomInt(0,10);
 	if (x === 0)
 	{
-		pageopts.ratemodifierselect = "450";
-		pageopts.ratemodifierinv = pageopts.ratemodifierselect;
-		pageopts.ratemodifier = 1/pageopts.ratemodifierselect;
+		pageOpts.ratemodifierselect.value = "450";
+		pageOpts.ratemodifierinv.value = pageOpts.ratemodifierselect.value;
+		pageOpts.ratemodifier.value = 1/pageOpts.ratemodifierselect.value;
 	}
 	else if (x === 1)
 	{
-		pageopts.ratemodifierselect = "75";
-		pageopts.ratemodifierinv = pageopts.ratemodifierselect;
-		pageopts.ratemodifier = 1/pageopts.ratemodifierselect;
+		pageOpts.ratemodifierselect.value = "75";
+		pageOpts.ratemodifierinv.value = pageOpts.ratemodifierselect.value;
+		pageOpts.ratemodifier.value = 1/pageOpts.ratemodifierselect.value;
 	}
 	else if (x === 2)
 	{
-		pageopts.ratemodifierselect = "45";
-		pageopts.ratemodifierinv = pageopts.ratemodifierselect;
-		pageopts.ratemodifier = 1/pageopts.ratemodifierselect;
+		pageOpts.ratemodifierselect.value = "45";
+		pageOpts.ratemodifierinv.value = pageOpts.ratemodifierselect.value;
+		pageOpts.ratemodifier.value = 1/pageOpts.ratemodifierselect.value;
 	}
 	else if (x === 3)
 	{
-		pageopts.ratemodifierselect = "35";
-		pageopts.ratemodifierinv = pageopts.ratemodifierselect;
-		pageopts.ratemodifier = 1/pageopts.ratemodifierselect;
+		pageOpts.ratemodifierselect.value = "35";
+		pageOpts.ratemodifierinv.value = pageOpts.ratemodifierselect.value;
+		pageOpts.ratemodifier.value = 1/pageOpts.ratemodifierselect.value;
 	}
 	else if (x === 4)
 	{
-		pageopts.ratemodifierselect = "19";
-		pageopts.ratemodifierinv = pageopts.ratemodifierselect;
-		pageopts.ratemodifier = 1/pageopts.ratemodifierselect;
+		pageOpts.ratemodifierselect.value = "19";
+		pageOpts.ratemodifierinv.value = pageOpts.ratemodifierselect.value;
+		pageOpts.ratemodifier.value = 1/pageOpts.ratemodifierselect.value;
 	}
 	else if (x === 5)
 	{
-		pageopts.ratemodifierselect = "24.5";
-		pageopts.ratemodifierinv = pageopts.ratemodifierselect;
-		pageopts.ratemodifier = 1/pageopts.ratemodifierselect;
+		pageOpts.ratemodifierselect.value = "24.5";
+		pageOpts.ratemodifierinv.value = pageOpts.ratemodifierselect.value;
+		pageOpts.ratemodifier.value = 1/pageOpts.ratemodifierselect.value;
 	}
 	else
 	{
 		x = getRandomArbitrary(0,1)
-		pageopts.ratemodifierselect = "custom";
+		pageOpts.ratemodifierselect.value = "custom";
 	
-		pageopts.ratemodifier = x;
-		pageopts.ratemodifierinv = 1/x;
+		pageOpts.ratemodifier.value = x;
+		pageOpts.ratemodifierinv.value = 1/x;
 	}
 	
 	x = getRandomInt(0,3)
 	if (x === 0)
 	{
-		pageopts.chartmode = "single";
+		pageOpts.chartmode.value = "single";
 	}
 	else if (x === 1)
 	{
-		pageopts.chartmode = "area";
+		pageOpts.chartmode.value = "area";
 	}
 	else if (x === 2)
 	{
-		pageopts.chartmode = "pmf";
+		pageOpts.chartmode.value = "pmf";
 	}
 	else if (x === 3)
 	{
-		pageopts.chartmode = "cdf";
+		pageOpts.chartmode.value = "cdf";
 	}
 	
 	x = getRandomInt(0,10)
-	pageopts.pokemontoget = getRandomInt(0,Math.pow(10,x));
+	pageOpts.pokemontoget.value = getRandomInt(0,Math.pow(10,x));
 	
 	x = getRandomInt(0,10)
-	pageopts.encounterstograph = getRandomInt(0,Math.pow(10,x));
+	pageOpts.encounterstograph.value = getRandomInt(0,Math.pow(10,x));
 }
 
 function runRandomTests()
@@ -312,15 +299,16 @@ function runRandomTests()
 function runTest(comment)
 {
 	console.log("Running test: " + comment);
-	console.log(pageopts);
+	console.log(pageOpts);
 
 	setPageOptions();
+	processOptions();
 	document.getElementById("testresults").innerHTML += `<br><br><span style="background-color:black;color:white">` +
 														`Running <a style="color:white" href="${getUrlOptionString(true)}">test: ${comment}</a></span><br>`+
-	                                                    `Chart mode:${pageopts.chartmode} Appraisal:${pageopts.appraisal} MinIVPercent:${pageopts.minivpercent} `+
-                                                        `MinAttackIv:${pageopts.minattackiv} EncounterType:${pageopts.encountertype} MinLevel:${pageopts.minlevel} `+
-														`TrainerLevel:${pageopts.trainerlevel} RateModiferSelect:${pageopts.ratemodifierselect} RateModifier:${pageopts.ratemodifier} `+
-														`RateModifierInv:${pageopts.ratemodifierinv} PokemonToGet:${pageopts.pokemontoget} EncountersToGraph:${pageopts.encounterstograph}<br>`;
+	                                                    `Chart mode:${pageOpts.chartmode.value} Appraisal:${pageOpts.appraisal.value} MinIVPercent:${pageOpts.minivpercent.value} `+
+                                                        `MinAttackIv:${pageOpts.minattackiv.value} EncounterType:${pageOpts.encountertype.value} MinLevel:${pageOpts.minlevel.value} `+
+														`TrainerLevel:${pageOpts.trainerlevel.value} RateModiferSelect:${pageOpts.ratemodifierselect.value} RateModifier:${pageOpts.ratemodifier.value} `+
+														`RateModifierInv:${pageOpts.ratemodifierinv.value} PokemonToGet:${pageOpts.pokemontoget.value} EncountersToGraph:${pageOpts.encounterstograph.value}<br>`;
 	var starttime = performance.now();
 	calculate();
 

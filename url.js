@@ -63,7 +63,7 @@ function getUrlOptions()
 		{
 			if (pageOpts[k].optionType === "bool")
 			{
-				pageOpts[k].setValue(Boolean(opts[k]));
+				pageOpts[k].setValue(opts[k] === "true");
 			}
 			else if (pageOpts[k].optionType === "int")
 			{
