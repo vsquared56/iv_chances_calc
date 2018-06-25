@@ -12,7 +12,320 @@ var	encountersToGraphDefaultRaid;
  * Update from the URL hash with getUrlOptions()
  * Reset to defaults with resetOptionDefaults()
  */
-var pageopts = {};
+var pageopts = {};  //Deprecated
+
+
+
+function PageOption(name,optionType,pageElement,pageElementType)
+{
+	this.name = name;
+	
+	if (optionType === "bool" || optionType === "int" || optionType === "float" || optionType === "string")
+	{
+		this.optionType = optionType;
+	}
+	else
+	{
+		throw("PageOption constructor -- Invalid optionType: " + optionType);
+	}
+
+	this.pageElement = pageElement;
+	
+	if (pageElementType === "select" || pageElementType === "textbox" || pageElementType === "checkbox")
+	{
+		this.pageElementType = pageElementType;
+	}
+	else
+	{
+		throw("PageOption constructor -- Invalid pageElementType: " + pageElementType);
+	}
+}
+PageOption.prototype.setValue = function(v)
+{
+	this.value = v;
+}
+PageOption.prototype.getFromPage = function()
+{
+	if (this.pageElementType === "select" || this.pageElementType === "textbox")
+	{
+		this.value = document.getElementById(this.pageElement).value;
+	}
+	else if (this.pageElementType === "checkbox")
+	{
+		this.value = document.getElementById(this.pageElement).checked;
+	}
+}
+PageOption.prototype.writeToPage = function()
+{
+	if (this.pageElementType === "select" || this.pageElementType === "textbox")
+	{
+		document.getElementById(this.pageElement).value = this.value;
+	}
+	else if (this.pageElementType === "checkbox")
+	{
+		document.getElementById(this.pageElement).checked = this.value;
+	}
+}
+
+function PageOptionString(name,pageElement,pageElementType,defaultVal,validVals)
+{
+	PageOption.call(this,name,"string",pageElement,pageElementType);
+	
+	if (Array.isArray(validVals))
+	{
+		this.validVals = validVals;
+	}
+	else
+	{
+		throw("PageOptionString constructor -- validVals must be an array.");
+	}
+	
+	if (validVals.includes(defaultVal))
+	{
+		this.defaultVal = defaultVal;
+		this.value = defaultVal;
+	}
+	else
+	{
+		throw("PageOptionString constructor -- invalid defaultVal.");
+	}
+}
+PageOptionString.prototype = Object.create(PageOption.prototype);
+PageOptionString.prototype.setValue = function(v)
+{
+	if (this.validVals.includes(v))
+	{
+		this.value = v;
+	}
+	else
+	{
+		throw("PageOptionString.setValue -- invalid value: " + v);
+	}
+}
+
+function PageOptionBool(name,pageElement,pageElementType,defaultVal)
+{
+	PageOption.call(this,name,"bool",pageElement,pageElementType);
+	
+	this.defaultVal = Boolean(defaultVal);
+	this.value = Boolean(defaultVal);
+}
+PageOptionBool.prototype = Object.create(PageOption.prototype);
+PageOptionBool.prototype.setValue = function(v)
+{
+	this.value = Boolean(v);
+}
+
+function PageOptionFloat(name,pageElement,pageElementType,defaultVal,validMinType,validMin,validMaxType,validMax)
+{
+	PageOption.call(this,name,"float",pageElement,pageElementType);
+	
+	if (Number.isFinite(defaultVal))
+	{
+		this.defaultVal = defaultVal;
+		this.value = defaultVal;
+	}
+	else
+	{
+		throw("PageOptionFloat constructor -- invalid defaultVal.");
+	}
+	
+	if (validMinType === "nomin" || validMinType === "inclusivemin" || validMinType === "exclusivemin")
+	{
+		this.validMinType = validMinType;
+	}
+	else
+	{
+		throw("PageOptionFloat constructor -- invalid validMinType.");
+	}
+	
+	if (Number.isFinite(validMin))
+	{
+		this.validMin = validMin;
+	}
+	else
+	{
+		throw("PageOptionFloat constructor -- invalid validMin.");
+	}
+	
+	if (validMaxType === "nomax" || validMaxType === "inclusivemax" || validMaxType === "exclusivemax")
+	{
+		this.validMaxType = validMaxType;
+	}
+	else
+	{
+		throw("PageOptionFloat constructor -- invalid validMaxType.");
+	}
+	
+	if (Number.isFinite(validMax))
+	{
+		this.validMax = validMax;
+	}
+	else
+	{
+		throw("PageOptionFloat constructor -- invalid validMax.");
+	}
+}
+PageOptionFloat.prototype = Object.create(PageOption.prototype);
+PageOptionFloat.prototype.setValue = function(v)
+{
+	if (!Number.isFinite(v))
+	{
+		throw("PageOptionFloat setValue -- not an valid float.");
+	}
+	else
+	{
+		if (((this.validMinType === "inclusivemin") && (v < this.validMin)) || ((this.validMinType === "exclusivemin") && (v <= this.validMin)) ||
+			((this.validMaxType === "inclusivemax") && (v > this.validMax)) || ((this.validMaxType === "exclusivemax") && (v >= this.validMax)))
+		{
+			throw("PageOptionFloat setValue -- value outside of valid range.");
+		}
+		else
+		{
+			this.value = v;
+		}
+	}
+}
+
+function PageOptionFloatOrAny(name,pageElement,pageElementType,defaultVal,validMinType,validMin,validMaxType,validMax)
+{
+	if (defaultVal === "any")
+	{
+		PageOptionFloat.call(this,name,pageElement,pageElementType,0,validMinType,validMin,validMaxType,validMax);
+		this.defaultVal = "any";
+		this.value = "any";
+	}
+	else
+	{
+		PageOptionFloat.call(this,name,pageElement,pageElementType,defaultVal,validMinType,validMin,validMaxType,validMax);
+	}
+}
+PageOptionFloatOrAny.prototype = Object.create(PageOptionFloat.prototype);
+PageOptionFloatOrAny.prototype.setValue = function(v)
+{
+	if (v === "any")
+	{
+		this.value = "any";
+	}
+	else
+	{
+		PageOptionFloat.prototype.setValue.call(this, v);
+	}
+}
+
+function PageOptionInt(name,pageElement,pageElementType,defaultVal,validMinType,validMin,validMaxType,validMax)
+{
+	PageOption.call(this,name,"int",pageElement,pageElementType);
+	
+	if (Number.isInteger(defaultVal))
+	{
+		this.defaultVal = defaultVal;
+		this.value = defaultVal;
+	}
+	else
+	{
+		throw("PageOptionInt constructor -- invalid defaultVal.");
+	}
+	
+	if (validMinType === "nomin" || validMinType === "inclusivemin" || validMinType === "exclusivemin")
+	{
+		this.validMinType = validMinType;
+	}
+	else
+	{
+		throw("PageOptionInt constructor -- invalid validMinType.");
+	}
+	
+	if (Number.isInteger(validMin))
+	{
+		this.validMin = validMin;
+	}
+	else
+	{
+		throw("PageOptionInt constructor -- invalid validMin.");
+	}
+	
+	if (validMaxType === "nomax" || validMaxType === "inclusivemax" || validMaxType === "exclusivemax")
+	{
+		this.validMaxType = validMaxType;
+	}
+	else
+	{
+		throw("PageOptionInt constructor -- invalid validMaxType.");
+	}
+	
+	if (Number.isInteger(validMax))
+	{
+		this.validMax = validMax;
+	}
+	else
+	{
+		throw("PageOptionInt constructor -- invalid validMax.");
+	}
+}
+PageOptionInt.prototype = Object.create(PageOption.prototype);
+PageOptionInt.prototype.setValue = function (v)
+{
+	if (!Number.isInteger(v))
+	{
+		throw("PageOptionInt setValue -- not an valid integer.");
+	}
+	else
+	{
+		if (((this.validMinType === "inclusivemin") && (v < this.validMin)) || ((this.validMinType === "exclusivemin") && (v <= this.validMin)) ||
+			((this.validMaxType === "inclusivemax") && (v > this.validMax)) || ((this.validMaxType === "exclusivemax") && (v >= this.validMax)))
+		{
+			throw("PageOptionInt setValue -- value outside of valid range.");
+		}
+		else
+		{
+			this.value = v;
+		}
+	}
+}
+
+function PageOptionIntOrAny(name,pageElement,pageElementType,defaultVal,validMinType,validMin,validMaxType,validMax)
+{
+	if (defaultVal === "any")
+	{
+		PageOptionInt.call(this,name,pageElement,pageElementType,0,validMinType,validMin,validMaxType,validMax);
+		this.defaultVal = "any";
+		this.value = "any";
+	}
+	else
+	{
+		PageOptionFloat.call(this,name,pageElement,pageElementType,defaultVal,validMinType,validMin,validMaxType,validMax);
+	}
+	
+	
+}
+PageOptionIntOrAny.prototype = Object.create(PageOptionInt.prototype);
+PageOptionIntOrAny.prototype.setValue = function(v)
+{
+	if (v === "any")
+	{
+		this.value = "any";
+	}
+	else
+	{
+		PageOptionInt.prototype.setValue.call(this, v);
+	}
+}
+
+var pageOpts = {	appraisal: new PageOptionString("Appraisal","appraisal","select","best",["best","good","aboveaverage","any"]),
+					minivpercent: new PageOptionFloat("Minimum IV Percentage","min_iv_percent","textbox",82.2,"inclusivemin",0,"inclusivemax",100),
+					minattackiv: new PageOptionIntOrAny("Minimum Attack IV","min_attack_iv","select","any","inclusivemin",0,"inclusivemax",15),
+					encountertype: new PageOptionString("Encounter Type","encounter_type","select","normal",["normal","raid","boosted"]),
+					minlevel: new PageOptionIntOrAny("Minimum Pokemon Level","min_level","select","any","inclusivemin",1,"inclusivemax",35),
+					trainerlevel: new PageOptionInt("Trainer Level","trainer_level","select",30,"inclusivemin",1,"inclusivemax",30),
+					ratemodifierselect: new PageOptionString("Rate Modifier Selection","ratemodifierselect","select","1",["1","450","75","45","35","19","24.5","custom"]), //TODO: Update pageElement
+					ratemodifier: new PageOptionFloat("Rate Modifier","rate_modifier","textbox",1,"exclusivemin",0,"inclusivemax",1),
+					ratemodifierinv: new PageOptionFloat("Rate Modifier Inverse","rate_modifier_inv","textbox",1,"exclusivemin",0,"nomax",0),
+					pokemontoget: new PageOptionInt("Pokemon to Get","pokemon_to_get","textbox",1,"inclusivemin",1,"nomax",0),
+					chartmode: new PageOptionString("Chart Mode","chart_mode","select","single",["single","area","pmf","cdf","normalpdf","normalcdf"]),
+					encounterstograph: new PageOptionInt("Encounters to Graph","encounters_to_graph","textbox",1,"inclusivemin",1,"nomax",0), //TODO: Set max
+					autoencounterstograph: new PageOptionBool("Auto Encounters to Graph","auto_encounters_to_graph","checkbox",true)
+				};
 
 // Initialize pageopts
 resetOptionDefaults();
@@ -29,96 +342,12 @@ function resetOptionDefaults()
 	encountersToGraphDefaultNonRaid = 300;
 	encountersToGraphDefaultRaid = 30;
 	
-	pageopts = {	appraisal: {	value: "best",
-									defaultval: "best",
-									type: "string",
-									validvals: ["best","good","aboveaverage","any"],
-									pageelement: "appraisal",
-									pageelementtype: "select"},
-					minivpercent: {	value: 82.2,
-									defaultval: 82.2,
-									type:"float",
-									validmin:"0",
-									validmintype:"inclusive",
-									validmax:"100",
-									validmaxtype:"inclusive",
-									pagelement:"min_iv_percent",
-									pageelementtype:"textbox"},
-					minattackiv: {	value: "any",
-									defaultval: "any",
-									type: "string",
-									validvals: ["any","0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15"],
-									pageelement: "min_attack_iv",
-									pageelementtype: "select" },
-					encountertype: {	value: "normal",
-										defaultval: "normal",
-										type: "string",
-										validvals: ["normal","raid","boosted"],
-										pageelement: "encounter_type",
-										pageelementtype: "select" },
-					minlevel: {	value: "any",
-								defaultval: "any",
-								type: "string",
-								validvals: ["any","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18",
-											"19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35"],
-								pagelement: "min_level",
-								pageelementtype: "select" },
-					trainerlevel: {	value: "30",
-									defaultval: "30",
-									type: "string",
-									validvals: ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15",
-												"16","17","18","19","20","21","22","23","24","25","26","27","28","29","30"],
-									pagelement: "trainer_level",
-									pageelementtype: "select" },
-					ratemodifierselect: {	value: "1",
-											defaultval: "1",
-											type: "string",
-											validvals: ["1","450","75","45","35","19","24.5","custom"],
-											pageelement: "ratemodifierselect",
-											pageelementtype: "select" },
-					ratemodifier: { value: 1,
-									defaultval: 1,
-									type: "float",
-									validmin: 0,
-									validmintype: "exclusive",
-									validmax: 1,
-									validmaxtype: "inclusive",
-									pageelement: "rate_modifier",
-									pageelementtype: "textbox" },
-					ratemodifierinv: {	value: 1,
-										defaultval: 1,
-										type: "float",
-										validmin: 0,
-										validmintype: "exclusive",
-										pageelement: "rate_modifier_inv",
-										pageelementtype: "textbox" },
-					pokemontoget: { value:1,
-									defaultval: 1,
-									type: "int",
-									validmin: 1,
-									validmintype: "inclusive",
-									pageelement: "pokemon_to_get",
-									pageelementtype: "textbox" },
-					chartmode: {	value: "single",
-									defaultval: "single",
-									type: "string",
-									validvals: ["single","area","pmf","cdf","normalpdf","normalcdf"],
-									pageelement: "chart_mode",
-									pageelementtype: "select" },
-					encounterstograph: {	value: encountersToGraphDefaultNonRaid,
-											defaultval: encountersToGraphDefaultNonRaid,
-											type: "int",
-											validmin: 1,
-											validmintype: "inclusive",
-											pageelement: "encounters_to_graph",
-											pageelementtype: "textbox" },
-					autoencounterstograph: {	value: true,
-												defaultval: true,
-												type: "bool",
-												pageelement: "auto_encounters_to_graph",
-												pageelementtype: "checkbox" }
-				};
+	for (var k in pageOpts)
+	{
+		pageOpts[k].setValue(pageOpts[k].defaultVal);
+	}
 	
+	//Deprecated below
 	pageopts = {	appraisal:"best",
 					minivpercent:"82.2",
 					minattackiv:"any",
@@ -138,6 +367,13 @@ function resetOptionDefaults()
 				
 function getPageOptions()
 {
+	for (var k in pageOpts)
+	{
+		pageOpts[k].getFromPage();
+	}
+	
+	//Deprecated below
+	
 	pageopts = {	appraisal:document.getElementById("appraisal").value,
 					minivpercent:document.getElementById("min_iv_percent").value,
 					minattackiv:document.getElementById("min_attack_iv").value,
@@ -151,11 +387,13 @@ function getPageOptions()
 					chartmode:document.getElementById("chart_mode").value,
 					encounterstograph:document.getElementById("encounters_to_graph").value,
 					autoencounterstograph:document.getElementById("auto_encounters_to_graph").checked };
+					
 
 }
 
 function setPageOptions()
 {
+	
 	//For HTML Elements set with .value
 	var keyToHtmlIdValue = {	appraisal:"appraisal",
 								minivpercent:"min_iv_percent",
@@ -188,6 +426,14 @@ function setPageOptions()
 		{
 			console.log("setPageOptions(): invalid option key -- " + k);
 		}
+	}
+	
+	//Deprecated above
+	
+	
+	for (var k in pageOpts)
+	{
+		pageOpts[k].writeToPage();
 	}
 }
 
