@@ -364,7 +364,7 @@ function setPageOptions()
  */
 function processEncountersToGraphOption()
 {
-	getPageOptions();
+	/*getPageOptions();
 	
 	validateOptions();
 	
@@ -380,6 +380,7 @@ function processEncountersToGraphOption()
 	{
 		optEncountersToGraphSavedRaid = pageOpts.encounterstograph.value;
 	}
+	*/
 }
 
 /* processMinIvPercentOption()
@@ -482,11 +483,11 @@ function processOptions()
 	{
 		if (optEncountersToGraphSavedNonRaid)
 		{
-			pageOpts.encounterstograph.value = optEncountersToGraphSavedNonRaid;
+			//pageOpts.encounterstograph.value = optEncountersToGraphSavedNonRaid;
 		}
 		else
 		{
-			pageOpts.encounterstograph.value = encountersToGraphDefaultNonRaid;
+			//pageOpts.encounterstograph.value = encountersToGraphDefaultNonRaid;
 		}
 		document.getElementById("opt_minlevel").disabled = false;
 		document.getElementById("opt_trainerlevel").disabled = false;
@@ -501,11 +502,11 @@ function processOptions()
 	{
 		if (optEncountersToGraphSavedNonRaid)
 		{
-			pageOpts.encounterstograph.value = optEncountersToGraphSavedNonRaid;
+			//pageOpts.encounterstograph.value = optEncountersToGraphSavedNonRaid;
 		}
 		else
 		{
-			pageOpts.encounterstograph.value = encountersToGraphDefaultNonRaid;
+			//pageOpts.encounterstograph.value = encountersToGraphDefaultNonRaid;
 		}
 		document.getElementById("opt_minlevel").disabled = false;
 		document.getElementById("opt_trainerlevel").disabled = false;
@@ -520,11 +521,11 @@ function processOptions()
 	{
 		if (optEncountersToGraphSavedRaid)
 		{
-			pageOpts.encounterstograph.value = optEncountersToGraphSavedRaid;
+			//pageOpts.encounterstograph.value = optEncountersToGraphSavedRaid;
 		}
 		else
 		{
-			pageOpts.encounterstograph.value = encountersToGraphDefaultRaid;
+			//pageOpts.encounterstograph.value = encountersToGraphDefaultRaid;
 		}
 		document.getElementById("opt_minlevel").disabled = true;
 		document.getElementById("opt_minlevel").disabled = true;
