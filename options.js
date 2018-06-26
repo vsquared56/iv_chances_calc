@@ -304,6 +304,7 @@ PageOptionIntOrAny.prototype.setValue = function(v)
 	}
 }
 
+// Initialize pageOpts
 var pageOpts = {	appraisal: new PageOptionString("Appraisal","appraisal","select","best",["best","good","aboveaverage","any","other"]),
 					minivpercent: new PageOptionFloat("Minimum IV Percentage","min_iv_percent","textbox",82.2,"inclusivemin",0,"inclusivemax",100),
 					minattackiv: new PageOptionIntOrAny("Minimum Attack IV","min_attack_iv","select","any","inclusivemin",0,"inclusivemax",15),
@@ -319,7 +320,7 @@ var pageOpts = {	appraisal: new PageOptionString("Appraisal","appraisal","select
 					autoencounterstograph: new PageOptionBool("Auto Encounters to Graph","auto_encounters_to_graph","checkbox",true)
 				};
 
-// Initialize pageOpts
+
 resetOptionDefaults();
 
 /* resetOptionDefaults()
@@ -405,8 +406,8 @@ function processMinIvPercentOption()
 function processRateModifierOption()
 {
 	getPageOptions();
-	optCustomRateModifierSaved = pageOpts.ratemodifier.value;
-	pageOpts.ratemodifierinv.value = (1/parseFloat(pageOpts.ratemodifier.value)).toFixed(4);
+	optCustomRateModifierSaved = parseFloat(pageOpts.ratemodifier.value);
+	pageOpts.ratemodifierinv.setValue(parseFloat((1/pageOpts.ratemodifier.value).toFixed(4)));
 	
 	validateOptions();
 	setPageOptions();
@@ -422,8 +423,8 @@ function processRateModifierOption()
 function processRateModifierInvOption()
 {
 	getPageOptions();
-	var decvalue = (1/parseFloat(pageOpts.ratemodifierinv.value)).toFixed(8);
-	pageOpts.ratemodifier.value = decvalue;
+	var decvalue = parseFloat((1/pageOpts.ratemodifierinv.value).toFixed(8));
+	pageOpts.ratemodifier.setValue(decvalue);
 	optCustomRateModifierSaved = decvalue;
 	
 	validateOptions();
@@ -447,22 +448,22 @@ function processOptions()
 	 */
 	if(pageOpts.appraisal.value === "best")
 	{
-		pageOpts.minivpercent.value = 82.2;
+		pageOpts.minivpercent.setValue(82.2);
 		document.getElementById("min_iv_percent").disabled = true;
 	}
 	else if(pageOpts.appraisal.value === "good")
 	{
-		pageOpts.minivpercent.value = 66.7;
+		pageOpts.minivpercent.setValue(66.7);
 		document.getElementById("min_iv_percent").disabled = true;
 	}
 	else if(pageOpts.appraisal.value === "aboveaverage")
 	{
-		pageOpts.minivpercent.value = 51.1;
+		pageOpts.minivpercent.setValue(51.1);
 		document.getElementById("min_iv_percent").disabled = true;
 	}
 	else if(pageOpts.appraisal.value === "any")
 	{
-		pageOpts.minivpercent.value = 0;
+		pageOpts.minivpercent.setValue(0);
 		document.getElementById("min_iv_percent").disabled = true;
 	}
 	else if(pageOpts.appraisal.value === "other")
@@ -470,7 +471,7 @@ function processOptions()
 		document.getElementById("min_iv_percent").disabled = false;
 		if (optCustomMinIvPercentSaved)
 		{
-			pageOpts.minivpercent.value = optCustomMinIvPercentSaved;
+			pageOpts.minivpercent.setValue(optCustomMinIvPercentSaved);
 		}
 	}
 	  
@@ -483,11 +484,11 @@ function processOptions()
 	{
 		if (optEncountersToGraphSavedNonRaid)
 		{
-			//pageOpts.encounterstograph.value = optEncountersToGraphSavedNonRaid;
+			//pageOpts.encounterstograph.setValue(optEncountersToGraphSavedNonRaid);
 		}
 		else
 		{
-			//pageOpts.encounterstograph.value = encountersToGraphDefaultNonRaid;
+			//pageOpts.encounterstograph.setValue(encountersToGraphDefaultNonRaid);
 		}
 		document.getElementById("opt_minlevel").disabled = false;
 		document.getElementById("opt_trainerlevel").disabled = false;
@@ -502,11 +503,11 @@ function processOptions()
 	{
 		if (optEncountersToGraphSavedNonRaid)
 		{
-			//pageOpts.encounterstograph.value = optEncountersToGraphSavedNonRaid;
+			//pageOpts.encounterstograph.setValue(optEncountersToGraphSavedNonRaid);
 		}
 		else
 		{
-			//pageOpts.encounterstograph.value = encountersToGraphDefaultNonRaid;
+			//pageOpts.encounterstograph.setValue(encountersToGraphDefaultNonRaid);
 		}
 		document.getElementById("opt_minlevel").disabled = false;
 		document.getElementById("opt_trainerlevel").disabled = false;
@@ -521,11 +522,11 @@ function processOptions()
 	{
 		if (optEncountersToGraphSavedRaid)
 		{
-			//pageOpts.encounterstograph.value = optEncountersToGraphSavedRaid;
+			//pageOpts.encounterstograph.setValue(optEncountersToGraphSavedRaid);
 		}
 		else
 		{
-			//pageOpts.encounterstograph.value = encountersToGraphDefaultRaid;
+			//pageOpts.encounterstograph.setValue(encountersToGraphDefaultRaid);
 		}
 		document.getElementById("opt_minlevel").disabled = true;
 		document.getElementById("opt_minlevel").disabled = true;
@@ -556,16 +557,16 @@ function processOptions()
 		document.getElementById("rate_modifier_inv").disabled = false;
 		if (optCustomRateModifierSaved)
 		{
-			pageOpts.ratemodifier.value = optCustomRateModifierSaved;
-			pageOpts.ratemodifierinv.value = (1/optCustomRateModifierSaved).toFixed(4);
+			pageOpts.ratemodifier.setValue(optCustomRateModifierSaved);
+			pageOpts.ratemodifierinv.setValue(parseFloat((1/optCustomRateModifierSaved).toFixed(4)));
 		}
 	}
 	else
 	{
 		document.getElementById("rate_modifier").disabled = true;
 		document.getElementById("rate_modifier_inv").disabled = true;
-		pageOpts.ratemodifierinv.value = pageOpts.ratemodifierselect.value;
-		pageOpts.ratemodifier.value = (1/parseFloat(pageOpts.ratemodifierselect.value)).toFixed(8);
+		pageOpts.ratemodifierinv.setValue(parseFloat(pageOpts.ratemodifierselect.value));
+		pageOpts.ratemodifier.setValue(parseFloat((1/pageOpts.ratemodifierselect.value).toFixed(8)));
 	}
 	
 	/* Process Chart Mode select
@@ -582,8 +583,8 @@ function processOptions()
 	
 	if ((pageOpts.autoencounterstograph.value === true) && (pageOpts.chartmode.value === "single" || pageOpts.chartmode.value === "area"))
 	{
-		var autoEncountersToGraphValue = calculateAutoEncountersToGraph(); //Can't do this in a single line like pageOpts.encounterstograph.value = calculateAutoEncountersToGraph()
-		pageOpts.encounterstograph.value = autoEncountersToGraphValue; //...because pageOpts is reset deep within calculateAutoEncountersToGraph().
+		var autoEncountersToGraphValue = calculateAutoEncountersToGraph(); //Can't do this in a single line like pageOpts.encounterstograph.setValue(calculateAutoEncountersToGraph())
+		pageOpts.encounterstograph.setValue(autoEncountersToGraphValue); //...because pageOpts is reset deep within calculateAutoEncountersToGraph().
 	}
 	
 	validateOptions();
@@ -681,7 +682,7 @@ function validateOptions(optionsSource)
 	}
 	else
 	{
-		pageOpts.minivpercent.value = parseFloat(pageOpts.minivpercent.value);
+		pageOpts.minivpercent.setValue(parseFloat(pageOpts.minivpercent.value)); //TODO Remove this since options are validated by setValue()
 		
 		if (pageOpts.minivpercent.value > 100 || pageOpts.minivpercent.value < 0)
 		{
@@ -708,7 +709,7 @@ function validateOptions(optionsSource)
 	}
 	else if (pageOpts.minattackiv.value !== "any")
 	{
-		pageOpts.minattackiv.value = parseFloat(pageOpts.minattackiv.value)
+		pageOpts.minattackiv.setValue(parseFloat(pageOpts.minattackiv.value));
 		if (!Number.isInteger(pageOpts.minattackiv.value))
 		{
 			addError("Minimum Attack IV selection must be an integer.","opt_minattackiv");
@@ -732,7 +733,7 @@ function validateOptions(optionsSource)
 	}
 	else if (pageOpts.minlevel.value !== "any")
 	{
-		pageOpts.minlevel.value = parseFloat(pageOpts.minlevel.value);
+		pageOpts.minlevel.setValue(parseFloat(pageOpts.minlevel.value));
 		if (!Number.isInteger(pageOpts.minlevel.value))
 		{
 			addError("Minimum Pokemon Level selection must be an integer.","opt_minlevel");
@@ -750,7 +751,7 @@ function validateOptions(optionsSource)
 	}
 	else
 	{
-		pageOpts.trainerlevel.value = parseFloat(pageOpts.trainerlevel.value);
+		pageOpts.trainerlevel.setValue(parseFloat(pageOpts.trainerlevel.value));
 		if (!Number.isInteger(pageOpts.trainerlevel.value))
 		{
 			addError("Trainer Level selection must be an integer.","opt_trainerlevel");
@@ -801,7 +802,7 @@ function validateOptions(optionsSource)
 	}
 	else
 	{
-		pageOpts.ratemodifier.value = parseFloat(pageOpts.ratemodifier.value);
+		pageOpts.ratemodifier.setValue(parseFloat(pageOpts.ratemodifier.value));
 		if (pageOpts.ratemodifier.value < 0 || pageOpts.ratemodifier.value > 1)
 		{
 			addError("Rate modifier must be a decimal between 0 and 1.","opt_ratemodifier");
@@ -815,7 +816,7 @@ function validateOptions(optionsSource)
 	}
 	else
 	{
-		pageOpts.ratemodifierinv.value = parseFloat(pageOpts.ratemodifierinv.value);
+		pageOpts.ratemodifierinv.setValue(parseFloat(pageOpts.ratemodifierinv.value));
 		if (pageOpts.ratemodifierinv.value <= 0)
 		{
 			addError("Rate modifier (inverse) must be above 0.","opt_ratemodifier");
@@ -837,7 +838,7 @@ function validateOptions(optionsSource)
 	}
 	else
 	{
-		pageOpts.pokemontoget.value = parseFloat(pageOpts.pokemontoget.value);
+		pageOpts.pokemontoget.setValue(parseFloat(pageOpts.pokemontoget.value));
 		if (!Number.isInteger(pageOpts.pokemontoget.value))
 		{
 			addError("Number of Pokemon needed must be an integer.","opt_pokemontoget");
@@ -881,7 +882,7 @@ function validateOptions(optionsSource)
 	}
 	else
 	{
-		pageOpts.encounterstograph.value = parseFloat(pageOpts.encounterstograph.value);
+		pageOpts.encounterstograph.setValue(parseFloat(pageOpts.encounterstograph.value));
 		if (!Number.isInteger(pageOpts.encounterstograph.value))
 		{
 			addError("Number of encounters to graph must be an integer.","opt_encounterstograph");
