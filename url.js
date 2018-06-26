@@ -33,7 +33,7 @@ function getUrlOptionString(isGraphDrawn)
 function setUrlOptions(isGraphDrawn)
 {	
 	state = {id:'iv_chances_calc_state',options:pageOpts}
-	history.replaceState(state, "", getUrlOptionString(isGraphDrawn));
+	history.pushState(state, "", getUrlOptionString(isGraphDrawn));
 }
 
 function getUrlOptions()

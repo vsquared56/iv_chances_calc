@@ -25,6 +25,19 @@ window.addEventListener('resize', function(){
 		}, 500);
 	});
 
+/* History handling */
+window.onpopstate = function(event) {
+	if (getUrlOptions() == 0)
+	{
+		setPageOptions();
+		processOptions();
+		// Set a timeout of 0 to push the calculation into the queue and let the spinner update on the page
+		setTimeout(function(){
+			calculate();
+			}, 0);
+	}
+};
+	
 function drawChart() {
 	// Disable the button while the chart is drawing.
 	var button = document.getElementById('calcbutton');
@@ -59,6 +72,58 @@ window.onload = function()
 }
 */
 
+function addTooltip()
+{
+	chartWrapper.getChart().setAction({
+		id: 'showpmf',
+		text: 'Show PMF at this number of encounters',
+		visible: function() {
+			var selection = chartWrapper.getChart().getSelection();
+			if (selection.length > 0)
+			{
+				if (selection[0].row > 0)
+				{
+					return true;
+				}
+			}
+			return false;
+		},
+		action: function() {
+			var selection = chartWrapper.getChart().getSelection();
+			pageOpts.encounterstograph.setValue(selection[0].row);
+			pageOpts.chartmode.setValue("pmf");
+			setPageOptions();
+			processOptions();
+			setUrlOptions();
+			calculate();
+		}
+	});
+	
+	chartWrapper.getChart().setAction({
+		id: 'showcdf',
+		text: 'Show CDF at this number of encounters',
+		visible: function() {
+			var selection = chartWrapper.getChart().getSelection();
+			if (selection.length > 0)
+			{
+				if (selection[0].row > 0)
+				{
+					return true;
+				}
+			}
+			return false;
+		},
+		action: function() {
+			selection = chartWrapper.getChart().getSelection();
+			pageOpts.encounterstograph.setValue(selection[0].row);
+			pageOpts.chartmode.setValue("cdf");
+			setPageOptions();
+			processOptions();
+			setUrlOptions();
+			calculate();
+		}
+	});
+}
 
 function resetClick()
 {
@@ -71,6 +136,14 @@ function resetClick()
 
 function calculateClick()
 {
+	getPageOptions();
+	if (!validateOptions());
+	{
+		//Save the options for this chart in the URL
+		setUrlOptions(true);
+		setPageOptions();
+	}
+	
 	// Start the loading spinner
 	document.getElementById("calculatingspinner").style.display = "block";
 	

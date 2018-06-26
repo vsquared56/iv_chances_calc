@@ -159,9 +159,6 @@ function calculate()
 	{
 		getCalcOptions();
 		
-		//Save the options for this chart in the URL
-		setUrlOptions(true);
-		
 		var titleopts = { findingwhat: "", //Chance of finding __ Pokemon...
 		                  afterwhat: ""    //...after ___ normal catches/encounters
 		                };
@@ -240,6 +237,9 @@ function calculate()
 				data.addRow([i,prob]);
 			}
 			
+			//Add tooltip when the chart is ready
+			google.visualization.events.addOneTimeListener(chartWrapper, 'ready', addTooltip);
+			
 			//Set the title options
 			titleopts.findingwhat = `at least ${calcopts.pokemontoget}`;
 			titleopts.afterwhat = "x";
@@ -287,6 +287,10 @@ function calculate()
 				
 				data.addRow(datarow);
 			}
+			
+			//Add tooltip when the chart is ready
+			google.visualization.events.addOneTimeListener(chartWrapper, 'ready', addTooltip);
+			
 			//Set the title options
 			titleopts.findingwhat = `0 to ${calcopts.pokemontoget}`;
 			titleopts.afterwhat = "x";
