@@ -219,7 +219,7 @@ function calculate()
 		/* Single chart */
 		if (calcopts.chartmode === "single")
 		{
-			chart.setChartType("LineChart");
+			chartWrapper.setChartType("LineChart");
 			chartOptions.isStacked = false;
 			chartOptions.legend = { position :'none'};
 			chartOptions.hAxis = {title:'Number of catches/encounters'};
@@ -253,7 +253,7 @@ function calculate()
 		/* Area chart */
 		else if (calcopts.chartmode === "area")
 		{
-			chart.setChartType("AreaChart");
+			chartWrapper.setChartType("AreaChart");
 			chartOptions.isStacked = true;
 			chartOptions.legend = { position :'right'};
 			chartOptions.hAxis = {title:'Number of catches/encounters'};
@@ -313,7 +313,7 @@ function calculate()
 			//Graph at most 50 columns, otherwise switch to a line chart
 			if((maxencounters - minencounters) <= 50)
 			{
-				chart.setChartType("ColumnChart");
+				chartWrapper.setChartType("ColumnChart");
 				data.addColumn('string', 'Successful Encounters');
 				data.addColumn('number', 'Probability');
 				data.addColumn({type:'string', role:'style'});
@@ -322,7 +322,7 @@ function calculate()
 			}
 			else
 			{
-				chart.setChartType("LineChart");
+				chartWrapper.setChartType("LineChart");
 				data.addColumn('string', 'Successful Encounters');
 				data.addColumn('number', 'Probability');
 				charttype="LineChart";
@@ -391,7 +391,7 @@ function calculate()
 			//Graph at most 50 columns, otherwise switch to a line chart
 			if((maxencounters - minencounters) <= 50)
 			{
-				chart.setChartType("ColumnChart");
+				chartWrapper.setChartType("ColumnChart");
 				data.addColumn('string', 'Successful Encounters');
 				data.addColumn('number', 'Probability');
 				data.addColumn({type:'string', role:'style'});
@@ -400,7 +400,7 @@ function calculate()
 			}
 			else
 			{
-				chart.setChartType("LineChart");
+				chartWrapper.setChartType("LineChart");
 				data.addColumn('string', 'Successful Encounters');
 				data.addColumn('number', 'Probability');
 				charttype="LineChart";
@@ -485,7 +485,7 @@ function calculate()
 			//Graph at most 50 columns, otherwise switch to a line chart
 			if((maxencounters - minencounters) <= 50)
 			{
-				chart.setChartType("ColumnChart");
+				chartWrapper.setChartType("ColumnChart");
 				data.addColumn('string', 'Successful Encounters');
 				data.addColumn('number', 'Probability');
 				data.addColumn({type:'string', role:'style'});
@@ -494,7 +494,7 @@ function calculate()
 			}
 			else
 			{
-				chart.setChartType("LineChart");
+				chartWrapper.setChartType("LineChart");
 				data.addColumn('string', 'Successful Encounters');
 				data.addColumn('number', 'Probability');
 				charttype="LineChart";
@@ -570,7 +570,7 @@ function calculate()
 			//Graph at most 50 columns, otherwise switch to a line chart
 			if((maxencounters - minencounters) <= 50)
 			{
-				chart.setChartType("ColumnChart");
+				chartWrapper.setChartType("ColumnChart");
 				data.addColumn('string', 'Successful Encounters');
 				data.addColumn('number', 'Probability');
 				data.addColumn({type:'string', role:'style'});
@@ -579,7 +579,7 @@ function calculate()
 			}
 			else
 			{
-				chart.setChartType("LineChart");
+				chartWrapper.setChartType("LineChart");
 				data.addColumn('string', 'Successful Encounters');
 				data.addColumn('number', 'Probability');
 				charttype="LineChart";
@@ -682,8 +682,8 @@ function calculate()
 		chartOptions.width = "90%";
 		chartOptions.chartArea = {width:widthpercent,height:heightpercent};
 		
-		chart.setDataTable(data);
-		chart.setOptions(chartOptions);
+		chartWrapper.setDataTable(data);
+		chartWrapper.setOptions(chartOptions);
 		
 		//Draw the chart!
 		drawChart();

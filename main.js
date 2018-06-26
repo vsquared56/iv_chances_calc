@@ -29,7 +29,7 @@ function drawChart() {
 	// Disable the button while the chart is drawing.
 	var button = document.getElementById('calcbutton');
 	button.disabled = true;
-	google.visualization.events.addListener(chart, 'ready',
+	google.visualization.events.addListener(chartWrapper, 'ready',
 		function() {
 		button.disabled = false;
 		
@@ -42,12 +42,12 @@ function drawChart() {
 	});
 	
 	//Clear the chart if it has been drawn already
-	if (chart.getChart())
+	if (chartWrapper.getChart())
 	{
-		chart.getChart().clearChart();
+		chartWrapper.getChart().clearChart();
 	}
 	chartDrawn = true;
-	chart.draw();
+	chartWrapper.draw();
 }
 
 google.charts.load('current', {'packages':['corechart']});
@@ -82,10 +82,10 @@ function calculateClick()
 }
 
 var width, height, heightpercent;
-var chart;
+var chartWrapper;
 function init()
 {
-	chart = new google.visualization.ChartWrapper({'containerId':'visualization'});
+	chartWrapper = new google.visualization.ChartWrapper({'containerId':'visualization'});
 	
 	/* Set chart area.
 	 * Call this during init.
