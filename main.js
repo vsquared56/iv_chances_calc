@@ -101,7 +101,7 @@ function addTooltip()
 	
 	chartWrapper.getChart().setAction({
 		id: 'showcdf',
-		text: 'Show CDF at this number of encounters',
+		text: 'Show 1-CDF at this number of encounters',
 		visible: function() {
 			var selection = chartWrapper.getChart().getSelection();
 			if (selection.length > 0)
