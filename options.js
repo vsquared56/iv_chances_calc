@@ -36,17 +36,6 @@ PageOption.prototype.setValue = function(v)
 {
 	this.value = v;
 }
-PageOption.prototype.getFromPage = function()
-{
-	if (this.pageElementType === "select" || this.pageElementType === "textbox")
-	{
-		this.value = document.getElementById(this.pageElement).value;
-	}
-	else if (this.pageElementType === "checkbox")
-	{
-		this.value = document.getElementById(this.pageElement).checked;
-	}
-}
 PageOption.prototype.writeToPage = function()
 {
 	if (this.pageElementType === "select" || this.pageElementType === "textbox")
@@ -94,6 +83,17 @@ PageOptionString.prototype.setValue = function(v)
 		throw("PageOptionString.setValue -- invalid value: " + v);
 	}
 }
+PageOptionString.prototype.getFromPage = function()
+{
+	if (this.pageElementType === "select" || this.pageElementType === "textbox")
+	{
+		this.value = document.getElementById(this.pageElement).value.toString();
+	}
+	else if (this.pageElementType === "checkbox")
+	{
+		this.value = document.getElementById(this.pageElement).checked.toString();
+	}
+}
 
 function PageOptionBool(name,pageElement,pageElementType,defaultVal)
 {
@@ -106,6 +106,17 @@ PageOptionBool.prototype = Object.create(PageOption.prototype);
 PageOptionBool.prototype.setValue = function(v)
 {
 	this.value = Boolean(v);
+}
+PageOptionBool.prototype.getFromPage = function()
+{
+	if (this.pageElementType === "select" || this.pageElementType === "textbox")
+	{
+		this.value = (document.getElementById(this.pageElement).value === 'true');
+	}
+	else if (this.pageElementType === "checkbox")
+	{
+		this.value = document.getElementById(this.pageElement).checked;
+	}
 }
 
 function PageOptionFloat(name,pageElement,pageElementType,defaultVal,validMinType,validMin,validMaxType,validMax)
@@ -178,6 +189,17 @@ PageOptionFloat.prototype.setValue = function(v)
 		}
 	}
 }
+PageOptionFloat.prototype.getFromPage = function()
+{
+	if (this.pageElementType === "select" || this.pageElementType === "textbox")
+	{
+		this.value = parseFloat(document.getElementById(this.pageElement).value);
+	}
+	else if (this.pageElementType === "checkbox")
+	{
+		throw("PageOptionFloat getFromPage -- Can't get float from checkbox on page");
+	}
+}
 
 function PageOptionFloatOrAny(name,pageElement,pageElementType,defaultVal,validMinType,validMin,validMaxType,validMax)
 {
@@ -202,6 +224,25 @@ PageOptionFloatOrAny.prototype.setValue = function(v)
 	else
 	{
 		PageOptionFloat.prototype.setValue.call(this, v);
+	}
+
+}
+PageOptionFloatOrAny.prototype.getFromPage = function()
+{
+	if (this.pageElementType === "select" || this.pageElementType === "textbox")
+	{
+		if (document.getElementById(this.pageElement).value === 'any')
+		{
+			this.value = 'any';
+		}
+		else
+		{
+			this.value = parseFloat(document.getElementById(this.pageElement).value);
+		}
+	}
+	else if (this.pageElementType === "checkbox")
+	{
+		throw("PageOptionFloat getFromPage -- Can't get float from checkbox on page");
 	}
 }
 
@@ -275,6 +316,17 @@ PageOptionInt.prototype.setValue = function (v)
 		}
 	}
 }
+PageOptionInt.prototype.getFromPage = function()
+{
+	if (this.pageElementType === "select" || this.pageElementType === "textbox")
+	{
+		this.value = parseInt(document.getElementById(this.pageElement).value);
+	}
+	else if (this.pageElementType === "checkbox")
+	{
+		throw("PageOptionFloat getFromPage -- Can't get int from checkbox on page");
+	}
+}
 
 function PageOptionIntOrAny(name,pageElement,pageElementType,defaultVal,validMinType,validMin,validMaxType,validMax)
 {
@@ -288,8 +340,6 @@ function PageOptionIntOrAny(name,pageElement,pageElementType,defaultVal,validMin
 	{
 		PageOptionFloat.call(this,name,pageElement,pageElementType,defaultVal,validMinType,validMin,validMaxType,validMax);
 	}
-	
-	
 }
 PageOptionIntOrAny.prototype = Object.create(PageOptionInt.prototype);
 PageOptionIntOrAny.prototype.setValue = function(v)
@@ -301,6 +351,24 @@ PageOptionIntOrAny.prototype.setValue = function(v)
 	else
 	{
 		PageOptionInt.prototype.setValue.call(this, v);
+	}
+}
+PageOptionIntOrAny.prototype.getFromPage = function()
+{
+	if (this.pageElementType === "select" || this.pageElementType === "textbox")
+	{
+		if (document.getElementById(this.pageElement).value === 'any')
+		{
+			this.value = 'any';
+		}
+		else
+		{
+			this.value = parseInt(document.getElementById(this.pageElement).value);
+		}
+	}
+	else if (this.pageElementType === "checkbox")
+	{
+		throw("PageOptionFloat getFromPage -- Can't get int from checkbox on page");
 	}
 }
 

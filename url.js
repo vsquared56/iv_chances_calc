@@ -56,6 +56,7 @@ function getUrlOptions()
 	}
 
 	var calc = false;
+	var optionsSet = 0;
 	
 	for (var k in opts)
 	{
@@ -91,6 +92,8 @@ function getUrlOptions()
 			{
 				pageOpts[k].setValue(opts[k].toString());
 			}
+			
+			optionsSet++;
 		}
 		else if (k === "calc")
 		{
@@ -98,6 +101,8 @@ function getUrlOptions()
 			{
 				calc = true;
 			}
+			
+			optionsSet++;
 		}
 		else
 		{
@@ -105,27 +110,35 @@ function getUrlOptions()
 		}
 	}
 	
-	var err = validateOptions("url");
-	if (!err)
+	if (optionsSet > 0)
 	{
-		setPageOptions();
-	
-		processEncountersToGraphOption();  //Save the Encounters to Graph option or it'll get reset to default by processOptions()
-		processRateModifierOption();
-		
-		processOptions();
-		
-		if (calc)
+		var err = validateOptions("url");
+		if (!err)
 		{
-			// Start the loading spinner
-			document.getElementById("loadingoverlay").style.display = "flex";
-	
-			// Set a timeout of 0 to push the calculation into the queue and let the spinner update on the page
-			setTimeout(function(){
-				calculate();
-			}, 1000);
+			setPageOptions();
+		
+			processEncountersToGraphOption();  //Save the Encounters to Graph option or it'll get reset to default by processOptions()
+			processRateModifierOption();
 			
+			processOptions();
+			
+			if (calc)
+			{
+				// Start the loading spinner
+				document.getElementById("loadingoverlay").style.display = "flex";
+		
+				// Set a timeout of 0 to push the calculation into the queue and let the spinner update on the page
+				setTimeout(function(){
+					calculate();
+				}, 1000);
+				
+			}
 		}
+		return err;
 	}
-	return err;
+	else
+	{
+		return;
+	}
+
 }
