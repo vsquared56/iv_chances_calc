@@ -144,7 +144,17 @@ function calculateAutoEncountersToGraph()
 		
 	var encounters = 10;
 	
-	while(100*(1-binomcdf(calcopts.pokemontoget-1,encounters,(calcresults.final_prob),0)) < 99.5)
+	var maxProb;
+	if (calcopts.chartmode === 'single')
+	{
+		maxProb = 99.5;
+	}
+	else if (calcopts.chartmode === 'area')
+	{
+		maxProb = 75;
+	}
+	
+	while(100*(1-binomcdf(calcopts.pokemontoget-1,encounters,(calcresults.final_prob),0)) < maxProb)
 	{
 		encounters += Math.pow(10,Math.floor(Math.log10(encounters))); //Add the nearest lower power of 10 (10 for x<100, 100 for x<1000, etc)
 	}
