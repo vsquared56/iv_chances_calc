@@ -90,7 +90,7 @@ function addTooltip()
 		},
 		action: function() {
 			var selection = chartWrapper.getChart().getSelection();
-			pageOpts.encounterstograph.setValue(selection[0].row);
+			pageOpts.encounterstograph.setValue(data.getValue(selection[0].row,0));
 			pageOpts.chartmode.setValue("pmf");
 			setPageOptions();
 			processOptions();
@@ -115,7 +115,7 @@ function addTooltip()
 		},
 		action: function() {
 			selection = chartWrapper.getChart().getSelection();
-			pageOpts.encounterstograph.setValue(selection[0].row);
+			pageOpts.encounterstograph.setValue(data.getValue(selection[0].row,0));
 			pageOpts.chartmode.setValue("cdf");
 			setPageOptions();
 			processOptions();
@@ -201,9 +201,8 @@ function init()
 	setChartArea();
 	
 	resetOptionDefaults();
-	if (getUrlOptions() == 0)
-	{
-		setPageOptions();
-	}
+	setPageOptions();
+	
+	getUrlOptions();
 
 }
