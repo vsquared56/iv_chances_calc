@@ -7,7 +7,18 @@ var optCustomRateModifierSaved = false;
 var encountersToGraphDefaultNonRaid;
 var	encountersToGraphDefaultRaid;
 
-
+/* PageOption objects
+ * 
+ * PageOptionBool, PageOptionFloat, PageOptionFloatOrAny, PageOptionInt, PageOptionIntOrAny, and PageOptionString
+ * all inherit from the base PageOption.  Each object provides a value property that can be set by .setValue(),
+ * written to the page with .writeToPage(), or read from the page with .getFromPage().
+ *
+ * The page element must be one of 'select', 'textbox', or 'checkbox'.
+ *
+ * PageOption itself should not be used directly.
+ */
+ 
+//Base PageOption prototype
 function PageOption(name,optionType,pageElement,pageElementType)
 {
 	this.name = name;
@@ -55,6 +66,7 @@ PageOption.prototype.writeToPage = function()
 	}
 }
 
+//PageOptionString prototype -- inherits from PageOption
 function PageOptionString(name,pageElement,pageElementType,defaultVal,validVals)
 {
 	PageOption.call(this,name,"string",pageElement,pageElementType);
@@ -102,6 +114,7 @@ PageOptionString.prototype.getFromPage = function()
 	}
 }
 
+//PageOptionBool prototype -- inherits from PageObject
 function PageOptionBool(name,pageElement,pageElementType,defaultVal)
 {
 	PageOption.call(this,name,"bool",pageElement,pageElementType);
@@ -126,6 +139,7 @@ PageOptionBool.prototype.getFromPage = function()
 	}
 }
 
+//PageOptionFloat prototype -- inherits from PageOption
 function PageOptionFloat(name,pageElement,pageElementType,defaultVal,validMinType,validMin,validMaxType,validMax)
 {
 	PageOption.call(this,name,"float",pageElement,pageElementType);
@@ -208,6 +222,7 @@ PageOptionFloat.prototype.getFromPage = function()
 	}
 }
 
+//PageOptionFloatOrAny prototype -- inherits from PageOptionFloat
 function PageOptionFloatOrAny(name,pageElement,pageElementType,defaultVal,validMinType,validMin,validMaxType,validMax)
 {
 	if (defaultVal === "any")
@@ -253,6 +268,7 @@ PageOptionFloatOrAny.prototype.getFromPage = function()
 	}
 }
 
+//PageOptionInt prototype -- inherits from PageOption
 function PageOptionInt(name,pageElement,pageElementType,defaultVal,validMinType,validMin,validMaxType,validMax)
 {
 	PageOption.call(this,name,"int",pageElement,pageElementType);
@@ -335,6 +351,7 @@ PageOptionInt.prototype.getFromPage = function()
 	}
 }
 
+//PageOptionIntOrAny prototype -- inherits from PageOptionInt
 function PageOptionIntOrAny(name,pageElement,pageElementType,defaultVal,validMinType,validMin,validMaxType,validMax)
 {
 	if (defaultVal === "any")
@@ -379,7 +396,7 @@ PageOptionIntOrAny.prototype.getFromPage = function()
 	}
 }
 
-// Initialize pageOpts
+/* pageOpts global variable -- contains various PageOption objects that can be set */
 var pageOpts = {	appraisal: new PageOptionString("Appraisal","appraisal","select","best",["best","good","aboveaverage","any","other"]),
 					minivpercent: new PageOptionFloat("Minimum IV Percentage","min_iv_percent","textbox",82.2,"inclusivemin",0,"inclusivemax",100),
 					minattackiv: new PageOptionIntOrAny("Minimum Attack IV","min_attack_iv","select","any","inclusivemin",0,"inclusivemax",15),
@@ -391,14 +408,13 @@ var pageOpts = {	appraisal: new PageOptionString("Appraisal","appraisal","select
 					ratemodifierinv: new PageOptionFloat("Rate Modifier Inverse","rate_modifier_inv","textbox",1,"exclusivemin",0,"nomax",0),
 					pokemontoget: new PageOptionInt("Pokemon to Get","pokemon_to_get","textbox",1,"inclusivemin",1,"nomax",0),
 					chartmode: new PageOptionString("Chart Mode","chart_mode","select","single",["single","area","pmf","cdf","normalpdf","normalcdf"]),
-					encounterstograph: new PageOptionInt("Encounters to Graph","encounters_to_graph","textbox",300,"inclusivemin",1,"nomax",0), //TODO: Set max
+					encounterstograph: new PageOptionInt("Encounters to Graph","encounters_to_graph","textbox",200,"inclusivemin",1,"nomax",0), //TODO: Set max
 					autoencounterstograph: new PageOptionBool("Auto Encounters to Graph","auto_encounters_to_graph","checkbox",true)
 				};
 
 
-resetOptionDefaults();
-
 /* resetOptionDefaults()
+ * Reset all pageOpts to their defaults
  */
 function resetOptionDefaults()
 {
@@ -415,7 +431,10 @@ function resetOptionDefaults()
 		pageOpts[k].setValue(pageOpts[k].defaultVal);
 	}
 }
-				
+
+/* getPageOptions()
+ * Get all pageOpts from the values on the page form
+ */ 
 function getPageOptions()
 {
 	for (var k in pageOpts)
@@ -424,6 +443,9 @@ function getPageOptions()
 	}
 }
 
+/* setPageOptions()
+ * Write all pageOpts to the page form
+ */
 function setPageOptions()
 {
 	for (var k in pageOpts)
@@ -666,6 +688,14 @@ function processOptions()
 	setPageOptions();
 }
 
+/* validateOptions()
+ * Validates the values in pageOpts to ensure the combination is valid.
+ * Writes any errors to the page.  If optionsSource is 'url', the error is written to the main column at id=urlerror.
+ * Otherwise, the error is written to the options column at id=optionerror.
+ * 
+ * Optionally called with some presetErrorText containing list elements of errors to print.  TODO: clean this behavior up.
+ * Returns 0 if no errors were found.
+ */
 function validateOptions(optionsSource,presetErrorText)
 {
 	if (!presetErrorText)
@@ -739,6 +769,7 @@ function validateOptions(optionsSource,presetErrorText)
 		document.getElementById(elementid).className += " invalidoptionentry";
 	}
 	
+	//Checks if value is contained in validvals
 	function isValid(value, validvals)
 	{
 		valid = false;
@@ -752,20 +783,13 @@ function validateOptions(optionsSource,presetErrorText)
 		return valid;
 	}
 	
-	//Polyfill https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isInteger#Polyfill
-	Number.isInteger = Number.isInteger || function(value) {
-		return typeof value === 'number' && 
-		isFinite(value) && 
-		Math.floor(value) === value;
-	};
-	
-	/* Validate appraisal selection */
+	// Validate appraisal selection
 	if (!isValid(pageOpts.appraisal.value,["best","good","aboveaverage","any","other"]))
 	{
 		addError("Invalid Appraisal selection.","opt_minivpercent");
 	}
 	
-	/* Validate Minimum IV Percent box */
+	// Validate Minimum IV Percent box
 	if (isNaN(pageOpts.minivpercent.value))
 	{
 		addError("Minimum IV Percentage must be a number.","opt_minivpercent");
@@ -780,7 +804,7 @@ function validateOptions(optionsSource,presetErrorText)
 		}
 	}
 	
-	/* Validate combination of Minimum IV Percentage and Appraisal */
+	// Validate combination of Minimum IV Percentage and Appraisal
 	if (pageOpts.appraisal.value !== "other")
 	{
 		if (((pageOpts.appraisal.value === "best") && (pageOpts.minivpercent.value != 82.2)) ||
@@ -792,7 +816,7 @@ function validateOptions(optionsSource,presetErrorText)
 		}
 	}
 	
-	/* Validate Minimum Attack IV */
+	// Validate Minimum Attack IV
 	if (isNaN(pageOpts.minattackiv.value) && (pageOpts.minattackiv.value !== "any"))
 	{
 		addError("Invalid Minimum Attack IV selection","opt_minattackiv");
@@ -810,13 +834,13 @@ function validateOptions(optionsSource,presetErrorText)
 		}		
 	}
 	
-	/* Validate Encounter Type Selection */
+	// Validate Encounter Type Selection
 	if (!isValid(pageOpts.encountertype.value,["normal","boosted","raid"]))
 	{
 		addError("Invalid Encounter Type selection!","opt_encountertype");
 	}
 	
-	/* Validate Minimum Pokemon Level Selection */
+	// Validate Minimum Pokemon Level Selection
 	if (isNaN(pageOpts.minlevel.value) && (pageOpts.minlevel.value !== "any"))
 	{
 		addError("Invalid Pokemon Level selection!","opt_minlevel");
@@ -834,7 +858,7 @@ function validateOptions(optionsSource,presetErrorText)
 		}	
 	}
 	
-	/* Validate Trainer Level Selection */
+	// Validate Trainer Level Selection
 	if (isNaN(pageOpts.trainerlevel.value) && (pageOpts.trainerlevel.value !== "any"))
 	{
 		addError("Invalid Trainer Level selection!","opt_trainerlevel");
@@ -852,7 +876,7 @@ function validateOptions(optionsSource,presetErrorText)
 		}	
 	}
 	
-	/* Validate combination of trainer level and pokemon level */
+	// Validate combination of trainer level and pokemon level
 	if (pageOpts.minlevel.value !== "any")
 	{
 		if (pageOpts.encountertype.value === "normal")
@@ -879,13 +903,13 @@ function validateOptions(optionsSource,presetErrorText)
 		}
 	}
 	
-	/* Validate Additional Probability Modifier selection */
+	// Validate Additional Probability Modifier selection
 	if (!isValid(pageOpts.ratemodifierselect.value,["1","450","75","45","35","19","24.5","custom"]))
 	{
 		addError("Invalid Probability Modifier selection.","opt_ratemodifier");
 	}
 	
-	/* Validate Rate Modifier box */
+	// Validate Rate Modifier box
 	if (isNaN(pageOpts.ratemodifier.value))
 	{
 		addError("Rate modifier must be a number.","opt_ratemodifier");
@@ -899,7 +923,7 @@ function validateOptions(optionsSource,presetErrorText)
 		}	
 	}
 	
-	/* Validate Rate Modifier Inverse box */
+	// Validate Rate Modifier Inverse box
 	if (isNaN(pageOpts.ratemodifierinv.value))
 	{
 		addError("Rate modifier (inverse) must be a number.","opt_ratemodifier");
@@ -913,7 +937,7 @@ function validateOptions(optionsSource,presetErrorText)
 		}	
 	}
 	
-	/* Validate combination of Rate Modifier and Rate Modifier Inverse */
+	// Validate combination of Rate Modifier and Rate Modifier Inverse
 	if ((pageOpts.ratemodifier.value > (1.001 / pageOpts.ratemodifierinv.value)) ||
 		(pageOpts.ratemodifier.value < (0.999 / pageOpts.ratemodifierinv.value)))
 	{
@@ -921,7 +945,7 @@ function validateOptions(optionsSource,presetErrorText)
 		addError("Rate modifier and inverse do not match.","opt_ratemodifier");
 	}
 	
-	/* Validate Number of Pokemon Needed box */
+	// Validate Number of Pokemon Needed box
 	if (isNaN(pageOpts.pokemontoget.value))
 	{
 		addError("Invalid Pokemon Number Needed.","opt_pokemontoget");
@@ -939,13 +963,13 @@ function validateOptions(optionsSource,presetErrorText)
 		}
 	}
 	
-	/* Validate Chart Mode Selection */
+	// Validate Chart Mode Selection
 	if (!isValid(pageOpts.chartmode.value,["single","area","pmf","cdf","normalpdf","normalcdf"]))
 	{
 		addError("Invalid Chart Mode selection.","opt_chartmode");
 	}
 	
-	/* Validate combination of chart mode and number of Pokemon needed */
+	// Validate combination of chart mode and number of Pokemon needed */
 	if (pageOpts.chartmode.value === "single")
 	{
 		if (pageOpts.pokemontoget.value > 16)
@@ -953,7 +977,7 @@ function validateOptions(optionsSource,presetErrorText)
 			addError("Simple chart only supports  a maximum of 16 Pokemon needed.","opt_pokemontoget");
 		}
 	}
-	if (pageOpts.chartmode.value === "area")
+	else if (pageOpts.chartmode.value === "area")
 	{
 		if (pageOpts.pokemontoget.value > 16)
 		{
@@ -965,7 +989,7 @@ function validateOptions(optionsSource,presetErrorText)
 		}
 	}
 	
-	/* Validate Encounters to graph box */
+	// Validate Encounters to graph box
 	if (isNaN(pageOpts.encounterstograph.value))
 	{
 		addError("Invalid encounters to graph.","opt_encounterstograph");
@@ -977,7 +1001,7 @@ function validateOptions(optionsSource,presetErrorText)
 		{
 			addError("Number of encounters to graph must be an integer.","opt_encounterstograph");
 		}
-		if (pageOpts.encounterstograph.value < 1)
+		else if (pageOpts.encounterstograph.value < 1)
 		{
 			addError("Number of encounters to graph must be 1 or more.","opt_encounterstograph");
 		}
@@ -996,7 +1020,9 @@ function validateOptions(optionsSource,presetErrorText)
 	return numErrors;
 }
 
-/* Enable or Disable any option elements between the low and high in the Pokemon level selection */
+/* changePokeLvlOption()
+ * Enable or Disable any option elements between the low and high in the Pokemon level selection
+ */
 function changePokeLvlOption(optionnumlow,optionnumhigh,state)
 {
   var i,disabled;
@@ -1018,7 +1044,9 @@ function changePokeLvlOption(optionnumlow,optionnumhigh,state)
   }
 }
 
-/* Enable or Disable any option elements between the low and high in the trainer level selection */
+/* changeTrainerLvlOption()
+ * Enable or Disable any option elements between the low and high in the trainer level selection
+ */
 function changeTrainerLvlOption(optionnumlow,optionnumhigh,state)
 {
   var i,disabled;
