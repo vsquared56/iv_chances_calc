@@ -184,7 +184,7 @@ function init()
 		if (width < 1000)
 		{
 		  heightpercent = '70%';
-		  widthpercent = '80%';
+		  widthpercent = '75%';
 		}
 		else
 		{
