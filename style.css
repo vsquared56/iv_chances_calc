@@ -20,6 +20,10 @@ body {	background-color:#DDDDDD;
 
 .description {  font-size:1em; 
 				padding: 1% 1% 1% 1%; }			
+				
+#urlerror { background-color: #EE4444;
+			padding: 1% 1% 1% 1%;
+			display: none; }
 			
 .chartcontainer { 	flex-basis: 60%;
 					flex-grow: 1;
@@ -67,13 +71,13 @@ body {	background-color:#DDDDDD;
 .invalidoptionentry { background-color: #EE4444; }
 		
 
-#error { 	background-color: #EE4444; 
-			float: left; 
-			padding: 1% 0 1% 0; 
-			width: 100%;
-			display: none;}			
+#optionerror { 	background-color: #EE4444; 
+				float: left; 
+				padding: 1% 0 1% 0; 
+				width: 100%;
+				display: none;}			
 			
-.errorheading { font-size: 1.3em; }			
+.errorheading { font-size: 1.25em; }			
 .errortext { padding: 2% 2% 2% 2%; 
 			 font-size: 1em; }
 

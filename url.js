@@ -38,6 +38,8 @@ function setUrlOptions(isGraphDrawn)
 
 function getUrlOptions()
 {
+	var err = 0;
+	var errortext = "";
 	var hash = location.hash.substr(1);
 	if (hash)
 	{
@@ -62,38 +64,46 @@ function getUrlOptions()
 	{
 		if (pageOpts[k])
 		{
-			if (pageOpts[k].optionType === "bool")
+			try
 			{
-				pageOpts[k].setValue(opts[k] === "true");
+				if (pageOpts[k].optionType === "bool")
+				{
+					pageOpts[k].setValue(opts[k] === "true");
+				}
+				else if (pageOpts[k].optionType === "int")
+				{
+					if (opts[k] === "any")
+					{
+						pageOpts[k].setValue("any");
+					}
+					else
+					{
+						pageOpts[k].setValue(parseInt(opts[k]));
+					}
+				}
+				else if (pageOpts[k].optionType === "float")
+				{
+					if (opts[k] === "any")
+					{
+						pageOpts[k].setValue("any");
+					}
+					else
+					{
+						pageOpts[k].setValue(parseFloat(opts[k]));
+					}
+				}
+				else if (pageOpts[k].optionType === "string")
+				{
+					pageOpts[k].setValue(opts[k].toString());
+				}
+				
+				optionsSet++;
 			}
-			else if (pageOpts[k].optionType === "int")
+			catch(e)
 			{
-				if (opts[k] === "any")
-				{
-					pageOpts[k].setValue("any");
-				}
-				else
-				{
-					pageOpts[k].setValue(parseInt(opts[k]));
-				}
+				err++;
+				errortext += "<li>Invalid value '" + opts[k] + "' for option " + k + ".</li>";
 			}
-			else if (pageOpts[k].optionType === "float")
-			{
-				if (opts[k] === "any")
-				{
-					pageOpts[k].setValue("any");
-				}
-				else
-				{
-					pageOpts[k].setValue(parseFloat(opts[k]));
-				}
-			}
-			else if (pageOpts[k].optionType === "string")
-			{
-				pageOpts[k].setValue(opts[k].toString());
-			}
-			
-			optionsSet++;
 		}
 		else if (k === "calc")
 		{
@@ -106,13 +116,18 @@ function getUrlOptions()
 		}
 		else
 		{
-			console.log("getUrlOptions(): invalid URL option -- " + k);
+			err++;
+			errortext += "<li>Invalid option " + k + ".</li>";
 		}
 	}
 	
-	if (optionsSet > 0)
+	if (err)
 	{
-		var err = validateOptions("url");
+		validateOptions("url",errortext);
+	}
+	else if (optionsSet > 0)
+	{
+		err = validateOptions("url");
 		if (!err)
 		{
 			setPageOptions();

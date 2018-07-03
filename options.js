@@ -18,7 +18,7 @@ function PageOption(name,optionType,pageElement,pageElementType)
 	}
 	else
 	{
-		throw("PageOption constructor -- Invalid optionType: " + optionType);
+		throw new TypeError("PageOption constructor -- Invalid optionType: " + optionType);
 	}
 
 	this.pageElement = pageElement;
@@ -29,7 +29,7 @@ function PageOption(name,optionType,pageElement,pageElementType)
 	}
 	else
 	{
-		throw("PageOption constructor -- Invalid pageElementType: " + pageElementType);
+		throw new TypeError("PageOption constructor -- Invalid pageElementType: " + pageElementType);
 	}
 }
 PageOption.prototype.setValue = function(v)
@@ -44,7 +44,14 @@ PageOption.prototype.writeToPage = function()
 	}
 	else if (this.pageElementType === "checkbox")
 	{
-		document.getElementById(this.pageElement).checked = this.value;
+		if (this.optionType === "bool")
+		{
+			document.getElementById(this.pageElement).checked = this.value;
+		}
+		else
+		{
+			throw new TypeError("PageOption writeToPage -- trying to write invalid optionType " + this.optionType + " to checkbox.");
+		}
 	}
 }
 
@@ -58,7 +65,7 @@ function PageOptionString(name,pageElement,pageElementType,defaultVal,validVals)
 	}
 	else
 	{
-		throw("PageOptionString constructor -- validVals must be an array.");
+		throw new TypeError("PageOptionString constructor -- validVals must be an array.");
 	}
 	
 	if (validVals.includes(defaultVal))
@@ -68,7 +75,7 @@ function PageOptionString(name,pageElement,pageElementType,defaultVal,validVals)
 	}
 	else
 	{
-		throw("PageOptionString constructor -- invalid defaultVal.");
+		throw new RangeError("PageOptionString constructor -- invalid defaultVal.");
 	}
 }
 PageOptionString.prototype = Object.create(PageOption.prototype);
@@ -80,7 +87,7 @@ PageOptionString.prototype.setValue = function(v)
 	}
 	else
 	{
-		throw("PageOptionString.setValue -- invalid value: " + v);
+		throw new RangeError("PageOptionString.setValue -- invalid value: " + v);
 	}
 }
 PageOptionString.prototype.getFromPage = function()
@@ -130,7 +137,7 @@ function PageOptionFloat(name,pageElement,pageElementType,defaultVal,validMinTyp
 	}
 	else
 	{
-		throw("PageOptionFloat constructor -- invalid defaultVal.");
+		throw new TypeError("PageOptionFloat constructor -- invalid defaultVal.");
 	}
 	
 	if (validMinType === "nomin" || validMinType === "inclusivemin" || validMinType === "exclusivemin")
@@ -139,7 +146,7 @@ function PageOptionFloat(name,pageElement,pageElementType,defaultVal,validMinTyp
 	}
 	else
 	{
-		throw("PageOptionFloat constructor -- invalid validMinType.");
+		throw new TypeError("PageOptionFloat constructor -- invalid validMinType.");
 	}
 	
 	if (Number.isFinite(validMin))
@@ -148,7 +155,7 @@ function PageOptionFloat(name,pageElement,pageElementType,defaultVal,validMinTyp
 	}
 	else
 	{
-		throw("PageOptionFloat constructor -- invalid validMin.");
+		throw new TypeError("PageOptionFloat constructor -- invalid validMin.");
 	}
 	
 	if (validMaxType === "nomax" || validMaxType === "inclusivemax" || validMaxType === "exclusivemax")
@@ -157,7 +164,7 @@ function PageOptionFloat(name,pageElement,pageElementType,defaultVal,validMinTyp
 	}
 	else
 	{
-		throw("PageOptionFloat constructor -- invalid validMaxType.");
+		throw new TypeError("PageOptionFloat constructor -- invalid validMaxType.");
 	}
 	
 	if (Number.isFinite(validMax))
@@ -166,7 +173,7 @@ function PageOptionFloat(name,pageElement,pageElementType,defaultVal,validMinTyp
 	}
 	else
 	{
-		throw("PageOptionFloat constructor -- invalid validMax.");
+		throw new TypeError("PageOptionFloat constructor -- invalid validMax.");
 	}
 }
 PageOptionFloat.prototype = Object.create(PageOption.prototype);
@@ -174,14 +181,14 @@ PageOptionFloat.prototype.setValue = function(v)
 {
 	if (!Number.isFinite(v))
 	{
-		throw("PageOptionFloat setValue -- " + this.name + " is not an valid float.");
+		throw new TypeError("PageOptionFloat setValue -- " + this.name + " is not an valid float.");
 	}
 	else
 	{
 		if (((this.validMinType === "inclusivemin") && (v < this.validMin)) || ((this.validMinType === "exclusivemin") && (v <= this.validMin)) ||
 			((this.validMaxType === "inclusivemax") && (v > this.validMax)) || ((this.validMaxType === "exclusivemax") && (v >= this.validMax)))
 		{
-			throw("PageOptionFloat setValue -- " + this.name + " value outside of valid range.");
+			throw new RangeError("PageOptionFloat setValue -- " + this.name + " value outside of valid range.");
 		}
 		else
 		{
@@ -197,7 +204,7 @@ PageOptionFloat.prototype.getFromPage = function()
 	}
 	else if (this.pageElementType === "checkbox")
 	{
-		throw("PageOptionFloat getFromPage -- Can't get float from checkbox on page");
+		throw new TypeError("PageOptionFloat getFromPage -- Can't get float from checkbox on page");
 	}
 }
 
@@ -242,7 +249,7 @@ PageOptionFloatOrAny.prototype.getFromPage = function()
 	}
 	else if (this.pageElementType === "checkbox")
 	{
-		throw("PageOptionFloat getFromPage -- Can't get float from checkbox on page");
+		throw new TypeError("PageOptionFloat getFromPage -- Can't get float from checkbox on page");
 	}
 }
 
@@ -257,7 +264,7 @@ function PageOptionInt(name,pageElement,pageElementType,defaultVal,validMinType,
 	}
 	else
 	{
-		throw("PageOptionInt constructor -- invalid defaultVal.");
+		throw new TypeError("PageOptionInt constructor -- invalid defaultVal.");
 	}
 	
 	if (validMinType === "nomin" || validMinType === "inclusivemin" || validMinType === "exclusivemin")
@@ -266,7 +273,7 @@ function PageOptionInt(name,pageElement,pageElementType,defaultVal,validMinType,
 	}
 	else
 	{
-		throw("PageOptionInt constructor -- invalid validMinType.");
+		throw new TypeError("PageOptionInt constructor -- invalid validMinType.");
 	}
 	
 	if (Number.isInteger(validMin))
@@ -275,7 +282,7 @@ function PageOptionInt(name,pageElement,pageElementType,defaultVal,validMinType,
 	}
 	else
 	{
-		throw("PageOptionInt constructor -- invalid validMin.");
+		throw new TypeError("PageOptionInt constructor -- invalid validMin.");
 	}
 	
 	if (validMaxType === "nomax" || validMaxType === "inclusivemax" || validMaxType === "exclusivemax")
@@ -284,7 +291,7 @@ function PageOptionInt(name,pageElement,pageElementType,defaultVal,validMinType,
 	}
 	else
 	{
-		throw("PageOptionInt constructor -- invalid validMaxType.");
+		throw new TypeError("PageOptionInt constructor -- invalid validMaxType.");
 	}
 	
 	if (Number.isInteger(validMax))
@@ -293,7 +300,7 @@ function PageOptionInt(name,pageElement,pageElementType,defaultVal,validMinType,
 	}
 	else
 	{
-		throw("PageOptionInt constructor -- invalid validMax.");
+		throw new TypeError("PageOptionInt constructor -- invalid validMax.");
 	}
 }
 PageOptionInt.prototype = Object.create(PageOption.prototype);
@@ -301,14 +308,14 @@ PageOptionInt.prototype.setValue = function (v)
 {
 	if (!Number.isInteger(v))
 	{
-		throw("PageOptionInt setValue -- " + this.name + " is not an valid int.");
+		throw new TypeError("PageOptionInt setValue -- " + this.name + " is not an valid int.");
 	}
 	else
 	{
 		if (((this.validMinType === "inclusivemin") && (v < this.validMin)) || ((this.validMinType === "exclusivemin") && (v <= this.validMin)) ||
 			((this.validMaxType === "inclusivemax") && (v > this.validMax)) || ((this.validMaxType === "exclusivemax") && (v >= this.validMax)))
 		{
-			throw("PageOptionInt setValue -- " + this.name + " value outside of valid range.");
+			throw new RangeError("PageOptionInt setValue -- " + this.name + " value outside of valid range.");
 		}
 		else
 		{
@@ -324,7 +331,7 @@ PageOptionInt.prototype.getFromPage = function()
 	}
 	else if (this.pageElementType === "checkbox")
 	{
-		throw("PageOptionFloat getFromPage -- Can't get int from checkbox on page");
+		throw new TypeError("PageOptionFloat getFromPage -- Can't get int from checkbox on page");
 	}
 }
 
@@ -368,7 +375,7 @@ PageOptionIntOrAny.prototype.getFromPage = function()
 	}
 	else if (this.pageElementType === "checkbox")
 	{
-		throw("PageOptionFloat getFromPage -- Can't get int from checkbox on page");
+		throw new TypeError("PageOptionFloat getFromPage -- Can't get int from checkbox on page");
 	}
 }
 
@@ -659,15 +666,21 @@ function processOptions()
 	setPageOptions();
 }
 
-function validateOptions(optionsSource)
+function validateOptions(optionsSource,presetErrorText)
 {
-	var errortext = "";
-	var numErrors = 0;
+	if (!presetErrorText)
+	{
+		var errortext = "";
+		var numErrors = 0;
+	}
+	else
+	{
+		var errortext = presetErrorText;
+		var numErrors = 1;
+	}
+	
 	function addError(err,invalidoptionid)
 	{
-
-
-
 		errortext += `<li>${err}</li>`;
 		markOptionInvalid(invalidoptionid);
 		
@@ -690,24 +703,33 @@ function validateOptions(optionsSource)
 		// Display any error text
 		if (numErrors > 0)
 		{
-				
 				document.getElementById("calcbutton").disabled = true;
-				document.getElementById("error").style.display = "block";
+				
 				
 				if (optionsSource == "url")
 				{
-					errortext += document.getElementById("error").innerHTML = "<div class='errortext'><div class='errorheading'>Invalid URL Options:</div><ul>" + errortext + "</ul></div>";
+					document.getElementById("urlerror").style.display = "block";
+					document.getElementById("urlerror").innerHTML = "<div class='errortext'><div class='errorheading'>" +
+																	"You got to this page via a direct URL that tried to preset the options and draw a finished chart for you.<br><br>" +
+																	"Unfortunately, something went wrong, and the options encoded in the URL were invalid.<br><br>" +
+																	"Make sure you copied the full URL properly, or contact the person that provided it to you.<br><br>" +
+																	"The errors were:" +
+																	"</div><ul>" + errortext + "</ul></div>";
 				}
 				else
 				{
-					errortext += document.getElementById("error").innerHTML = "<div class='errortext'><div class='errorheading'>Invalid Options:</div><ul>" + errortext + "</ul></div>";
+					document.getElementById("optionerror").style.display = "block";
+					document.getElementById("optionerror").innerHTML = "<div class='errortext'><div class='errorheading'>Invalid Options:</div><ul>" + errortext + "</ul></div>";
 				}
 		}
 		else
 		{
-				document.getElementById("error").innerHTML = "";
+				document.getElementById("optionerror").innerHTML = "";
+				document.getElementById("optionerror").style.display = "none";
+				document.getElementById("urlerror").innerHTML = "";
+				document.getElementById("urlerror").style.display = "none";
 				document.getElementById("calcbutton").disabled = false;
-				document.getElementById("error").style.display = "none";
+				
 				clearInvalidOptions();
 		}
 	}
