@@ -95,7 +95,7 @@ PageOptionString.prototype.setValue = function(v)
 {
 	if (this.validVals.includes(v))
 	{
-		this.value = v;
+		this.value = v.toString();
 	}
 	else
 	{
@@ -106,11 +106,11 @@ PageOptionString.prototype.getFromPage = function()
 {
 	if (this.pageElementType === "select" || this.pageElementType === "textbox")
 	{
-		this.value = document.getElementById(this.pageElement).value.toString();
+		this.setValue(document.getElementById(this.pageElement).value);
 	}
 	else if (this.pageElementType === "checkbox")
 	{
-		this.value = document.getElementById(this.pageElement).checked.toString();
+		this.setValue(document.getElementById(this.pageElement).checked);
 	}
 }
 
@@ -131,11 +131,11 @@ PageOptionBool.prototype.getFromPage = function()
 {
 	if (this.pageElementType === "select" || this.pageElementType === "textbox")
 	{
-		this.value = (document.getElementById(this.pageElement).value === 'true');
+		this.setValue(document.getElementById(this.pageElement).value === 'true');
 	}
 	else if (this.pageElementType === "checkbox")
 	{
-		this.value = document.getElementById(this.pageElement).checked;
+		this.setValue(document.getElementById(this.pageElement).checked);
 	}
 }
 
@@ -193,6 +193,15 @@ function PageOptionFloat(name,pageElement,pageElementType,defaultVal,validMinTyp
 PageOptionFloat.prototype = Object.create(PageOption.prototype);
 PageOptionFloat.prototype.setValue = function(v)
 {
+	if (isNaN(v))
+	{
+		throw new TypeError("PageOptionFloat setValue -- " + this.name + " must be a number.");
+	}
+	else
+	{
+		v = parseFloat(v);
+	}
+	
 	if (!Number.isFinite(v))
 	{
 		throw new TypeError("PageOptionFloat setValue -- " + this.name + " is not an valid float.");
@@ -214,7 +223,7 @@ PageOptionFloat.prototype.getFromPage = function()
 {
 	if (this.pageElementType === "select" || this.pageElementType === "textbox")
 	{
-		this.value = parseFloat(document.getElementById(this.pageElement).value);
+		this.setValue(document.getElementById(this.pageElement).value);
 	}
 	else if (this.pageElementType === "checkbox")
 	{
@@ -255,11 +264,11 @@ PageOptionFloatOrAny.prototype.getFromPage = function()
 	{
 		if (document.getElementById(this.pageElement).value === 'any')
 		{
-			this.value = 'any';
+			this.setValue('any');
 		}
 		else
 		{
-			this.value = parseFloat(document.getElementById(this.pageElement).value);
+			this.setValue(document.getElementById(this.pageElement).value);
 		}
 	}
 	else if (this.pageElementType === "checkbox")
@@ -322,6 +331,15 @@ function PageOptionInt(name,pageElement,pageElementType,defaultVal,validMinType,
 PageOptionInt.prototype = Object.create(PageOption.prototype);
 PageOptionInt.prototype.setValue = function (v)
 {
+	if (isNaN(v))
+	{
+		throw new TypeError("PageOptionInt setValue -- " + this.name + " must be a number.");
+	}
+	else
+	{
+		v = parseInt(v);
+	}
+	
 	if (!Number.isInteger(v))
 	{
 		throw new TypeError("PageOptionInt setValue -- " + this.name + " is not an valid int.");
@@ -343,7 +361,7 @@ PageOptionInt.prototype.getFromPage = function()
 {
 	if (this.pageElementType === "select" || this.pageElementType === "textbox")
 	{
-		this.value = parseInt(document.getElementById(this.pageElement).value);
+		this.setValue(document.getElementById(this.pageElement).value);
 	}
 	else if (this.pageElementType === "checkbox")
 	{
@@ -383,11 +401,11 @@ PageOptionIntOrAny.prototype.getFromPage = function()
 	{
 		if (document.getElementById(this.pageElement).value === 'any')
 		{
-			this.value = 'any';
+			this.setValue('any');
 		}
 		else
 		{
-			this.value = parseInt(document.getElementById(this.pageElement).value);
+			this.setValue(document.getElementById(this.pageElement).value);
 		}
 	}
 	else if (this.pageElementType === "checkbox")

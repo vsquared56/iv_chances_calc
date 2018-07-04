@@ -102,7 +102,7 @@ function getUrlOptions()
 			catch(e)
 			{
 				err++;
-				errortext += "<li>Invalid value '" + opts[k] + "' for option " + k + ".</li>";
+				errortext += "<li>Invalid value '" + opts[k] + "' for option " + k + ".  " + e.message + " </li>";
 			}
 		}
 		else if (k === "calc")
