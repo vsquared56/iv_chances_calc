@@ -78,7 +78,7 @@ function getUrlOptions()
 					}
 					else
 					{
-						pageOpts[k].setValue(parseInt(opts[k]));
+						pageOpts[k].setValue(parseFloat(opts[k])); //Parse as a float so we can throw an error if it's not an integer
 					}
 				}
 				else if (pageOpts[k].optionType === "float")
@@ -102,7 +102,7 @@ function getUrlOptions()
 			catch(e)
 			{
 				err++;
-				errortext += "<li>Invalid value '" + opts[k] + "' for option " + k + ".  " + e.message + " </li>";
+				errortext += "<li>" + e.message + "</li>";
 			}
 		}
 		else if (k === "calc")

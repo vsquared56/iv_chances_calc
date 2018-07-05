@@ -99,7 +99,7 @@ PageOptionString.prototype.setValue = function(v)
 	}
 	else
 	{
-		throw new RangeError("PageOptionString.setValue -- invalid value: " + v);
+		throw new RangeError(this.name + " has an invalid value: " + v + ".");
 	}
 }
 PageOptionString.prototype.getFromPage = function()
@@ -195,7 +195,7 @@ PageOptionFloat.prototype.setValue = function(v)
 {
 	if (isNaN(v))
 	{
-		throw new TypeError("PageOptionFloat setValue -- " + this.name + " must be a number.");
+		throw new TypeError(this.name + " must be a number.");
 	}
 	else
 	{
@@ -204,14 +204,25 @@ PageOptionFloat.prototype.setValue = function(v)
 	
 	if (!Number.isFinite(v))
 	{
-		throw new TypeError("PageOptionFloat setValue -- " + this.name + " is not an valid float.");
+		throw new TypeError(this.name + " is not an valid number.");
 	}
 	else
 	{
-		if (((this.validMinType === "inclusivemin") && (v < this.validMin)) || ((this.validMinType === "exclusivemin") && (v <= this.validMin)) ||
-			((this.validMaxType === "inclusivemax") && (v > this.validMax)) || ((this.validMaxType === "exclusivemax") && (v >= this.validMax)))
+		if ((this.validMinType === "inclusivemin") && (v < this.validMin))
 		{
-			throw new RangeError("PageOptionFloat setValue -- " + this.name + " value outside of valid range.");
+			throw new RangeError(this.name + " must be at least " + this.validMin + ".");
+		}
+		else if ((this.validMinType === "exclusivemin") && (v <= this.validMin))
+		{
+			throw new RangeError(this.name + " must be greater than " + this.validMin + ".");
+		}
+		else if ((this.validMaxType === "inclusivemax") && (v > this.validMax))
+		{
+			throw new RangeError(this.name + " can't be greater than " + this.validMax + ".");
+		}
+		else if ((this.validMaxType === "exclusivemax") && (v >= this.validMax))
+		{
+			throw new RangeError(this.name + "must be less than " + this.validMax + ".");
 		}
 		else
 		{
@@ -333,23 +344,34 @@ PageOptionInt.prototype.setValue = function (v)
 {
 	if (isNaN(v))
 	{
-		throw new TypeError("PageOptionInt setValue -- " + this.name + " must be a number.");
+		throw new TypeError(this.name + " is not a valid integer.");
 	}
 	else
 	{
-		v = parseInt(v);
+		v = parseFloat(v);
 	}
 	
 	if (!Number.isInteger(v))
 	{
-		throw new TypeError("PageOptionInt setValue -- " + this.name + " is not an valid int.");
+		throw new TypeError(this.name + " must be an integer.");
 	}
 	else
 	{
-		if (((this.validMinType === "inclusivemin") && (v < this.validMin)) || ((this.validMinType === "exclusivemin") && (v <= this.validMin)) ||
-			((this.validMaxType === "inclusivemax") && (v > this.validMax)) || ((this.validMaxType === "exclusivemax") && (v >= this.validMax)))
+		if ((this.validMinType === "inclusivemin") && (v < this.validMin))
 		{
-			throw new RangeError("PageOptionInt setValue -- " + this.name + " value outside of valid range.");
+			throw new RangeError(this.name + " must be at least " + this.validMin + ".");
+		}
+		else if ((this.validMinType === "exclusivemin") && (v <= this.validMin))
+		{
+			throw new RangeError(this.name + " must be greater than " + this.validMin + ".");
+		}
+		else if ((this.validMaxType === "inclusivemax") && (v > this.validMax))
+		{
+			throw new RangeError(this.name + " can't be greater than " + this.validMax + ".");
+		}
+		else if ((this.validMaxType === "exclusivemax") && (v >= this.validMax))
+		{
+			throw new RangeError(this.name + "must be less than " + this.validMax + ".");
 		}
 		else
 		{
@@ -455,10 +477,25 @@ function resetOptionDefaults()
  */ 
 function getPageOptions()
 {
+	//var err = 0;
+	//var errortext = "";
 	for (var k in pageOpts)
 	{
-		pageOpts[k].getFromPage();
+		//try
+		//{
+			pageOpts[k].getFromPage();
+		//}
+		//catch (e)
+		//{
+		//	err++;
+		//	errortext += "<li>" + e.message + "</li>";
+		//}
 	}
+	
+	//if (err)
+	//{
+	//	validateOptions("page",errortext);
+	//}
 }
 
 /* setPageOptions()
@@ -556,6 +593,8 @@ function processRateModifierInvOption()
  */
 function processOptions()
 {
+	console.log("Process Options");
+	console.trace();
 	getPageOptions();
 	
 	/* Process appraisal selection
@@ -716,6 +755,8 @@ function processOptions()
  */
 function validateOptions(optionsSource,presetErrorText)
 {
+	console.log("Validate Options");
+	console.trace();
 	if (!presetErrorText)
 	{
 		var errortext = "";
