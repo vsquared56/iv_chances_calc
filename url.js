@@ -131,9 +131,6 @@ function getUrlOptions()
 		if (!err)
 		{
 			setPageOptions();
-		
-			processEncountersToGraphOption();  //Save the Encounters to Graph option or it'll get reset to default by processOptions()
-			processRateModifierOption();
 			
 			processOptions();
 			

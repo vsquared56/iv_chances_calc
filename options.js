@@ -809,9 +809,7 @@ function validateOptions(optionsSource,presetErrorText)
 		addError("Minimum IV Percentage must be a number.","opt_minivpercent");
 	}
 	else
-	{
-		pageOpts.minivpercent.setValue(parseFloat(pageOpts.minivpercent.value)); //TODO Remove this since options are validated by setValue()
-		
+	{	
 		if (pageOpts.minivpercent.value > 100 || pageOpts.minivpercent.value < 0)
 		{
 			addError("Minimum IV Percentage must be between 0 and 100.","opt_minivpercent");
