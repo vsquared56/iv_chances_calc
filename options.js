@@ -592,14 +592,6 @@ function processOptions()
 		 */
 		if(pageOpts.encountertype.value === "normal")
 		{
-			if (optEncountersToGraphSavedNonRaid)
-			{
-				//pageOpts.encounterstograph.setValue(optEncountersToGraphSavedNonRaid);
-			}
-			else
-			{
-				//pageOpts.encounterstograph.setValue(encountersToGraphDefaultNonRaid);
-			}
 			document.getElementById("opt_minlevel").disabled = false;
 			document.getElementById("opt_trainerlevel").disabled = false;
 
@@ -611,14 +603,6 @@ function processOptions()
 		}
 		else if(pageOpts.encountertype.value === "boosted")
 		{
-			if (optEncountersToGraphSavedNonRaid)
-			{
-				//pageOpts.encounterstograph.setValue(optEncountersToGraphSavedNonRaid);
-			}
-			else
-			{
-				//pageOpts.encounterstograph.setValue(encountersToGraphDefaultNonRaid);
-			}
 			document.getElementById("opt_minlevel").disabled = false;
 			document.getElementById("opt_trainerlevel").disabled = false;
 			
@@ -630,14 +614,6 @@ function processOptions()
 		}
 		else if(pageOpts.encountertype.value === "raid")
 		{
-			if (optEncountersToGraphSavedRaid)
-			{
-				//pageOpts.encounterstograph.setValue(optEncountersToGraphSavedRaid);
-			}
-			else
-			{
-				//pageOpts.encounterstograph.setValue(encountersToGraphDefaultRaid);
-			}
 			document.getElementById("opt_minlevel").disabled = true;
 			document.getElementById("opt_minlevel").disabled = true;
 			
@@ -705,14 +681,16 @@ function processOptions()
 			document.getElementById("autoencounterstograph").style.display = "none";
 		}
 		
-		if ((pageOpts.autoencounterstograph.value === true) && (pageOpts.chartmode.value === "single" || pageOpts.chartmode.value === "area"))
+		if (!validateOptions()) //Calculate auto encounters and write everything to the page if there were no validation errors
 		{
-			var autoEncountersToGraphValue = calculateAutoEncountersToGraph(); //Can't do this in a single line like pageOpts.encounterstograph.setValue(calculateAutoEncountersToGraph())
-			pageOpts.encounterstograph.setValue(autoEncountersToGraphValue); //...because pageOpts is reset deep within calculateAutoEncountersToGraph().
-		}
+			if ((pageOpts.autoencounterstograph.value === true) && (pageOpts.chartmode.value === "single" || pageOpts.chartmode.value === "area"))
+			{
+				var autoEncountersToGraphValue = calculateAutoEncountersToGraph(); //Can't do this in a single line like pageOpts.encounterstograph.setValue(calculateAutoEncountersToGraph())
+				pageOpts.encounterstograph.setValue(autoEncountersToGraphValue); //...because pageOpts is reset deep within calculateAutoEncountersToGraph().
+			}
 		
-		validateOptions();
-		setPageOptions();
+			setPageOptions();
+		}
 	}
 }
 
@@ -740,25 +718,6 @@ function validateOptions(optionsSource)
 		return valid;
 	}
 	
-	// Validate appraisal selection
-	if (!isValid(pageOpts.appraisal.value,["best","good","aboveaverage","any","other"]))
-	{
-		addError("Invalid Appraisal selection.",pageOpts.appraisal);
-	}
-	
-	// Validate Minimum IV Percent box
-	if (isNaN(pageOpts.minivpercent.value))
-	{
-		addError("Minimum IV Percentage must be a number.",pageOpts.minivpercent);
-	}
-	else
-	{	
-		if (pageOpts.minivpercent.value > 100 || pageOpts.minivpercent.value < 0)
-		{
-			addError("Minimum IV Percentage must be between 0 and 100.",pageOpts.minivpercent);
-		}
-	}
-	
 	// Validate combination of Minimum IV Percentage and Appraisal
 	if (pageOpts.appraisal.value !== "other")
 	{
@@ -769,66 +728,6 @@ function validateOptions(optionsSource)
 		{
 			addError("Minimum IV Percent doesn't match Appraisal selection.",pageOpts.appraisal);
 		}
-	}
-	
-	// Validate Minimum Attack IV
-	if (isNaN(pageOpts.minattackiv.value) && (pageOpts.minattackiv.value !== "any"))
-	{
-		addError("Invalid Minimum Attack IV selection",pageOpts.minattackiv);
-	}
-	else if (pageOpts.minattackiv.value !== "any")
-	{
-		pageOpts.minattackiv.setValue(parseFloat(pageOpts.minattackiv.value));
-		if (!Number.isInteger(pageOpts.minattackiv.value))
-		{
-			addError("Minimum Attack IV selection must be an integer.",pageOpts.minattackiv);
-		}
-		if (pageOpts.minattackiv.value > 15 || pageOpts.minattackiv.value < 0)
-		{
-			addError("Minimum Attack IV selection must be between 0 and 15.",pageOpts.minattackiv);
-		}		
-	}
-	
-	// Validate Encounter Type Selection
-	if (!isValid(pageOpts.encountertype.value,["normal","boosted","raid"]))
-	{
-		addError("Invalid Encounter Type selection!",pageOpts.encountertype);
-	}
-	
-	// Validate Minimum Pokemon Level Selection
-	if (isNaN(pageOpts.minlevel.value) && (pageOpts.minlevel.value !== "any"))
-	{
-		addError("Invalid Pokemon Level selection!",pageOpts.minlevel);
-	}
-	else if (pageOpts.minlevel.value !== "any")
-	{
-		pageOpts.minlevel.setValue(parseFloat(pageOpts.minlevel.value));
-		if (!Number.isInteger(pageOpts.minlevel.value))
-		{
-			addError("Minimum Pokemon Level selection must be an integer.",pageOpts.minlevel);
-		}
-		if (pageOpts.minlevel.value > 35 || pageOpts.minlevel.value < 1)
-		{
-			addError("Minimum Pokemon Level selection must be between 1 and 35.",pageOpts.minlevel);
-		}	
-	}
-	
-	// Validate Trainer Level Selection
-	if (isNaN(pageOpts.trainerlevel.value) && (pageOpts.trainerlevel.value !== "any"))
-	{
-		addError("Invalid Trainer Level selection!",pageOpts.trainerlevel);
-	}
-	else
-	{
-		pageOpts.trainerlevel.setValue(parseFloat(pageOpts.trainerlevel.value));
-		if (!Number.isInteger(pageOpts.trainerlevel.value))
-		{
-			addError("Trainer Level selection must be an integer.",pageOpts.trainerlevel);
-		}
-		if (pageOpts.trainerlevel.value > 30 || pageOpts.trainerlevel.value < 1)
-		{
-			addError("Trainer Level selection must be between 1 and 30.",pageOpts.trainerlevel);
-		}	
 	}
 	
 	// Validate combination of trainer level and pokemon level
@@ -858,70 +757,12 @@ function validateOptions(optionsSource)
 		}
 	}
 	
-	// Validate Additional Probability Modifier selection
-	if (!isValid(pageOpts.ratemodifierselect.value,["1","450","75","45","35","19","24.5","custom"]))
-	{
-		addError("Invalid Probability Modifier selection.",pageOpts.ratemodifier);
-	}
-	
-	// Validate Rate Modifier box
-	if (isNaN(pageOpts.ratemodifier.value))
-	{
-		addError("Rate modifier must be a number.",pageOpts.ratemodifier);
-	}
-	else
-	{
-		pageOpts.ratemodifier.setValue(parseFloat(pageOpts.ratemodifier.value));
-		if (pageOpts.ratemodifier.value < 0 || pageOpts.ratemodifier.value > 1)
-		{
-			addError("Rate modifier must be a decimal between 0 and 1.",pageOpts.ratemodifier);
-		}	
-	}
-	
-	// Validate Rate Modifier Inverse box
-	if (isNaN(pageOpts.ratemodifierinv.value))
-	{
-		addError("Rate modifier (inverse) must be a number.",pageOpts.ratemodifier);
-	}
-	else
-	{
-		pageOpts.ratemodifierinv.setValue(parseFloat(pageOpts.ratemodifierinv.value));
-		if (pageOpts.ratemodifierinv.value <= 0)
-		{
-			addError("Rate modifier (inverse) must be above 0.",pageOpts.ratemodifier);
-		}	
-	}
-	
 	// Validate combination of Rate Modifier and Rate Modifier Inverse
 	if ((pageOpts.ratemodifier.value > (1.001 / pageOpts.ratemodifierinv.value)) ||
 		(pageOpts.ratemodifier.value < (0.999 / pageOpts.ratemodifierinv.value)))
 	{
 		//The two values need to be inverses of each other, but allow some .1% leeway to account for float rounding
 		addError("Rate modifier and inverse do not match.",pageOpts.ratemodifier);
-	}
-	
-	// Validate Number of Pokemon Needed box
-	if (isNaN(pageOpts.pokemontoget.value))
-	{
-		addError("Invalid Pokemon Number Needed.",pageOpts.pokemontoget);
-	}
-	else
-	{
-		pageOpts.pokemontoget.setValue(parseFloat(pageOpts.pokemontoget.value));
-		if (!Number.isInteger(pageOpts.pokemontoget.value))
-		{
-			addError("Number of Pokemon needed must be an integer.",pageOpts.pokemontoget);
-		}
-		if (pageOpts.pokemontoget.value < 1)
-		{
-			addError("Number of Pokemon needed must be greater than 0.",pageOpts.pokemontoget);
-		}
-	}
-	
-	// Validate Chart Mode Selection
-	if (!isValid(pageOpts.chartmode.value,["single","area","pmf","cdf","normalpdf","normalcdf"]))
-	{
-		addError("Invalid Chart Mode selection.",pageOpts.chartmode);
 	}
 	
 	// Validate combination of chart mode and number of Pokemon needed */
@@ -943,32 +784,16 @@ function validateOptions(optionsSource)
 			addError("The stacked area chart must have more than 1 matching Pokemon needed.",pageOpts.pokemontoget);
 		}
 	}
-	
-	// Validate Encounters to graph box
-	if (isNaN(pageOpts.encounterstograph.value))
+
+	if (pageOpts.encounterstograph.value > Number.MAX_SAFE_INTEGER)
 	{
-		addError("Invalid encounters to graph.",pageOpts.encounterstograph);
+		addError("Number of encounters to graph can't be bigger than " + Number.MAX_SAFE_INTEGER + ".",pageOpts.encounterstograph);
 	}
-	else
+	else if (pageOpts.encounterstograph.value < pageOpts.pokemontoget.value)
 	{
-		pageOpts.encounterstograph.setValue(parseFloat(pageOpts.encounterstograph.value));
-		if (!Number.isInteger(pageOpts.encounterstograph.value))
-		{
-			addError("Number of encounters to graph must be an integer.",pageOpts.encounterstograph);
-		}
-		else if (pageOpts.encounterstograph.value < 1)
-		{
-			addError("Number of encounters to graph must be 1 or more.",pageOpts.encounterstograph);
-		}
-		else if (pageOpts.encounterstograph.value > Number.MAX_SAFE_INTEGER)
-		{
-			addError("Number of encounters to graph can't be bigger than " + Number.MAX_SAFE_INTEGER + ".",pageOpts.encounterstograph);
-		}
-		else if (pageOpts.encounterstograph.value < pageOpts.pokemontoget.value)
-		{
-			addError("Number of encounters to graph can't be smaller than the number of Pokemon needed.",pageOpts.encounterstograph);
-		}
+		addError("Number of encounters to graph can't be smaller than the number of Pokemon needed.",pageOpts.encounterstograph);
 	}
+
 	
 	processErrors(optionsSource);
 	

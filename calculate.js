@@ -141,6 +141,8 @@ function calculateAutoEncountersToGraph()
 {
 	getCalcOptions();
 	calculatePerEncounterProb();
+	
+	console.trace();
 		
 	var encounters = 10;
 	
