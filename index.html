@@ -49,7 +49,7 @@
 								<option value="any">Any</option>
 								<option value="other">Custom percentage</option>
 							</select>
-							<span class="inputbox"><input class="optiontextbox" id="min_iv_percent" type="number" min="0" max="100" step="0.1" disabled="true" value="82.2" onchange="processMinIvPercentOption()">%IV</span>
+							<span class="inputbox"><input class="optiontextbox" id="min_iv_percent" type="number" min="0" max="100" step="0.1" disabled="true" value="82.2" onchange="processOptions()">%IV</span>
 						</div>
 						<div class="optionentry" id="opt_minattackiv"><div class="optiondescription">Minimum Attack IV:</div>
 							<select id="min_attack_iv" onchange="processOptions()">
@@ -170,8 +170,8 @@
 								<option value="24.5">Community Day shiny rate (1/24.5)</option>
 								<option value="custom">Custom rate</option>
 							</select>
-							<span class="inputbox"><input class="optiontextbox" id="rate_modifier" type="number" min="0" max="1" step="0.01" disabled="true" onchange="processRateModifierOption()">
-							= 1 / <input class="optiontextbox" id="rate_modifier_inv" type="number" min="1" step="1" disabled="true" onchange="processRateModifierInvOption()"></span>
+							<span class="inputbox"><input class="optiontextbox" id="rate_modifier" type="number" min="0" max="1" step="0.01" disabled="true" onchange="processOptions()">
+							= 1 / <input class="optiontextbox" id="rate_modifier_inv" type="number" min="1" step="1" disabled="true" onchange="processOptions()"></span>
 							<div class="optionsubdescription">Keep this at the default (1) in most cases, or set to a specific shiny rate if you're looking for shinies.</div>
 						</div>
 					</div>
@@ -197,7 +197,7 @@
 							</div>
 						</div>
 						<div class="optionentry" id="opt_encounterstograph"><div class="optiondescription">Encounters to graph:</div>
-							<input class="optiontextbox" id="encounters_to_graph" type="number" min="1" step="1" onchange="processEncountersToGraphOption()">
+							<input class="optiontextbox" id="encounters_to_graph" type="number" min="1" step="1" onchange="processOptions()">
 							<span id="autoencounterstograph"><input id="auto_encounters_to_graph" type="checkbox" onchange="processOptions()">Set Automatically</span>
 						</div>
 					</div>

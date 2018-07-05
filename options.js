@@ -11,7 +11,8 @@ var	encountersToGraphDefaultRaid;
  * 
  * PageOptionBool, PageOptionFloat, PageOptionFloatOrAny, PageOptionInt, PageOptionIntOrAny, and PageOptionString
  * all inherit from the base PageOption.  Each object provides a value property that can be set by .setValue(),
- * written to the page with .writeToPage(), or read from the page with .getFromPage().
+ * written to the page with .writeToPage(), or read from the page with .getFromPage().  The previous value held
+ * is saved in the previousValue property.
  *
  * The page element must be one of 'select', 'textbox', or 'checkbox'.
  *
@@ -45,6 +46,7 @@ function PageOption(name,optionType,pageElement,pageElementType)
 }
 PageOption.prototype.setValue = function(v)
 {
+	this.previousValue = this.value;
 	this.value = v;
 }
 PageOption.prototype.writeToPage = function()
@@ -95,6 +97,7 @@ PageOptionString.prototype.setValue = function(v)
 {
 	if (this.validVals.includes(v))
 	{
+		this.previousValue = this.value;
 		this.value = v.toString();
 	}
 	else
@@ -125,6 +128,7 @@ function PageOptionBool(name,pageElement,pageElementType,defaultVal)
 PageOptionBool.prototype = Object.create(PageOption.prototype);
 PageOptionBool.prototype.setValue = function(v)
 {
+	this.previousValue = this.value;
 	this.value = Boolean(v);
 }
 PageOptionBool.prototype.getFromPage = function()
@@ -226,6 +230,7 @@ PageOptionFloat.prototype.setValue = function(v)
 		}
 		else
 		{
+			this.previousValue = this.value;
 			this.value = v;
 		}
 	}
@@ -261,6 +266,7 @@ PageOptionFloatOrAny.prototype.setValue = function(v)
 {
 	if (v === "any")
 	{
+		this.previousValue = this.value;
 		this.value = "any";
 	}
 	else
@@ -375,6 +381,7 @@ PageOptionInt.prototype.setValue = function (v)
 		}
 		else
 		{
+			this.previousValue = this.value;
 			this.value = v;
 		}
 	}
@@ -410,6 +417,7 @@ PageOptionIntOrAny.prototype.setValue = function(v)
 {
 	if (v === "any")
 	{
+		this.previousValue = this.value;
 		this.value = "any";
 	}
 	else
@@ -477,6 +485,8 @@ function resetOptionDefaults()
  */ 
 function getPageOptions()
 {
+	console.log("getPageOptions()");
+	console.trace();
 	//var err = 0;
 	//var errortext = "";
 	for (var k in pageOpts)
@@ -509,87 +519,11 @@ function setPageOptions()
 	}
 }
 
-/* processEncountersToGraphOption()
- * Save the state of the Encounters to Graph text box between different Encounter Type modes
- * The value is then recalled in processOptions()
- *
- * Called from onchange at <input id="encounters_to_graph">
- */
-function processEncountersToGraphOption()
-{
-	/*getPageOptions();
-	
-	validateOptions();
-	
-	if(pageOpts.encountertype.value === "normal")
-	{
-		optEncountersToGraphSavedNonRaid = pageOpts.encounterstograph.value;
-	}
-	else if(pageOpts.encountertype.value === "boosted")
-	{
-		optEncountersToGraphSavedNonRaid = pageOpts.encounterstograph.value;
-	}
-	else if(pageOpts.encountertype.value === "raid")
-	{
-		optEncountersToGraphSavedRaid = pageOpts.encounterstograph.value;
-	}
-	*/
-}
-
-/* processMinIvPercentOption()
- * Save the custom value entered into the minimum IV text box
- *
- * Called from onchange at <input id="min_iv_percent">
- */
-function processMinIvPercentOption()
-{
-	getPageOptions();
-	optCustomMinIvPercentSaved = pageOpts.minivpercent.value;
-	validateOptions();
-	setPageOptions();
-	processOptions();
-}
-
-/* processRateModifierOption()
- * Save the custom value entered into the custom shiny rate box
- *
- * Called from onchange at <input id="rate_modifier">
- */
-function processRateModifierOption()
-{
-	getPageOptions();
-	optCustomRateModifierSaved = parseFloat(pageOpts.ratemodifier.value);
-	pageOpts.ratemodifierinv.setValue(parseFloat((1/pageOpts.ratemodifier.value).toFixed(4)));
-	
-	validateOptions();
-	setPageOptions();
-	processOptions();
-}
-
-/* processRateModifierInvOption()
- * Save the custom value entered into the custom shiny rate (inverse) box
- *
- * Called from onchange at <input id="rate_modifier_inv">
- */
-
-function processRateModifierInvOption()
-{
-	getPageOptions();
-	var decvalue = parseFloat((1/pageOpts.ratemodifierinv.value).toFixed(8));
-	pageOpts.ratemodifier.setValue(decvalue);
-	optCustomRateModifierSaved = decvalue;
-	
-	validateOptions();
-	setPageOptions();
-	processOptions();
-}
-
-
 /* processOptions()
  * Process various selection and input boxes on the pageX
  * Print errors if necessary
  *
- * Called from onchange on all <select> and <input> except for <input id="encounters_to_graph"> and <input id="min_iv_percent">
+ * Called from onchange on all <select> and <input>
  */
 function processOptions()
 {
@@ -623,7 +557,14 @@ function processOptions()
 	else if(pageOpts.appraisal.value === "other")
 	{
 		document.getElementById("min_iv_percent").disabled = false;
-		if (optCustomMinIvPercentSaved)
+		
+		//If the Minimum IV Percent box was just changed, save the value.
+		if (pageOpts.minivpercent.previousValue != pageOpts.minivpercent.value)
+		{
+			optCustomMinIvPercentSaved = pageOpts.minivpercent.value;
+		}
+		//Otherwise, restore the saved value.
+		else if (optCustomMinIvPercentSaved)
 		{
 			pageOpts.minivpercent.setValue(optCustomMinIvPercentSaved);
 		}
@@ -709,7 +650,21 @@ function processOptions()
 	{
 		document.getElementById("rate_modifier").disabled = false;
 		document.getElementById("rate_modifier_inv").disabled = false;
-		if (optCustomRateModifierSaved)
+		
+		//If the rate modifier box was just changed, save the value and update the inverse.
+		if (pageOpts.ratemodifier.previousValue != pageOpts.ratemodifier.value)
+		{
+			optCustomRateModifierSaved = pageOpts.ratemodifier.value;
+			pageOpts.ratemodifierinv.setValue(parseFloat((1/pageOpts.ratemodifier.value).toFixed(4)));
+		}
+		//If the inverse rate modifier box was just changed, calculate the rate modifier, update it, and save the value.
+		else if (pageOpts.ratemodifierinv.previousValue != pageOpts.ratemodifierinv.value)
+		{
+			pageOpts.ratemodifier.setValue(parseFloat((1/pageOpts.ratemodifierinv.value).toFixed(8)));
+			optCustomRateModifierSaved = pageOpts.ratemodifier.value;
+		}
+		//Otherwise, set both boxes to the saved value.
+		else if (optCustomRateModifierSaved)
 		{
 			pageOpts.ratemodifier.setValue(optCustomRateModifierSaved);
 			pageOpts.ratemodifierinv.setValue(parseFloat((1/optCustomRateModifierSaved).toFixed(4)));
