@@ -14,13 +14,14 @@ var	encountersToGraphDefaultRaid;
  * written to the page with .writeToPage(), or read from the page with .getFromPage().  The previous value held
  * is saved in the previousValue property.
  *
- * The page element must be one of 'select', 'textbox', or 'checkbox'.
+ * The pageElement is the html id of the input on the page, and must be one of 'select', 'textbox', or 'checkbox'.
+ * The pageContainerElement is the html id of the container div for the input.
  *
  * PageOption itself should not be used directly.
  */
  
 //Base PageOption prototype
-function PageOption(name,optionType,pageElement,pageElementType)
+function PageOption(name,optionType,pageElement,pageElementType,pageContainerElement)
 {
 	this.name = name;
 	
@@ -43,6 +44,8 @@ function PageOption(name,optionType,pageElement,pageElementType)
 	{
 		throw new TypeError("PageOption constructor -- Invalid pageElementType: " + pageElementType);
 	}
+	
+	this.pageContainerElement = pageContainerElement;
 }
 PageOption.prototype.setValue = function(v)
 {
@@ -69,9 +72,9 @@ PageOption.prototype.writeToPage = function()
 }
 
 //PageOptionString prototype -- inherits from PageOption
-function PageOptionString(name,pageElement,pageElementType,defaultVal,validVals)
+function PageOptionString(name,pageElement,pageElementType,pageContainerElement,defaultVal,validVals)
 {
-	PageOption.call(this,name,"string",pageElement,pageElementType);
+	PageOption.call(this,name,"string",pageElement,pageElementType,pageContainerElement);
 	
 	if (Array.isArray(validVals))
 	{
@@ -144,9 +147,9 @@ PageOptionBool.prototype.getFromPage = function()
 }
 
 //PageOptionFloat prototype -- inherits from PageOption
-function PageOptionFloat(name,pageElement,pageElementType,defaultVal,validMinType,validMin,validMaxType,validMax)
+function PageOptionFloat(name,pageElement,pageElementType,pageContainerElement,defaultVal,validMinType,validMin,validMaxType,validMax)
 {
-	PageOption.call(this,name,"float",pageElement,pageElementType);
+	PageOption.call(this,name,"float",pageElement,pageElementType,pageContainerElement);
 	
 	if (Number.isFinite(defaultVal))
 	{
@@ -248,17 +251,17 @@ PageOptionFloat.prototype.getFromPage = function()
 }
 
 //PageOptionFloatOrAny prototype -- inherits from PageOptionFloat
-function PageOptionFloatOrAny(name,pageElement,pageElementType,defaultVal,validMinType,validMin,validMaxType,validMax)
+function PageOptionFloatOrAny(name,pageElement,pageElementType,pageContainerElement,defaultVal,validMinType,validMin,validMaxType,validMax)
 {
 	if (defaultVal === "any")
 	{
-		PageOptionFloat.call(this,name,pageElement,pageElementType,0,validMinType,validMin,validMaxType,validMax);
+		PageOptionFloat.call(this,name,pageElement,pageElementType,pageContainerElement,0,validMinType,validMin,validMaxType,validMax);
 		this.defaultVal = "any";
 		this.value = "any";
 	}
 	else
 	{
-		PageOptionFloat.call(this,name,pageElement,pageElementType,defaultVal,validMinType,validMin,validMaxType,validMax);
+		PageOptionFloat.call(this,name,pageElement,pageElementType,pageContainerElement,defaultVal,validMinType,validMin,validMaxType,validMax);
 	}
 }
 PageOptionFloatOrAny.prototype = Object.create(PageOptionFloat.prototype);
@@ -295,9 +298,9 @@ PageOptionFloatOrAny.prototype.getFromPage = function()
 }
 
 //PageOptionInt prototype -- inherits from PageOption
-function PageOptionInt(name,pageElement,pageElementType,defaultVal,validMinType,validMin,validMaxType,validMax)
+function PageOptionInt(name,pageElement,pageElementType,pageContainerElement,defaultVal,validMinType,validMin,validMaxType,validMax)
 {
-	PageOption.call(this,name,"int",pageElement,pageElementType);
+	PageOption.call(this,name,"int",pageElement,pageElementType,pageContainerElement);
 	
 	if (Number.isInteger(defaultVal))
 	{
@@ -399,17 +402,17 @@ PageOptionInt.prototype.getFromPage = function()
 }
 
 //PageOptionIntOrAny prototype -- inherits from PageOptionInt
-function PageOptionIntOrAny(name,pageElement,pageElementType,defaultVal,validMinType,validMin,validMaxType,validMax)
+function PageOptionIntOrAny(name,pageElement,pageElementType,pageContainerElement,defaultVal,validMinType,validMin,validMaxType,validMax)
 {
 	if (defaultVal === "any")
 	{
-		PageOptionInt.call(this,name,pageElement,pageElementType,0,validMinType,validMin,validMaxType,validMax);
+		PageOptionInt.call(this,name,pageElement,pageElementType,pageContainerElement,0,validMinType,validMin,validMaxType,validMax);
 		this.defaultVal = "any";
 		this.value = "any";
 	}
 	else
 	{
-		PageOptionFloat.call(this,name,pageElement,pageElementType,defaultVal,validMinType,validMin,validMaxType,validMax);
+		PageOptionFloat.call(this,name,pageElement,pageElementType,pageContainerElement,defaultVal,validMinType,validMin,validMaxType,validMax);
 	}
 }
 PageOptionIntOrAny.prototype = Object.create(PageOptionInt.prototype);
@@ -445,19 +448,19 @@ PageOptionIntOrAny.prototype.getFromPage = function()
 }
 
 /* pageOpts global variable -- contains various PageOption objects that can be set */
-var pageOpts = {	appraisal: new PageOptionString("Appraisal","appraisal","select","best",["best","good","aboveaverage","any","other"]),
-					minivpercent: new PageOptionFloat("Minimum IV Percentage","min_iv_percent","textbox",82.2,"inclusivemin",0,"inclusivemax",100),
-					minattackiv: new PageOptionIntOrAny("Minimum Attack IV","min_attack_iv","select","any","inclusivemin",0,"inclusivemax",15),
-					encountertype: new PageOptionString("Encounter Type","encounter_type","select","normal",["normal","raid","boosted"]),
-					minlevel: new PageOptionIntOrAny("Minimum Pokemon Level","min_level","select","any","inclusivemin",1,"inclusivemax",35),
-					trainerlevel: new PageOptionInt("Trainer Level","trainer_level","select",30,"inclusivemin",1,"inclusivemax",30),
-					ratemodifierselect: new PageOptionString("Rate Modifier Selection","ratemodifierselect","select","1",["1","450","75","45","35","19","24.5","custom"]), //TODO: Update pageElement
-					ratemodifier: new PageOptionFloat("Rate Modifier","rate_modifier","textbox",1,"exclusivemin",0,"inclusivemax",1),
-					ratemodifierinv: new PageOptionFloat("Rate Modifier Inverse","rate_modifier_inv","textbox",1,"exclusivemin",0,"nomax",0),
-					pokemontoget: new PageOptionInt("Pokemon to Get","pokemon_to_get","textbox",1,"inclusivemin",1,"nomax",0),
-					chartmode: new PageOptionString("Chart Mode","chart_mode","select","single",["single","area","pmf","cdf","normalpdf","normalcdf"]),
-					encounterstograph: new PageOptionInt("Encounters to Graph","encounters_to_graph","textbox",200,"inclusivemin",1,"nomax",0), //TODO: Set max
-					autoencounterstograph: new PageOptionBool("Auto Encounters to Graph","auto_encounters_to_graph","checkbox",true)
+var pageOpts = {	appraisal: new PageOptionString("Appraisal","appraisal","select","opt_minivpercent","best",["best","good","aboveaverage","any","other"]),
+					minivpercent: new PageOptionFloat("Minimum IV Percentage","min_iv_percent","textbox","opt_minivpercent",82.2,"inclusivemin",0,"inclusivemax",100),
+					minattackiv: new PageOptionIntOrAny("Minimum Attack IV","min_attack_iv","select","opt_minattackiv","any","inclusivemin",0,"inclusivemax",15),
+					encountertype: new PageOptionString("Encounter Type","encounter_type","select","opt_encountertype","normal",["normal","raid","boosted"]),
+					minlevel: new PageOptionIntOrAny("Minimum Pokemon Level","min_level","select","opt_minlevel","any","inclusivemin",1,"inclusivemax",35),
+					trainerlevel: new PageOptionInt("Trainer Level","trainer_level","select","opt_trainerlevel",30,"inclusivemin",1,"inclusivemax",30),
+					ratemodifierselect: new PageOptionString("Rate Modifier Selection","ratemodifierselect","select","opt_ratemodifier","1",["1","450","75","45","35","19","24.5","custom"]), //TODO: Update pageElement
+					ratemodifier: new PageOptionFloat("Rate Modifier","rate_modifier","textbox","opt_ratemodifier",1,"exclusivemin",0,"inclusivemax",1),
+					ratemodifierinv: new PageOptionFloat("Rate Modifier (inverse)","rate_modifier_inv","textbox","opt_ratemodifier",1,"exclusivemin",0,"nomax",0),
+					pokemontoget: new PageOptionInt("Number of Pokemon Needed","pokemon_to_get","textbox","opt_pokemontoget",1,"inclusivemin",1,"nomax",0),
+					chartmode: new PageOptionString("Chart Mode","chart_mode","select","opt_chartmode","single",["single","area","pmf","cdf","normalpdf","normalcdf"]),
+					encounterstograph: new PageOptionInt("Encounters to Graph","encounters_to_graph","textbox","opt_encounterstograph",200,"inclusivemin",1,"nomax",0), //TODO: Set max
+					autoencounterstograph: new PageOptionBool("Auto Encounters to Graph","auto_encounters_to_graph","checkbox","opt_encounterstograph",true)
 				};
 
 
@@ -487,25 +490,32 @@ function getPageOptions()
 {
 	console.log("getPageOptions()");
 	console.trace();
-	//var err = 0;
-	//var errortext = "";
+
+	clearErrors();
+	var err = 0;
+	
 	for (var k in pageOpts)
 	{
-		//try
-		//{
+		try
+		{
 			pageOpts[k].getFromPage();
-		//}
-		//catch (e)
-		//{
-		//	err++;
-		//	errortext += "<li>" + e.message + "</li>";
-		//}
+		}
+		catch (e)
+		{
+			err++;
+			addError(e.message,pageOpts[k]);
+		}
 	}
 	
-	//if (err)
-	//{
-	//	validateOptions("page",errortext);
-	//}
+	if (err)
+	{
+		processErrors("page");
+		return err;
+	}
+	else
+	{
+		return;
+	}
 }
 
 /* setPageOptions()
@@ -520,7 +530,7 @@ function setPageOptions()
 }
 
 /* processOptions()
- * Process various selection and input boxes on the pageX
+ * Process various selection and input boxes on the page
  * Print errors if necessary
  *
  * Called from onchange on all <select> and <input>
@@ -529,259 +539,192 @@ function processOptions()
 {
 	console.log("Process Options");
 	console.trace();
-	getPageOptions();
 	
-	/* Process appraisal selection
-	 * Change min_iv_percent to match selected value and disable/enable the text box as needed
-	 */
-	if(pageOpts.appraisal.value === "best")
+	if (getPageOptions()) //If getPageOptions() had an immediate error, do nothing.
 	{
-		pageOpts.minivpercent.setValue(82.2);
-		document.getElementById("min_iv_percent").disabled = true;
 	}
-	else if(pageOpts.appraisal.value === "good")
+	else //Only process options if there were no immediate errors from getPageOptions()
 	{
-		pageOpts.minivpercent.setValue(66.7);
-		document.getElementById("min_iv_percent").disabled = true;
-	}
-	else if(pageOpts.appraisal.value === "aboveaverage")
-	{
-		pageOpts.minivpercent.setValue(51.1);
-		document.getElementById("min_iv_percent").disabled = true;
-	}
-	else if(pageOpts.appraisal.value === "any")
-	{
-		pageOpts.minivpercent.setValue(0);
-		document.getElementById("min_iv_percent").disabled = true;
-	}
-	else if(pageOpts.appraisal.value === "other")
-	{
-		document.getElementById("min_iv_percent").disabled = false;
-		
-		//If the Minimum IV Percent box was just changed, save the value.
-		if (pageOpts.minivpercent.previousValue != pageOpts.minivpercent.value)
+	
+		/* Process appraisal selection
+		 * Change min_iv_percent to match selected value and disable/enable the text box as needed
+		 */
+		if(pageOpts.appraisal.value === "best")
 		{
-			optCustomMinIvPercentSaved = pageOpts.minivpercent.value;
+			pageOpts.minivpercent.setValue(82.2);
+			document.getElementById("min_iv_percent").disabled = true;
 		}
-		//Otherwise, restore the saved value.
-		else if (optCustomMinIvPercentSaved)
+		else if(pageOpts.appraisal.value === "good")
 		{
-			pageOpts.minivpercent.setValue(optCustomMinIvPercentSaved);
+			pageOpts.minivpercent.setValue(66.7);
+			document.getElementById("min_iv_percent").disabled = true;
 		}
-	}
-	  
-	/* Process encounter type selection
-	 * Set the encounters to graph text box to either the default or the saved value for the selected encounter type
-	 * Enable or disable the minimum level and trainer level selections
-	 * Enable or disable the different Pokemon levels that become available in normal or boosted mode
-	 */
-	if(pageOpts.encountertype.value === "normal")
-	{
-		if (optEncountersToGraphSavedNonRaid)
+		else if(pageOpts.appraisal.value === "aboveaverage")
 		{
-			//pageOpts.encounterstograph.setValue(optEncountersToGraphSavedNonRaid);
+			pageOpts.minivpercent.setValue(51.1);
+			document.getElementById("min_iv_percent").disabled = true;
 		}
-		else
+		else if(pageOpts.appraisal.value === "any")
 		{
-			//pageOpts.encounterstograph.setValue(encountersToGraphDefaultNonRaid);
+			pageOpts.minivpercent.setValue(0);
+			document.getElementById("min_iv_percent").disabled = true;
 		}
-		document.getElementById("opt_minlevel").disabled = false;
-		document.getElementById("opt_trainerlevel").disabled = false;
+		else if(pageOpts.appraisal.value === "other")
+		{
+			document.getElementById("min_iv_percent").disabled = false;
+			
+			//If the Minimum IV Percent box was just changed, save the value.
+			if (pageOpts.minivpercent.previousValue != pageOpts.minivpercent.value)
+			{
+				optCustomMinIvPercentSaved = pageOpts.minivpercent.value;
+			}
+			//Otherwise, restore the saved value.
+			else if (optCustomMinIvPercentSaved)
+			{
+				pageOpts.minivpercent.setValue(optCustomMinIvPercentSaved);
+			}
+		}
+		  
+		/* Process encounter type selection
+		 * Set the encounters to graph text box to either the default or the saved value for the selected encounter type
+		 * Enable or disable the minimum level and trainer level selections
+		 * Enable or disable the different Pokemon levels that become available in normal or boosted mode
+		 */
+		if(pageOpts.encountertype.value === "normal")
+		{
+			if (optEncountersToGraphSavedNonRaid)
+			{
+				//pageOpts.encounterstograph.setValue(optEncountersToGraphSavedNonRaid);
+			}
+			else
+			{
+				//pageOpts.encounterstograph.setValue(encountersToGraphDefaultNonRaid);
+			}
+			document.getElementById("opt_minlevel").disabled = false;
+			document.getElementById("opt_trainerlevel").disabled = false;
 
-		changePokeLvlOption(31,35,"disabled");
-		changePokeLvlOption(1,5,"enabled");
-		
-		document.getElementById("opt_minlevel").style.display = "block"; //Display the minimum Pokemon level / Trainer level div
-		document.getElementById("opt_trainerlevel").style.display = "block";
-	}
-	else if(pageOpts.encountertype.value === "boosted")
-	{
-		if (optEncountersToGraphSavedNonRaid)
+			changePokeLvlOption(31,35,"disabled");
+			changePokeLvlOption(1,5,"enabled");
+			
+			document.getElementById("opt_minlevel").style.display = "block"; //Display the minimum Pokemon level / Trainer level div
+			document.getElementById("opt_trainerlevel").style.display = "block";
+		}
+		else if(pageOpts.encountertype.value === "boosted")
 		{
-			//pageOpts.encounterstograph.setValue(optEncountersToGraphSavedNonRaid);
+			if (optEncountersToGraphSavedNonRaid)
+			{
+				//pageOpts.encounterstograph.setValue(optEncountersToGraphSavedNonRaid);
+			}
+			else
+			{
+				//pageOpts.encounterstograph.setValue(encountersToGraphDefaultNonRaid);
+			}
+			document.getElementById("opt_minlevel").disabled = false;
+			document.getElementById("opt_trainerlevel").disabled = false;
+			
+			changePokeLvlOption(31,35,"enabled");
+			changePokeLvlOption(1,5,"disabled");
+			
+			document.getElementById("opt_minlevel").style.display = "block";
+			document.getElementById("opt_minlevel").style.display = "block";
+		}
+		else if(pageOpts.encountertype.value === "raid")
+		{
+			if (optEncountersToGraphSavedRaid)
+			{
+				//pageOpts.encounterstograph.setValue(optEncountersToGraphSavedRaid);
+			}
+			else
+			{
+				//pageOpts.encounterstograph.setValue(encountersToGraphDefaultRaid);
+			}
+			document.getElementById("opt_minlevel").disabled = true;
+			document.getElementById("opt_minlevel").disabled = true;
+			
+			document.getElementById("opt_minlevel").style.display = "none";  //Hide the minimum Pokemon level / Trainer level div
+			document.getElementById("opt_minlevel").style.display = "none";
+		}
+		  
+		/* Process minimum Pokemon level selection
+		 * Disable the trainer level selection if the minimum Pokemon level is set to any.
+		 */
+		if(pageOpts.minlevel.value === "any")
+		{
+			document.getElementById("trainer_level").disabled = true;
 		}
 		else
 		{
-			//pageOpts.encounterstograph.setValue(encountersToGraphDefaultNonRaid);
+			document.getElementById("trainer_level").disabled = false;
 		}
-		document.getElementById("opt_minlevel").disabled = false;
-		document.getElementById("opt_trainerlevel").disabled = false;
-		
-		changePokeLvlOption(31,35,"enabled");
-		changePokeLvlOption(1,5,"disabled");
-		
-		document.getElementById("opt_minlevel").style.display = "block";
-		document.getElementById("opt_minlevel").style.display = "block";
-	}
-	else if(pageOpts.encountertype.value === "raid")
-	{
-		if (optEncountersToGraphSavedRaid)
+		 
+		/* Process the rate modifier select box
+		 * If the rate is set to custom, enable the text box to set a custom rate.
+		 * Otherwise, disable the text box and fill it with the selected value.
+		 */
+		if (pageOpts.ratemodifierselect.value === "custom")
 		{
-			//pageOpts.encounterstograph.setValue(optEncountersToGraphSavedRaid);
+			document.getElementById("rate_modifier").disabled = false;
+			document.getElementById("rate_modifier_inv").disabled = false;
+			
+			//If the rate modifier box was just changed, save the value and update the inverse.
+			if (pageOpts.ratemodifier.previousValue != pageOpts.ratemodifier.value)
+			{
+				optCustomRateModifierSaved = pageOpts.ratemodifier.value;
+				pageOpts.ratemodifierinv.setValue(parseFloat((1/pageOpts.ratemodifier.value).toFixed(4)));
+			}
+			//If the inverse rate modifier box was just changed, calculate the rate modifier, update it, and save the value.
+			else if (pageOpts.ratemodifierinv.previousValue != pageOpts.ratemodifierinv.value)
+			{
+				pageOpts.ratemodifier.setValue(parseFloat((1/pageOpts.ratemodifierinv.value).toFixed(8)));
+				optCustomRateModifierSaved = pageOpts.ratemodifier.value;
+			}
+			//Otherwise, set both boxes to the saved value.
+			else if (optCustomRateModifierSaved)
+			{
+				pageOpts.ratemodifier.setValue(optCustomRateModifierSaved);
+				pageOpts.ratemodifierinv.setValue(parseFloat((1/optCustomRateModifierSaved).toFixed(4)));
+			}
 		}
 		else
 		{
-			//pageOpts.encounterstograph.setValue(encountersToGraphDefaultRaid);
+			document.getElementById("rate_modifier").disabled = true;
+			document.getElementById("rate_modifier_inv").disabled = true;
+			pageOpts.ratemodifierinv.setValue(parseFloat(pageOpts.ratemodifierselect.value));
+			pageOpts.ratemodifier.setValue(parseFloat((1/pageOpts.ratemodifierselect.value).toFixed(8)));
 		}
-		document.getElementById("opt_minlevel").disabled = true;
-		document.getElementById("opt_minlevel").disabled = true;
 		
-		document.getElementById("opt_minlevel").style.display = "none";  //Hide the minimum Pokemon level / Trainer level div
-		document.getElementById("opt_minlevel").style.display = "none";
-	}
-	  
-	/* Process minimum Pokemon level selection
-	 * Disable the trainer level selection if the minimum Pokemon level is set to any.
-	 */
-	if(pageOpts.minlevel.value === "any")
-	{
-		document.getElementById("trainer_level").disabled = true;
-	}
-	else
-	{
-		document.getElementById("trainer_level").disabled = false;
-	}
-	 
-	/* Process the rate modifier select box
-	 * If the rate is set to custom, enable the text box to set a custom rate.
-	 * Otherwise, disable the text box and fill it with the selected value.
-	 */
-	if (pageOpts.ratemodifierselect.value === "custom")
-	{
-		document.getElementById("rate_modifier").disabled = false;
-		document.getElementById("rate_modifier_inv").disabled = false;
+		/* Process Chart Mode select
+		 * Enable the autoencounterstograph checkbox for single and area chart modes
+		 */
+		if (pageOpts.chartmode.value === "single" || pageOpts.chartmode.value === "area")
+		{
+			document.getElementById("autoencounterstograph").style.display = "inline";
+		}
+		else
+		{
+			document.getElementById("autoencounterstograph").style.display = "none";
+		}
 		
-		//If the rate modifier box was just changed, save the value and update the inverse.
-		if (pageOpts.ratemodifier.previousValue != pageOpts.ratemodifier.value)
+		if ((pageOpts.autoencounterstograph.value === true) && (pageOpts.chartmode.value === "single" || pageOpts.chartmode.value === "area"))
 		{
-			optCustomRateModifierSaved = pageOpts.ratemodifier.value;
-			pageOpts.ratemodifierinv.setValue(parseFloat((1/pageOpts.ratemodifier.value).toFixed(4)));
+			var autoEncountersToGraphValue = calculateAutoEncountersToGraph(); //Can't do this in a single line like pageOpts.encounterstograph.setValue(calculateAutoEncountersToGraph())
+			pageOpts.encounterstograph.setValue(autoEncountersToGraphValue); //...because pageOpts is reset deep within calculateAutoEncountersToGraph().
 		}
-		//If the inverse rate modifier box was just changed, calculate the rate modifier, update it, and save the value.
-		else if (pageOpts.ratemodifierinv.previousValue != pageOpts.ratemodifierinv.value)
-		{
-			pageOpts.ratemodifier.setValue(parseFloat((1/pageOpts.ratemodifierinv.value).toFixed(8)));
-			optCustomRateModifierSaved = pageOpts.ratemodifier.value;
-		}
-		//Otherwise, set both boxes to the saved value.
-		else if (optCustomRateModifierSaved)
-		{
-			pageOpts.ratemodifier.setValue(optCustomRateModifierSaved);
-			pageOpts.ratemodifierinv.setValue(parseFloat((1/optCustomRateModifierSaved).toFixed(4)));
-		}
+		
+		validateOptions();
+		setPageOptions();
 	}
-	else
-	{
-		document.getElementById("rate_modifier").disabled = true;
-		document.getElementById("rate_modifier_inv").disabled = true;
-		pageOpts.ratemodifierinv.setValue(parseFloat(pageOpts.ratemodifierselect.value));
-		pageOpts.ratemodifier.setValue(parseFloat((1/pageOpts.ratemodifierselect.value).toFixed(8)));
-	}
-	
-	/* Process Chart Mode select
-	 * Enable the autoencounterstograph checkbox for single and area chart modes
-	 */
-	if (pageOpts.chartmode.value === "single" || pageOpts.chartmode.value === "area")
-	{
-		document.getElementById("autoencounterstograph").style.display = "inline";
-	}
-	else
-	{
-		document.getElementById("autoencounterstograph").style.display = "none";
-	}
-	
-	if ((pageOpts.autoencounterstograph.value === true) && (pageOpts.chartmode.value === "single" || pageOpts.chartmode.value === "area"))
-	{
-		var autoEncountersToGraphValue = calculateAutoEncountersToGraph(); //Can't do this in a single line like pageOpts.encounterstograph.setValue(calculateAutoEncountersToGraph())
-		pageOpts.encounterstograph.setValue(autoEncountersToGraphValue); //...because pageOpts is reset deep within calculateAutoEncountersToGraph().
-	}
-	
-	validateOptions();
-	setPageOptions();
 }
 
 /* validateOptions()
  * Validates the values in pageOpts to ensure the combination is valid.
- * Writes any errors to the page.  If optionsSource is 'url', the error is written to the main column at id=urlerror.
- * Otherwise, the error is written to the options column at id=optionerror.
+ * Adds any errors and calls processErrors() to print them.
  * 
- * Optionally called with some presetErrorText containing list elements of errors to print.  TODO: clean this behavior up.
  * Returns 0 if no errors were found.
  */
-function validateOptions(optionsSource,presetErrorText)
+function validateOptions(optionsSource)
 {
-	console.log("Validate Options");
-	console.trace();
-	if (!presetErrorText)
-	{
-		var errortext = "";
-		var numErrors = 0;
-	}
-	else
-	{
-		var errortext = presetErrorText;
-		var numErrors = 1;
-	}
-	
-	function addError(err,invalidoptionid)
-	{
-		errortext += `<li>${err}</li>`;
-		markOptionInvalid(invalidoptionid);
-		
-		numErrors++;
-	}
-	
-	function clearInvalidOptions()
-	{
-		optionEntryDivs = document.getElementsByClassName("optionentry");
-		var i;
-		
-		for (i=0; i < optionEntryDivs.length; i++)
-		{
-			optionEntryDivs[i].className = "optionentry";
-		}
-	}
-	
-	function processErrors()
-	{
-		// Display any error text
-		if (numErrors > 0)
-		{
-				document.getElementById("calcbutton").disabled = true;
-				
-				
-				if (optionsSource == "url")
-				{
-					document.getElementById("urlerror").style.display = "block";
-					document.getElementById("urlerror").innerHTML = "<div class='errortext'><div class='errorheading'>" +
-																	"You got to this page via a direct URL that tried to preset the options and draw a finished chart for you.<br><br>" +
-																	"Unfortunately, something went wrong, and the options encoded in the URL were invalid.<br><br>" +
-																	"Make sure you copied the full URL properly, or contact the person that provided it to you.<br><br>" +
-																	"The errors were:" +
-																	"</div><ul>" + errortext + "</ul></div>";
-				}
-				else
-				{
-					document.getElementById("optionerror").style.display = "block";
-					document.getElementById("optionerror").innerHTML = "<div class='errortext'><div class='errorheading'>Invalid Options:</div><ul>" + errortext + "</ul></div>";
-				}
-		}
-		else
-		{
-				document.getElementById("optionerror").innerHTML = "";
-				document.getElementById("optionerror").style.display = "none";
-				document.getElementById("urlerror").innerHTML = "";
-				document.getElementById("urlerror").style.display = "none";
-				document.getElementById("calcbutton").disabled = false;
-				
-				clearInvalidOptions();
-		}
-	}
-	
-	function markOptionInvalid(elementid)
-	{
-		document.getElementById(elementid).className += " invalidoptionentry";
-	}
+	clearErrors();
 	
 	//Checks if value is contained in validvals
 	function isValid(value, validvals)
@@ -800,19 +743,19 @@ function validateOptions(optionsSource,presetErrorText)
 	// Validate appraisal selection
 	if (!isValid(pageOpts.appraisal.value,["best","good","aboveaverage","any","other"]))
 	{
-		addError("Invalid Appraisal selection.","opt_minivpercent");
+		addError("Invalid Appraisal selection.",pageOpts.appraisal);
 	}
 	
 	// Validate Minimum IV Percent box
 	if (isNaN(pageOpts.minivpercent.value))
 	{
-		addError("Minimum IV Percentage must be a number.","opt_minivpercent");
+		addError("Minimum IV Percentage must be a number.",pageOpts.minivpercent);
 	}
 	else
 	{	
 		if (pageOpts.minivpercent.value > 100 || pageOpts.minivpercent.value < 0)
 		{
-			addError("Minimum IV Percentage must be between 0 and 100.","opt_minivpercent");
+			addError("Minimum IV Percentage must be between 0 and 100.",pageOpts.minivpercent);
 		}
 	}
 	
@@ -824,67 +767,67 @@ function validateOptions(optionsSource,presetErrorText)
 			((pageOpts.appraisal.value === "aboveaverage") && (pageOpts.minivpercent.value != 51.1)) ||
 			((pageOpts.appraisal.value === "any") && (pageOpts.minivpercent.value != 0)))
 		{
-			addError("Minimum IV Percent doesn't match Appraisal selection.","opt_minivpercent");
+			addError("Minimum IV Percent doesn't match Appraisal selection.",pageOpts.appraisal);
 		}
 	}
 	
 	// Validate Minimum Attack IV
 	if (isNaN(pageOpts.minattackiv.value) && (pageOpts.minattackiv.value !== "any"))
 	{
-		addError("Invalid Minimum Attack IV selection","opt_minattackiv");
+		addError("Invalid Minimum Attack IV selection",pageOpts.minattackiv);
 	}
 	else if (pageOpts.minattackiv.value !== "any")
 	{
 		pageOpts.minattackiv.setValue(parseFloat(pageOpts.minattackiv.value));
 		if (!Number.isInteger(pageOpts.minattackiv.value))
 		{
-			addError("Minimum Attack IV selection must be an integer.","opt_minattackiv");
+			addError("Minimum Attack IV selection must be an integer.",pageOpts.minattackiv);
 		}
 		if (pageOpts.minattackiv.value > 15 || pageOpts.minattackiv.value < 0)
 		{
-			addError("Minimum Attack IV selection must be between 0 and 15.","opt_minattackiv");
+			addError("Minimum Attack IV selection must be between 0 and 15.",pageOpts.minattackiv);
 		}		
 	}
 	
 	// Validate Encounter Type Selection
 	if (!isValid(pageOpts.encountertype.value,["normal","boosted","raid"]))
 	{
-		addError("Invalid Encounter Type selection!","opt_encountertype");
+		addError("Invalid Encounter Type selection!",pageOpts.encountertype);
 	}
 	
 	// Validate Minimum Pokemon Level Selection
 	if (isNaN(pageOpts.minlevel.value) && (pageOpts.minlevel.value !== "any"))
 	{
-		addError("Invalid Pokemon Level selection!","opt_minlevel");
+		addError("Invalid Pokemon Level selection!",pageOpts.minlevel);
 	}
 	else if (pageOpts.minlevel.value !== "any")
 	{
 		pageOpts.minlevel.setValue(parseFloat(pageOpts.minlevel.value));
 		if (!Number.isInteger(pageOpts.minlevel.value))
 		{
-			addError("Minimum Pokemon Level selection must be an integer.","opt_minlevel");
+			addError("Minimum Pokemon Level selection must be an integer.",pageOpts.minlevel);
 		}
 		if (pageOpts.minlevel.value > 35 || pageOpts.minlevel.value < 1)
 		{
-			addError("Minimum Pokemon Level selection must be between 1 and 35.","opt_minlevel");
+			addError("Minimum Pokemon Level selection must be between 1 and 35.",pageOpts.minlevel);
 		}	
 	}
 	
 	// Validate Trainer Level Selection
 	if (isNaN(pageOpts.trainerlevel.value) && (pageOpts.trainerlevel.value !== "any"))
 	{
-		addError("Invalid Trainer Level selection!","opt_trainerlevel");
+		addError("Invalid Trainer Level selection!",pageOpts.trainerlevel);
 	}
 	else
 	{
 		pageOpts.trainerlevel.setValue(parseFloat(pageOpts.trainerlevel.value));
 		if (!Number.isInteger(pageOpts.trainerlevel.value))
 		{
-			addError("Trainer Level selection must be an integer.","opt_trainerlevel");
+			addError("Trainer Level selection must be an integer.",pageOpts.trainerlevel);
 		}
 		if (pageOpts.trainerlevel.value > 30 || pageOpts.trainerlevel.value < 1)
 		{
-			addError("Trainer Level selection must be between 1 and 30.","opt_trainerlevel");
+			addError("Trainer Level selection must be between 1 and 30.",pageOpts.trainerlevel);
 		}	
 	}
 	
@@ -895,22 +838,22 @@ function validateOptions(optionsSource,presetErrorText)
 		{
 			if (pageOpts.minlevel.value > pageOpts.trainerlevel.value)
 			{
-				addError("Minimum Pokemon level can't be greater than Trainer Level.","opt_minlevel");
+				addError("Minimum Pokemon level can't be greater than Trainer Level.",pageOpts.minlevel);
 			}
 			if (pageOpts.minlevel.value > 30)
 			{
-				addError("Minimum Pokemon level can't be greater than 30 unless weather boosted.","opt_minlevel");
+				addError("Minimum Pokemon level can't be greater than 30 unless weather boosted.",pageOpts.minlevel);
 			}
 		}
 		else if (pageOpts.encountertype.value === "boosted")
 		{
 			if (pageOpts.minlevel.value > pageOpts.trainerlevel.value + 5)
 			{
-				addError("Minimum Pokemon level can't be greater than Trainer Level + 5 when weather boosted.","opt_minlevel");
+				addError("Minimum Pokemon level can't be greater than Trainer Level + 5 when weather boosted.",pageOpts.minlevel);
 			}
 			if (pageOpts.minlevel.value < 6)
 			{
-				addError("Minimum Pokemon level can't be less than 6 when weather boosted.","opt_minlevel");
+				addError("Minimum Pokemon level can't be less than 6 when weather boosted.",pageOpts.minlevel);
 			}
 		}
 	}
@@ -918,34 +861,34 @@ function validateOptions(optionsSource,presetErrorText)
 	// Validate Additional Probability Modifier selection
 	if (!isValid(pageOpts.ratemodifierselect.value,["1","450","75","45","35","19","24.5","custom"]))
 	{
-		addError("Invalid Probability Modifier selection.","opt_ratemodifier");
+		addError("Invalid Probability Modifier selection.",pageOpts.ratemodifier);
 	}
 	
 	// Validate Rate Modifier box
 	if (isNaN(pageOpts.ratemodifier.value))
 	{
-		addError("Rate modifier must be a number.","opt_ratemodifier");
+		addError("Rate modifier must be a number.",pageOpts.ratemodifier);
 	}
 	else
 	{
 		pageOpts.ratemodifier.setValue(parseFloat(pageOpts.ratemodifier.value));
 		if (pageOpts.ratemodifier.value < 0 || pageOpts.ratemodifier.value > 1)
 		{
-			addError("Rate modifier must be a decimal between 0 and 1.","opt_ratemodifier");
+			addError("Rate modifier must be a decimal between 0 and 1.",pageOpts.ratemodifier);
 		}	
 	}
 	
 	// Validate Rate Modifier Inverse box
 	if (isNaN(pageOpts.ratemodifierinv.value))
 	{
-		addError("Rate modifier (inverse) must be a number.","opt_ratemodifier");
+		addError("Rate modifier (inverse) must be a number.",pageOpts.ratemodifier);
 	}
 	else
 	{
 		pageOpts.ratemodifierinv.setValue(parseFloat(pageOpts.ratemodifierinv.value));
 		if (pageOpts.ratemodifierinv.value <= 0)
 		{
-			addError("Rate modifier (inverse) must be above 0.","opt_ratemodifier");
+			addError("Rate modifier (inverse) must be above 0.",pageOpts.ratemodifier);
 		}	
 	}
 	
@@ -954,31 +897,31 @@ function validateOptions(optionsSource,presetErrorText)
 		(pageOpts.ratemodifier.value < (0.999 / pageOpts.ratemodifierinv.value)))
 	{
 		//The two values need to be inverses of each other, but allow some .1% leeway to account for float rounding
-		addError("Rate modifier and inverse do not match.","opt_ratemodifier");
+		addError("Rate modifier and inverse do not match.",pageOpts.ratemodifier);
 	}
 	
 	// Validate Number of Pokemon Needed box
 	if (isNaN(pageOpts.pokemontoget.value))
 	{
-		addError("Invalid Pokemon Number Needed.","opt_pokemontoget");
+		addError("Invalid Pokemon Number Needed.",pageOpts.pokemontoget);
 	}
 	else
 	{
 		pageOpts.pokemontoget.setValue(parseFloat(pageOpts.pokemontoget.value));
 		if (!Number.isInteger(pageOpts.pokemontoget.value))
 		{
-			addError("Number of Pokemon needed must be an integer.","opt_pokemontoget");
+			addError("Number of Pokemon needed must be an integer.",pageOpts.pokemontoget);
 		}
 		if (pageOpts.pokemontoget.value < 1)
 		{
-			addError("Number of Pokemon needed must be greater than 0.","opt_pokemontoget");
+			addError("Number of Pokemon needed must be greater than 0.",pageOpts.pokemontoget);
 		}
 	}
 	
 	// Validate Chart Mode Selection
 	if (!isValid(pageOpts.chartmode.value,["single","area","pmf","cdf","normalpdf","normalcdf"]))
 	{
-		addError("Invalid Chart Mode selection.","opt_chartmode");
+		addError("Invalid Chart Mode selection.",pageOpts.chartmode);
 	}
 	
 	// Validate combination of chart mode and number of Pokemon needed */
@@ -986,50 +929,115 @@ function validateOptions(optionsSource,presetErrorText)
 	{
 		if (pageOpts.pokemontoget.value > 16)
 		{
-			addError("Simple chart only supports  a maximum of 16 Pokemon needed.","opt_pokemontoget");
+			addError("Simple chart only supports  a maximum of 16 Pokemon needed.",pageOpts.pokemontoget);
 		}
 	}
 	else if (pageOpts.chartmode.value === "area")
 	{
 		if (pageOpts.pokemontoget.value > 16)
 		{
-			addError("Stacked area chart only supports a maximum of 16 Pokemon needed.","opt_pokemontoget");
+			addError("Stacked area chart only supports a maximum of 16 Pokemon needed.",pageOpts.pokemontoget);
 		}
 		else if(pageOpts.pokemontoget.value === 1)
 		{
-			addError("The stacked area chart must have more than 1 matching Pokemon needed.","opt_pokemontoget");
+			addError("The stacked area chart must have more than 1 matching Pokemon needed.",pageOpts.pokemontoget);
 		}
 	}
 	
 	// Validate Encounters to graph box
 	if (isNaN(pageOpts.encounterstograph.value))
 	{
-		addError("Invalid encounters to graph.","opt_encounterstograph");
+		addError("Invalid encounters to graph.",pageOpts.encounterstograph);
 	}
 	else
 	{
 		pageOpts.encounterstograph.setValue(parseFloat(pageOpts.encounterstograph.value));
 		if (!Number.isInteger(pageOpts.encounterstograph.value))
 		{
-			addError("Number of encounters to graph must be an integer.","opt_encounterstograph");
+			addError("Number of encounters to graph must be an integer.",pageOpts.encounterstograph);
 		}
 		else if (pageOpts.encounterstograph.value < 1)
 		{
-			addError("Number of encounters to graph must be 1 or more.","opt_encounterstograph");
+			addError("Number of encounters to graph must be 1 or more.",pageOpts.encounterstograph);
 		}
 		else if (pageOpts.encounterstograph.value > Number.MAX_SAFE_INTEGER)
 		{
-			addError("Number of encounters to graph can't be bigger than " + Number.MAX_SAFE_INTEGER + ".","opt_encounterstograph");
+			addError("Number of encounters to graph can't be bigger than " + Number.MAX_SAFE_INTEGER + ".",pageOpts.encounterstograph);
 		}
 		else if (pageOpts.encounterstograph.value < pageOpts.pokemontoget.value)
 		{
-			addError("Number of encounters to graph can't be smaller than the number of Pokemon needed.","opt_encounterstograph");
+			addError("Number of encounters to graph can't be smaller than the number of Pokemon needed.",pageOpts.encounterstograph);
 		}
 	}
 	
-	processErrors();
+	processErrors(optionsSource);
 	
 	return numErrors;
+}
+
+var errorText;
+var numErrors = 0;
+
+function addError(err,invalidOption)
+{
+	errorText += `<li>${err}</li>`;
+	
+	if (invalidOption)
+	{
+		document.getElementById(invalidOption.pageContainerElement).className += " invalidoptionentry";
+	}
+	
+	numErrors++;
+}
+
+function clearErrors()
+{
+	errorText = "";
+	numErrors = 0;
+	
+	optionEntryDivs = document.getElementsByClassName("optionentry");
+	var i;
+	
+	for (i=0; i < optionEntryDivs.length; i++)
+	{
+		optionEntryDivs[i].className = "optionentry";
+	}
+}
+
+function processErrors(optionsSource)
+{
+	// Display any error text
+	if (numErrors > 0)
+	{
+			document.getElementById("calcbutton").disabled = true;
+			
+			
+			if (optionsSource == "url")
+			{
+				document.getElementById("urlerror").style.display = "block";
+				document.getElementById("urlerror").innerHTML = "<div class='errortext'><div class='errorheading'>" +
+																"You got to this page via a direct URL that tried to preset the options and draw a finished chart for you.<br><br>" +
+																"Unfortunately, something went wrong, and the options encoded in the URL were invalid.<br><br>" +
+																"Make sure you copied the full URL properly, or contact the person that provided it to you.<br><br>" +
+																"The errors were:" +
+																"</div><ul>" + errorText + "</ul></div>";
+			}
+			else
+			{
+				document.getElementById("optionerror").style.display = "block";
+				document.getElementById("optionerror").innerHTML = "<div class='errortext'><div class='errorheading'>Invalid Options:</div><ul>" + errorText + "</ul></div>";
+			}
+	}
+	else
+	{
+			document.getElementById("optionerror").innerHTML = "";
+			document.getElementById("optionerror").style.display = "none";
+			document.getElementById("urlerror").innerHTML = "";
+			document.getElementById("urlerror").style.display = "none";
+			document.getElementById("calcbutton").disabled = false;
+			
+			clearErrors();
+	}
 }
 
 /* changePokeLvlOption()

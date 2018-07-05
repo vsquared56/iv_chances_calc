@@ -38,6 +38,7 @@ function setUrlOptions(isGraphDrawn)
 
 function getUrlOptions()
 {
+	clearErrors();
 	var err = 0;
 	var errortext = "";
 	var hash = location.hash.substr(1);
@@ -102,7 +103,7 @@ function getUrlOptions()
 			catch(e)
 			{
 				err++;
-				errortext += "<li>" + e.message + "</li>";
+				addError(e.message,pageOpts[k]);
 			}
 		}
 		else if (k === "calc")
@@ -117,13 +118,13 @@ function getUrlOptions()
 		else
 		{
 			err++;
-			errortext += "<li>Invalid option " + k + ".</li>";
+			addError("Invalid option " + k + ".");;
 		}
 	}
 	
 	if (err)
 	{
-		validateOptions("url",errortext);
+		processErrors("url");
 	}
 	else if (optionsSet > 0)
 	{
