@@ -488,9 +488,6 @@ function resetOptionDefaults()
  */ 
 function getPageOptions()
 {
-	console.log("getPageOptions()");
-	console.trace();
-
 	clearErrors();
 	var err = 0;
 	
@@ -502,8 +499,10 @@ function getPageOptions()
 		}
 		catch (e)
 		{
-			err++;
-			addError(e.message,pageOpts[k]);
+			//err++;
+			//addError(e.message,pageOpts[k]);
+			alert(e.message);
+			pageOpts[k].setValue(pageOpts[k].previousValue);
 		}
 	}
 	
@@ -537,160 +536,154 @@ function setPageOptions()
  */
 function processOptions()
 {
-	console.log("Process Options");
-	console.trace();
+	clearErrors();
 	
-	if (getPageOptions()) //If getPageOptions() had an immediate error, do nothing.
-	{
-	}
-	else //Only process options if there were no immediate errors from getPageOptions()
-	{
-	
-		/* Process appraisal selection
-		 * Change min_iv_percent to match selected value and disable/enable the text box as needed
-		 */
-		if(pageOpts.appraisal.value === "best")
-		{
-			pageOpts.minivpercent.setValue(82.2);
-			document.getElementById("min_iv_percent").disabled = true;
-		}
-		else if(pageOpts.appraisal.value === "good")
-		{
-			pageOpts.minivpercent.setValue(66.7);
-			document.getElementById("min_iv_percent").disabled = true;
-		}
-		else if(pageOpts.appraisal.value === "aboveaverage")
-		{
-			pageOpts.minivpercent.setValue(51.1);
-			document.getElementById("min_iv_percent").disabled = true;
-		}
-		else if(pageOpts.appraisal.value === "any")
-		{
-			pageOpts.minivpercent.setValue(0);
-			document.getElementById("min_iv_percent").disabled = true;
-		}
-		else if(pageOpts.appraisal.value === "other")
-		{
-			document.getElementById("min_iv_percent").disabled = false;
-			
-			//If the Minimum IV Percent box was just changed, save the value.
-			if (pageOpts.minivpercent.previousValue != pageOpts.minivpercent.value)
-			{
-				optCustomMinIvPercentSaved = pageOpts.minivpercent.value;
-			}
-			//Otherwise, restore the saved value.
-			else if (optCustomMinIvPercentSaved)
-			{
-				pageOpts.minivpercent.setValue(optCustomMinIvPercentSaved);
-			}
-		}
-		  
-		/* Process encounter type selection
-		 * Set the encounters to graph text box to either the default or the saved value for the selected encounter type
-		 * Enable or disable the minimum level and trainer level selections
-		 * Enable or disable the different Pokemon levels that become available in normal or boosted mode
-		 */
-		if(pageOpts.encountertype.value === "normal")
-		{
-			document.getElementById("opt_minlevel").disabled = false;
-			document.getElementById("opt_trainerlevel").disabled = false;
+	var pageOptsError = getPageOptions();
 
-			changePokeLvlOption(31,35,"disabled");
-			changePokeLvlOption(1,5,"enabled");
-			
-			document.getElementById("opt_minlevel").style.display = "block"; //Display the minimum Pokemon level / Trainer level div
-			document.getElementById("opt_trainerlevel").style.display = "block";
-		}
-		else if(pageOpts.encountertype.value === "boosted")
-		{
-			document.getElementById("opt_minlevel").disabled = false;
-			document.getElementById("opt_trainerlevel").disabled = false;
-			
-			changePokeLvlOption(31,35,"enabled");
-			changePokeLvlOption(1,5,"disabled");
-			
-			document.getElementById("opt_minlevel").style.display = "block";
-			document.getElementById("opt_minlevel").style.display = "block";
-		}
-		else if(pageOpts.encountertype.value === "raid")
-		{
-			document.getElementById("opt_minlevel").disabled = true;
-			document.getElementById("opt_minlevel").disabled = true;
-			
-			document.getElementById("opt_minlevel").style.display = "none";  //Hide the minimum Pokemon level / Trainer level div
-			document.getElementById("opt_minlevel").style.display = "none";
-		}
-		  
-		/* Process minimum Pokemon level selection
-		 * Disable the trainer level selection if the minimum Pokemon level is set to any.
-		 */
-		if(pageOpts.minlevel.value === "any")
-		{
-			document.getElementById("trainer_level").disabled = true;
-		}
-		else
-		{
-			document.getElementById("trainer_level").disabled = false;
-		}
-		 
-		/* Process the rate modifier select box
-		 * If the rate is set to custom, enable the text box to set a custom rate.
-		 * Otherwise, disable the text box and fill it with the selected value.
-		 */
-		if (pageOpts.ratemodifierselect.value === "custom")
-		{
-			document.getElementById("rate_modifier").disabled = false;
-			document.getElementById("rate_modifier_inv").disabled = false;
-			
-			//If the rate modifier box was just changed, save the value and update the inverse.
-			if (pageOpts.ratemodifier.previousValue != pageOpts.ratemodifier.value)
-			{
-				optCustomRateModifierSaved = pageOpts.ratemodifier.value;
-				pageOpts.ratemodifierinv.setValue(parseFloat((1/pageOpts.ratemodifier.value).toFixed(4)));
-			}
-			//If the inverse rate modifier box was just changed, calculate the rate modifier, update it, and save the value.
-			else if (pageOpts.ratemodifierinv.previousValue != pageOpts.ratemodifierinv.value)
-			{
-				pageOpts.ratemodifier.setValue(parseFloat((1/pageOpts.ratemodifierinv.value).toFixed(8)));
-				optCustomRateModifierSaved = pageOpts.ratemodifier.value;
-			}
-			//Otherwise, set both boxes to the saved value.
-			else if (optCustomRateModifierSaved)
-			{
-				pageOpts.ratemodifier.setValue(optCustomRateModifierSaved);
-				pageOpts.ratemodifierinv.setValue(parseFloat((1/optCustomRateModifierSaved).toFixed(4)));
-			}
-		}
-		else
-		{
-			document.getElementById("rate_modifier").disabled = true;
-			document.getElementById("rate_modifier_inv").disabled = true;
-			pageOpts.ratemodifierinv.setValue(parseFloat(pageOpts.ratemodifierselect.value));
-			pageOpts.ratemodifier.setValue(parseFloat((1/pageOpts.ratemodifierselect.value).toFixed(8)));
-		}
+	/* Process appraisal selection
+	 * Change min_iv_percent to match selected value and disable/enable the text box as needed
+	 */
+	if(pageOpts.appraisal.value === "best")
+	{
+		pageOpts.minivpercent.setValue(82.2);
+		document.getElementById("min_iv_percent").disabled = true;
+	}
+	else if(pageOpts.appraisal.value === "good")
+	{
+		pageOpts.minivpercent.setValue(66.7);
+		document.getElementById("min_iv_percent").disabled = true;
+	}
+	else if(pageOpts.appraisal.value === "aboveaverage")
+	{
+		pageOpts.minivpercent.setValue(51.1);
+		document.getElementById("min_iv_percent").disabled = true;
+	}
+	else if(pageOpts.appraisal.value === "any")
+	{
+		pageOpts.minivpercent.setValue(0);
+		document.getElementById("min_iv_percent").disabled = true;
+	}
+	else if(pageOpts.appraisal.value === "other")
+	{
+		document.getElementById("min_iv_percent").disabled = false;
 		
-		/* Process Chart Mode select
-		 * Enable the autoencounterstograph checkbox for single and area chart modes
-		 */
-		if (pageOpts.chartmode.value === "single" || pageOpts.chartmode.value === "area")
+		//If the Minimum IV Percent box was just changed, save the value.
+		if (pageOpts.minivpercent.previousValue != pageOpts.minivpercent.value)
 		{
-			document.getElementById("autoencounterstograph").style.display = "inline";
+			optCustomMinIvPercentSaved = pageOpts.minivpercent.value;
 		}
-		else
+		//Otherwise, restore the saved value.
+		else if (optCustomMinIvPercentSaved)
 		{
-			document.getElementById("autoencounterstograph").style.display = "none";
+			pageOpts.minivpercent.setValue(optCustomMinIvPercentSaved);
 		}
+	}
+	  
+	/* Process encounter type selection
+	 * Set the encounters to graph text box to either the default or the saved value for the selected encounter type
+	 * Enable or disable the minimum level and trainer level selections
+	 * Enable or disable the different Pokemon levels that become available in normal or boosted mode
+	 */
+	if(pageOpts.encountertype.value === "normal")
+	{
+		document.getElementById("opt_minlevel").disabled = false;
+		document.getElementById("opt_trainerlevel").disabled = false;
+
+		changePokeLvlOption(31,35,"disabled");
+		changePokeLvlOption(1,5,"enabled");
 		
-		if (!validateOptions()) //Calculate auto encounters and write everything to the page if there were no validation errors
-		{
-			if ((pageOpts.autoencounterstograph.value === true) && (pageOpts.chartmode.value === "single" || pageOpts.chartmode.value === "area"))
-			{
-				var autoEncountersToGraphValue = calculateAutoEncountersToGraph(); //Can't do this in a single line like pageOpts.encounterstograph.setValue(calculateAutoEncountersToGraph())
-				pageOpts.encounterstograph.setValue(autoEncountersToGraphValue); //...because pageOpts is reset deep within calculateAutoEncountersToGraph().
-			}
+		document.getElementById("opt_minlevel").style.display = "block"; //Display the minimum Pokemon level / Trainer level div
+		document.getElementById("opt_trainerlevel").style.display = "block";
+	}
+	else if(pageOpts.encountertype.value === "boosted")
+	{
+		document.getElementById("opt_minlevel").disabled = false;
+		document.getElementById("opt_trainerlevel").disabled = false;
 		
-			setPageOptions();
+		changePokeLvlOption(31,35,"enabled");
+		changePokeLvlOption(1,5,"disabled");
+		
+		document.getElementById("opt_minlevel").style.display = "block";
+		document.getElementById("opt_minlevel").style.display = "block";
+	}
+	else if(pageOpts.encountertype.value === "raid")
+	{
+		document.getElementById("opt_minlevel").disabled = true;
+		document.getElementById("opt_minlevel").disabled = true;
+		
+		document.getElementById("opt_minlevel").style.display = "none";  //Hide the minimum Pokemon level / Trainer level div
+		document.getElementById("opt_minlevel").style.display = "none";
+	}
+	  
+	/* Process minimum Pokemon level selection
+	 * Disable the trainer level selection if the minimum Pokemon level is set to any.
+	 */
+	if(pageOpts.minlevel.value === "any")
+	{
+		document.getElementById("trainer_level").disabled = true;
+	}
+	else
+	{
+		document.getElementById("trainer_level").disabled = false;
+	}
+	 
+	/* Process the rate modifier select box
+	 * If the rate is set to custom, enable the text box to set a custom rate.
+	 * Otherwise, disable the text box and fill it with the selected value.
+	 */
+	if (pageOpts.ratemodifierselect.value === "custom")
+	{
+		document.getElementById("rate_modifier").disabled = false;
+		document.getElementById("rate_modifier_inv").disabled = false;
+		
+		//If the rate modifier box was just changed, save the value and update the inverse.
+		if (pageOpts.ratemodifier.previousValue != pageOpts.ratemodifier.value)
+		{
+			optCustomRateModifierSaved = pageOpts.ratemodifier.value;
+			pageOpts.ratemodifierinv.setValue(parseFloat((1/pageOpts.ratemodifier.value).toFixed(4)));
 		}
+		//If the inverse rate modifier box was just changed, calculate the rate modifier, update it, and save the value.
+		else if (pageOpts.ratemodifierinv.previousValue != pageOpts.ratemodifierinv.value)
+		{
+			pageOpts.ratemodifier.setValue(parseFloat((1/pageOpts.ratemodifierinv.value).toFixed(8)));
+			optCustomRateModifierSaved = pageOpts.ratemodifier.value;
+		}
+		//Otherwise, set both boxes to the saved value.
+		else if (optCustomRateModifierSaved)
+		{
+			pageOpts.ratemodifier.setValue(optCustomRateModifierSaved);
+			pageOpts.ratemodifierinv.setValue(parseFloat((1/optCustomRateModifierSaved).toFixed(4)));
+		}
+	}
+	else
+	{
+		document.getElementById("rate_modifier").disabled = true;
+		document.getElementById("rate_modifier_inv").disabled = true;
+		pageOpts.ratemodifierinv.setValue(parseFloat(pageOpts.ratemodifierselect.value));
+		pageOpts.ratemodifier.setValue(parseFloat((1/pageOpts.ratemodifierselect.value).toFixed(8)));
+	}
+	
+	/* Process Chart Mode select
+	 * Enable the autoencounterstograph checkbox for single and area chart modes
+	 */
+	if (pageOpts.chartmode.value === "single" || pageOpts.chartmode.value === "area")
+	{
+		document.getElementById("autoencounterstograph").style.display = "inline";
+	}
+	else
+	{
+		document.getElementById("autoencounterstograph").style.display = "none";
+	}
+	
+	if (!validateOptions()) //Calculate auto encounters and write everything to the page if there were no validation errors
+	{
+		if ((pageOpts.autoencounterstograph.value === true) && (pageOpts.chartmode.value === "single" || pageOpts.chartmode.value === "area"))
+		{
+			var autoEncountersToGraphValue = calculateAutoEncountersToGraph(); //Can't do this in a single line like pageOpts.encounterstograph.setValue(calculateAutoEncountersToGraph())
+			pageOpts.encounterstograph.setValue(autoEncountersToGraphValue); //...because pageOpts is reset deep within calculateAutoEncountersToGraph().
+		}
+	
+		setPageOptions();
 	}
 }
 
@@ -702,7 +695,7 @@ function processOptions()
  */
 function validateOptions(optionsSource)
 {
-	clearErrors();
+	//clearErrors();
 	
 	//Checks if value is contained in validvals
 	function isValid(value, validvals)
