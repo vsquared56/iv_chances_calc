@@ -21,8 +21,8 @@ var clientHeightOld = document.documentElement.clientHeight;
 window.addEventListener('resize', function(){
 	
 	if ((document.documentElement.clientWidth != clientWidthOld) ||	//Handle mobile resizes when the address bar appears or disappears
-	    (document.documentElement.clientHeight > clientHeightOld + 100) ||
-		(document.documentElement.clientHeight < clientHeightOld - 100))
+	    (document.documentElement.clientHeight > clientHeightOld + 200) || //That is, resize only on width changes or significant height changes.
+		(document.documentElement.clientHeight < clientHeightOld - 200))
 	{
 		clientWidthOld = document.documentElement.clientWidth;
 		clientHeightOld = document.documentElement.clientHeight;
