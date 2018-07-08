@@ -499,22 +499,13 @@ function getPageOptions()
 		}
 		catch (e)
 		{
-			//err++;
-			//addError(e.message,pageOpts[k]);
 			alert(e.message);
 			pageOpts[k].setValue(pageOpts[k].previousValue);
+			pageOpts[k].writeToPage();
 		}
 	}
 	
-	if (err)
-	{
-		processErrors("page");
-		return err;
-	}
-	else
-	{
-		return;
-	}
+	return;
 }
 
 /* setPageOptions()
