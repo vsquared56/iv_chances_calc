@@ -15,15 +15,23 @@ var chartOptions = {
 /* Window resize handling */
 var timer;
 var chartDrawn = false;
+
+var clientWidthOld = document.documentElement.clientWidth;
+var clientHeightOld = document.documentElement.clientHeight;
 window.addEventListener('resize', function(){
-	clearTimeout(timer);
-	timer = setTimeout(function(){
-		if (chartDrawn)
-		{
-			drawChart();
-		}
-		}, 500);
-	});
+	
+	if ((document.documentElement.clientWidth != clientWidthOld) ||	//Handle mobile resizes when the address bar appears or disappears
+	    (document.documentElement.clientHeight != clientHeightOld))
+	{
+		clearTimeout(timer);
+		timer = setTimeout(function(){
+			if (chartDrawn)
+			{
+				drawChart();
+			}
+			}, 500);
+	}
+});
 
 /* History handling */
 window.onpopstate = function(event) {
