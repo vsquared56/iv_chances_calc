@@ -31,6 +31,7 @@ window.addEventListener('resize', function(){
 		timer = setTimeout(function(){
 			if (chartDrawn)
 			{
+				setChartArea();
 				drawChart();
 			}
 			}, 500);
@@ -167,48 +168,49 @@ function calculateClick()
 }
 
 var width, height, heightpercent;
+/* Set chart area.
+ * Call this during init.
+ * Don't call during button press to prevent virtual-keyboard size changes on mobile.
+ * Don't call on window resize?
+ */
+function setChartArea()
+{
+	width = window.innerWidth;
+	height = window.innerHeight;
+	
+	if (height > width)
+	{
+	  height = height/2;
+	}
+	else
+	{
+	  height = Math.max((height - 300),(width/2.5));
+	}
+	
+	// Decrease chart area to fit the title if it spans two lines
+	
+	if (width < 1000)
+	{
+	  heightpercent = '70%';
+	  widthpercent = '75%';
+	}
+	else
+	{
+	  heightpercent = '85%';
+	  widthpercent = '90%';
+	}
+	
+	//Reset these in calculate() as well.
+	chartOptions.width = "90%";
+	chartOptions.height = height;
+	chartOptions.chartArea = {width:widthpercent,height:heightpercent};
+}
+	
 var chartWrapper;
 function init()
 {
 	chartWrapper = new google.visualization.ChartWrapper({'containerId':'visualization'});
 	
-	/* Set chart area.
-	 * Call this during init.
-	 * Don't call during button press to prevent virtual-keyboard size changes on mobile.
-	 * Don't call on window resize?
-	 */
-	function setChartArea()
-	{
-		width = window.innerWidth;
-		height = window.innerHeight;
-		
-		if (height > width)
-		{
-		  height = height/2;
-		}
-		else
-		{
-		  height = Math.max((height - 300),(width/2.5));
-		}
-		
-		// Decrease chart area to fit the title if it spans two lines
-		
-		if (width < 1000)
-		{
-		  heightpercent = '70%';
-		  widthpercent = '75%';
-		}
-		else
-		{
-		  heightpercent = '85%';
-		  widthpercent = '90%';
-		}
-		
-		//Reset these in calculate() as well.
-		chartOptions.width = "90%";
-		chartOptions.height = height;
-		chartOptions.chartArea = {width:widthpercent,height:heightpercent};
-	}
 	
 	setChartArea();
 	
