@@ -668,6 +668,14 @@ function processOptions()
 		document.getElementById("autoencounterstograph").style.display = "none";
 	}
 	
+	/* Process Encounters to Graph box
+	 * If the value was manually updated, turn off automatic encounters to graph
+	 */
+	if (pageOpts.encounterstograph.value != pageOpts.encounterstograph.previousValue)
+	{
+		pageOpts.autoencounterstograph.setValue(false);
+	}
+	
 	if (!validateOptions()) //Calculate auto encounters and write everything to the page if there were no validation errors
 	{
 		if ((pageOpts.autoencounterstograph.value === true) && (pageOpts.chartmode.value === "single" || pageOpts.chartmode.value === "area"))
