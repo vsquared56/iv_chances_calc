@@ -54,8 +54,50 @@
 							</select>
 							<span class="inputbox"><input class="optiontextbox" id="min_iv_percent" type="number" min="0" max="100" step="0.1" disabled="true" value="82.2" onchange="processOptions()">%IV</span>
 						</div>
-						<div class="optionentry" id="opt_minattackiv"><div class="optiondescription">Minimum Attack IV:</div>
+						<div class="optionentry" id="opt_minattackiv"><div class="optiondescription">Minimum ATK IV:</div>
 							<select id="min_attack_iv" onchange="processOptions()">
+								<option value="any">Any</option>
+								<option value=15>15</option>
+								<option value=14>14</option>
+								<option value=13>13</option>
+								<option value=12>12</option>
+								<option value=11>11</option>
+								<option value=10>10</option>
+								<option value=9>9</option>
+								<option value=8>8</option>
+								<option value=7>7</option>
+								<option value=6>6</option>
+								<option value=5>5</option>
+								<option value=4>4</option>
+								<option value=3>3</option>
+								<option value=2>2</option>
+								<option value=1>1</option>
+								<option value=0>0</option>
+							</select>
+						</div>
+						<div class="optionentry" id="opt_mindefenseiv"><div class="optiondescription">Minimum DEF IV:</div>
+							<select id="min_defense_iv" onchange="processOptions()">
+								<option value="any">Any</option>
+								<option value=15>15</option>
+								<option value=14>14</option>
+								<option value=13>13</option>
+								<option value=12>12</option>
+								<option value=11>11</option>
+								<option value=10>10</option>
+								<option value=9>9</option>
+								<option value=8>8</option>
+								<option value=7>7</option>
+								<option value=6>6</option>
+								<option value=5>5</option>
+								<option value=4>4</option>
+								<option value=3>3</option>
+								<option value=2>2</option>
+								<option value=1>1</option>
+								<option value=0>0</option>
+							</select>
+						</div>
+						<div class="optionentry" id="opt_minstaminaiv"><div class="optiondescription">Minimum STA (HP) IV:</div>
+							<select id="min_stamina_iv" onchange="processOptions()">
 								<option value="any">Any</option>
 								<option value=15>15</option>
 								<option value=14>14</option>
@@ -77,7 +119,7 @@
 						</div>
 					</div>
 					<div class="optioncategory">
-						<div class="optionentry" id="opt_encountertype"><div class="optiondescription">Type of catches/encounters:</div>
+						<div class="optionentry" id="opt_encountertype"><div class="optiondescription">Type of encounters:</div>
 							<select id="encounter_type" onchange="processOptions()">
 								<option value="normal">Normal wild Pokemon</option>
 								<option value="boosted">Weather boosted Pokemon</option>
@@ -167,10 +209,12 @@
 								<option value="1">Base catch probability (default)</option>
 								<option value="450">Wild shiny rate (1/450)</option>
 								<option value="75">Absol boss shiny rate (1/75)</option>
+								<option value="60">Aerodactyl field research shiny rate (1/60)</option>
+								<option value="50">Baby hatch shiny rate (1/50)</option>
 								<option value="45">Aerodactyl boss shiny rate (1/45)</option>
 								<option value="35">Mawile boss shiny rate (1/35)</option>
-								<option value="19">Legendary boss shiny rate (1/19)</option>
 								<option value="24.5">Community Day shiny rate (1/24.5)</option>
+								<option value="19">Legendary boss shiny rate (1/19)</option>
 								<option value="custom">Custom rate</option>
 							</select>
 							<span class="inputbox"><input class="optiontextbox" id="rate_modifier" type="number" min="0" max="1" step="0.01" disabled="true" onchange="processOptions()">
@@ -223,7 +267,7 @@
 						as long as it has 15 Attack?
 						<br><br>
 						Use this tool to get an idea of your chances of getting a desirable Pokemon
-						after a certain number of encounters or catches.
+						after a certain number of encounters.
 						<br><br>
 						Enter your desired minimum attack IV, the minimum overall IV percentage,
 						and whether these are normal, weather-boosted, or raid encounters.
