@@ -681,26 +681,26 @@ function calculate()
 		}
 		if ((calcopts.minlevel != 0) && (calcopts.encountertype != "raid"))
 		{
-			titleLevel = `with level >${calcopts.minlevel}`;
+			titleLevel = `with level ≥${calcopts.minlevel}`;
 		}
 		if (calcopts.minivpercent > 0)
 		{
-			titleMinIV = `above ${calcopts.minivpercent}% IV`;
+			titleMinIV = `of at least ${calcopts.minivpercent}% IV`;
 		}
 		if ((calcopts.minattackiv + calcopts.mindefenseiv + calcopts.minstaminaiv) > 0)
 		{
 			titleIV = "with ";
 			if (calcopts.minattackiv > 0)
 			{
-				titleIV += ` ATK>${calcopts.minattackiv}`;
+				titleIV += ` ATK≥${calcopts.minattackiv}`;
 			}
 			if (calcopts.mindefenseiv > 0)
 			{
-				titleIV += ` DEF>${calcopts.mindefenseiv}`;
+				titleIV += ` DEF≥${calcopts.mindefenseiv}`;
 			}
 			if (calcopts.minstaminaiv > 0)
 			{
-				titleIV += ` STA>${calcopts.minstaminaiv}`;
+				titleIV += ` STA≥${calcopts.minstaminaiv}`;
 			}
 		}
 		
