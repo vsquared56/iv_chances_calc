@@ -23,6 +23,8 @@ function getCalcOptions()
 	calcopts = { minivpercent:parseFloat(pageOpts.minivpercent.value),
 				 miniv:0,
 				 minattackiv:((pageOpts.minattackiv.value === "any") ? 0 : parseInt(pageOpts.minattackiv.value)),
+				 mindefenseiv:((pageOpts.mindefenseiv.value === "any") ? 0 : parseInt(pageOpts.mindefenseiv.value)),
+				 minstaminaiv:((pageOpts.minstaminaiv.value === "any") ? 0 : parseInt(pageOpts.minstaminaiv.value)),
 				 encountertype:pageOpts.encountertype.value,
 				 minlevel:((pageOpts.minlevel.value === "any") ? 0 : parseInt(pageOpts.minlevel.value)),
 				 trainerlevel:parseInt(pageOpts.trainerlevel.value),
@@ -63,8 +65,10 @@ function calculatePerEncounterProb()
 	// Loop through the entire iv table, counting the chance any single encounter will fit our criteria
 	for (i = 0; i < iv.length; i++)
 	{
-		// If it matches ATK and IV% criteria, and fits the type of encounter (miniv), we want it.
+		// If it matches ATK,DEF,STA and IV% criteria, and fits the type of encounter (miniv), we want it.
 		if ((iv[i].atk >= calcopts.minattackiv) &&
+		    (iv[i].def >= calcopts.mindefenseiv) &&
+			(iv[i].sta >= calcopts.minstaminaiv) &&
 			(iv[i].percent >= calcopts.minivpercent) &&
 			(iv[i].lowestiv >= calcopts.miniv))
 		{
@@ -671,26 +675,38 @@ function calculate()
 		var titleShiny = "";
 		var titleLevel = "";
 		var titleMinIV = "";
-		var titleAttackIV = "";
+		var titleIV = "";
 
 		if (calcopts.ratemodifier != 1)
 		{
-			var titleShiny = `shiny (1 in ${(1/calcopts.ratemodifier).toFixed(1)})`;
+			titleShiny = `shiny (1 in ${(1/calcopts.ratemodifier).toFixed(1)})`;
 		}
 		if ((calcopts.minlevel != 0) && (calcopts.encountertype != "raid"))
 		{
-			var titleLevel = `with level >${calcopts.minlevel}`;
+			titleLevel = `with level >${calcopts.minlevel}`;
 		}
 		if (calcopts.minivpercent > 0)
 		{
-			var titleMinIV = `above ${calcopts.minivpercent}% IV`;
+			titleMinIV = `above ${calcopts.minivpercent}% IV`;
 		}
-		if (calcopts.minattackiv > 0)
+		if ((calcopts.minattackiv + calcopts.mindefenseiv + calcopts.minstaminaiv) > 0)
 		{
-			var titleAttackIV = `with ATK>${calcopts.minattackiv}`;
+			titleIV = "with ";
+			if (calcopts.minattackiv > 0)
+			{
+				titleIV += ` ATK>${calcopts.minattackiv}`;
+			}
+			if (calcopts.mindefenseiv > 0)
+			{
+				titleIV += ` DEF>${calcopts.mindefenseiv}`;
+			}
+			if (calcopts.minstaminaiv > 0)
+			{
+				titleIV += ` STA>${calcopts.minstaminaiv}`;
+			}
 		}
 		
-		chartOptions.title  = `Chance of finding ${titleopts.findingwhat} ${titleShiny} Pokemon ${titleMinIV} ${titleLevel} ${titleAttackIV} ` +
+		chartOptions.title  = `Chance of finding ${titleopts.findingwhat} ${titleShiny} Pokemon ${titleMinIV} ${titleLevel} ${titleIV} ` +
 							  `after ${titleopts.afterwhat} ${calcopts.encountertype} encounters`;
 		
 		

@@ -451,6 +451,8 @@ PageOptionIntOrAny.prototype.getFromPage = function()
 var pageOpts = {	appraisal: new PageOptionString("Appraisal","appraisal","select","opt_minivpercent","best",["best","good","aboveaverage","any","other"]),
 					minivpercent: new PageOptionFloat("Minimum IV Percentage","min_iv_percent","textbox","opt_minivpercent",82.2,"inclusivemin",0,"inclusivemax",100),
 					minattackiv: new PageOptionIntOrAny("Minimum Attack IV","min_attack_iv","select","opt_minattackiv","any","inclusivemin",0,"inclusivemax",15),
+					mindefenseiv: new PageOptionIntOrAny("Minimum Defense IV","min_defense_iv","select","opt_mindefenseiv","any","inclusivemin",0,"inclusivemax",15),
+					minstaminaiv: new PageOptionIntOrAny("Minimum Stamina IV","min_stamina_iv","select","opt_minstaminaiv","any","inclusivemin",0,"inclusivemax",15),
 					encountertype: new PageOptionString("Encounter Type","encounter_type","select","opt_encountertype","normal",["normal","raid","boosted"]),
 					minlevel: new PageOptionIntOrAny("Minimum Pokemon Level","min_level","select","opt_minlevel","any","inclusivemin",1,"inclusivemax",35),
 					trainerlevel: new PageOptionInt("Trainer Level","trainer_level","select","opt_trainerlevel",30,"inclusivemin",1,"inclusivemax",30),
