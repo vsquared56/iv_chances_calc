@@ -176,7 +176,7 @@ function calculate()
 		getCalcOptions();
 		
 		var titleopts = { findingwhat: "", //Chance of finding __ Pokemon...
-		                  afterwhat: ""    //...after ___ normal catches/encounters
+		                  afterwhat: ""    //...after ___ normal encounters
 		                };
 		
 		calculatePerEncounterProb()
@@ -220,7 +220,7 @@ function calculate()
 			}
 		}
 		
-		/* Fill the data table, where x is the number of catches/encounters, y is the probability of successfully finding what we're looking for. */
+		/* Fill the data table, where x is the number of encounters, y is the probability of successfully finding what we're looking for. */
 		var i,j;
 		var prob;
 		var datapoints;
@@ -235,7 +235,7 @@ function calculate()
 			chartWrapper.setChartType("LineChart");
 			chartOptions.isStacked = false;
 			chartOptions.legend = { position :'none'};
-			chartOptions.hAxis = {title:'Number of catches/encounters'};
+			chartOptions.hAxis = {title:'Number of encounters'};
 			chartOptions.vAxis = {gridlines: {count:-1}, minValue:0, maxValue:100, format: 'decimal', title: 'Probability (%)', titleTextStyle:{italic: false}};
 
 			data.addColumn('number', 'Encounters');
@@ -244,7 +244,7 @@ function calculate()
 			datapoints = 500; //Don't calculate/chart more than 500 data points.
 			datainterval = Math.ceil(calcopts.encounterstograph / datapoints);
 			
-			// i is the number of catches/encounters.
+			// i is the number of encounters.
 			for (i = 0; i <= calcopts.encounterstograph; i+= datainterval)
 			{
 				// binomcdf(k,n,p) gives us the chances of getting k or fewer successes after n trials with p probability.
@@ -272,7 +272,7 @@ function calculate()
 			chartWrapper.setChartType("AreaChart");
 			chartOptions.isStacked = true;
 			chartOptions.legend = { position :'right'};
-			chartOptions.hAxis = {title:'Number of catches/encounters'};
+			chartOptions.hAxis = {title:'Number of encounters'};
 			chartOptions.vAxis = {gridlines: {count:-1}, minValue:0, maxValue:100, format: 'decimal', title: 'Probability (%)', titleTextStyle:{italic: false}};
 			
 			datapoints = 100; //Don't calculate/chart more than 500 data points.
@@ -287,7 +287,7 @@ function calculate()
 			
 			var prob_prev_series;
 			var datarow;
-			// i is the number of catches/encounters.
+			// i is the number of encounters.
 			for (i = 0; i <= calcopts.encounterstograph; i+= datainterval)
 			{
 				prob_prev_series = 0;
@@ -321,7 +321,7 @@ function calculate()
 		else if (calcopts.chartmode === "pmf")
 		{
 			chartOptions.legend = { position :'none'};
-			chartOptions.hAxis = {title:'Number of catches/encounters matching criteria'};
+			chartOptions.hAxis = {title:'Number of encounters matching criteria'};
 				
 			//Plot 5 standard deviations away from the mean
 			minencounters = Math.max(0,Math.floor((calcopts.encounterstograph*calcresults.final_prob) - 5*Math.sqrt(calcopts.encounterstograph*calcresults.final_prob*(1-calcresults.final_prob))));
@@ -398,7 +398,7 @@ function calculate()
 		else if (calcopts.chartmode === "cdf")
 		{
 			chartOptions.legend = { position :'none'};
-			chartOptions.hAxis = {title:'Number of catches/encounters matching criteria'};
+			chartOptions.hAxis = {title:'Number of encounters matching criteria'};
 				
 
 			//Plot 5 standard deviations away from the mean
@@ -492,7 +492,7 @@ function calculate()
 		else if (calcopts.chartmode === "normalpdf")
 		{
 			chartOptions.legend = { position :'none'};
-			chartOptions.hAxis = {title:'Number of catches/encounters matching criteria'};
+			chartOptions.hAxis = {title:'Number of encounters matching criteria'};
 				
 			//Plot 5 standard deviations away from the mean
 			minencounters = Math.max(0,Math.floor((calcopts.encounterstograph*calcresults.final_prob) - 5*Math.sqrt(calcopts.encounterstograph*calcresults.final_prob*(1-calcresults.final_prob))));
@@ -576,7 +576,7 @@ function calculate()
 		else if (calcopts.chartmode === "normalcdf")
 		{
 			chartOptions.legend = { position :'none'};
-			chartOptions.hAxis = {title:'Number of catches/encounters matching criteria'};
+			chartOptions.hAxis = {title:'Number of encounters matching criteria'};
 				
 			//Plot 5 standard deviations away from the mean
 			minencounters = Math.max(1,Math.floor((calcopts.encounterstograph*calcresults.final_prob) - 5*Math.sqrt(calcopts.encounterstograph*calcresults.final_prob*(1-calcresults.final_prob))));
