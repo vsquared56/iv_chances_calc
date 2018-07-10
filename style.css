@@ -5,7 +5,7 @@ body {	background-color:#DDDDDD;
 			background-color:#DDDDDD; }
 			
 .title {	padding: 1% 1% 1% 1%; 
-			font-size: 2em; }
+			font-size: 2rem; }
 			
 .chart { 	margin:auto; }
 
@@ -18,7 +18,7 @@ body {	background-color:#DDDDDD;
 			flex-grow: 1;
 			flex-shrink: 1;}
 
-.description {  font-size:1em; 
+.description {  font-size:1rem; 
 				padding: 1% 1% 1% 1%; }			
 				
 #urlerror { background-color: #EE4444;
@@ -31,41 +31,41 @@ body {	background-color:#DDDDDD;
 					max-width: 100%; 
 					border: 2px solid #666666;
 					padding: 1% 1% 1% 1%;
-					margin: 0 0.5em 0.5em 0; }
+					margin: 0 0.5rem 0.5rem 0; }
 			
 .optioncategory { 	border: 2px solid #666666;
 					display:flex;
 					flex-wrap: wrap; 
-					margin: 0 0.5em 0.5em 0; }
+					margin: 0 0.5rem 0.5rem 0; }
 					
 .optionentry { 		padding: 1% 1% 2% 1%; 
 					border: 1px solid #BBBBBB;
 					flex-grow: 1;}
 					
-.optiontextbox { 	font-size:1em;
-					line-height:1.2em; 
-					max-width: 5em;}
+.optiontextbox { 	font-size:1rem;
+					line-height:1.2rem; 
+					max-width: 5rem;}
 					
-.optiondescription { font-size:1em; 
+.optiondescription { font-size:1rem; 
 					 padding: 0 0 1% 0; }
 					 
-.optionsubdescription { font-size:0.75em; }
+.optionsubdescription { font-size:0.75rem; }
 
 #autoencounterstograph { white-space:nowrap; }
 
 .inputbox { 	white-space:nowrap; 
-				font-size:1em; }
+				font-size:1rem; }
 				
-.calcbutton { 	font-size:2em; 
+.calcbutton { 	font-size:2rem; 
 				margin: 1% 1% 1% 1%;
 				float: left; }
 				
-.resetbutton { 	font-size:2em; 
+.resetbutton { 	font-size:2rem; 
 				margin: 1% 1% 1% 1%;
 				float: left; }
 				
 .buttonsurround {	border: 2px solid #666666;
-					margin: 0 0.5em 0.5em 0; 
+					margin: 0 0.5rem 0.5rem 0; 
 					overflow: hidden; }
 		
 .invalidoptionentry { background-color: #EE4444; }
@@ -77,12 +77,12 @@ body {	background-color:#DDDDDD;
 				width: 100%;
 				display: none;}			
 			
-.errorheading { font-size: 1.25em; }			
+.errorheading { font-size: 1.25rem; }			
 .errortext { padding: 2% 2% 2% 2%; 
-			 font-size: 1em; }
+			 font-size: 1rem; }
 
-select { 	font-size:1.2em; 
-			line-height:1.2em;
+select { 	font-size:1.2rem; 
+			line-height:1.2rem;
 			width: 100%;
 			max-width: 90%; }
 
@@ -90,26 +90,24 @@ select { 	font-size:1.2em;
 					flex-wrap: wrap; 
 					align-items: center;}
 					
-#resultstext {	font-size:1em; 
-				margin: 1% 0 0 0;
-				padding: 1% 1% 1% 1%; }
+#resultstext {	font-size:1rem; 
+				margin: 1% 0 0 0; }
 				
-#debug {	font-size:0.8em;
-			font-family: "Courier New", Courier, "Lucida Sans Typewriter", "Lucida Typewriter", monospace;
-			padding: 1% 1% 1% 1%; }
+#debug {	font-size:0.8rem;
+			font-family: "Courier New", Courier, "Lucida Sans Typewriter", "Lucida Typewriter", monospace; }
 			
-#visualization { width: 95%; }
+#visualization { width: 100%; }
 
-.footer { 	font-size:0.75em;
+.footer { 	font-size:0.75rem;
 			text-align:center; 
-			padding: 30px 0 0 0; }
+			padding: 2rem 0 0 0; }
 					
 					
-#calculatingspinner {	border: 0.5em solid #EEEEEE;
-						border-top: 0.5em solid #333333;
+#calculatingspinner {	border: 0.5rem solid #EEEEEE;
+						border-top: 0.5rem solid #333333;
 						border-radius: 50%;
-						width: 1.5em;
-						height: 1.5em;
+						width: 1.5rem;
+						height: 1.5rem;
 						animation: spin 1s linear infinite;
 					
 						margin-left: 5%; 
@@ -129,35 +127,47 @@ select { 	font-size:1.2em;
 					align-items:center;}	
 
 #loadingcontainer { background: rgba(10,10,10, 0.8);
-					padding: 1em 3em 3em 3em;
+					padding: 1rem 3rem 3rem 3rem;
 					display:flex;
 					flex-direction:column;
 					justify-content:center;
 					align-items:center; }					
 
-#loadingtext {	font-size: 2em;
+#loadingtext {	font-size: 2rem;
 				color: #F0F0F0;
 				text-align: center;
 				margin-bottom: 5%;
 }
 					
-#loadingspinner {	border: 1.5em solid #EEEEEE;
-					border-top: 1.5em solid #333333;
+#loadingspinner {	border: 1.5rem solid #EEEEEE;
+					border-top: 1.5rem solid #333333;
 					border-radius: 50%;
-					width: 5em;
-					height: 5em;
+					width: 5rem;
+					height: 5rem;
 					animation: spin 1s linear infinite;
 							
 							
-					margin-left:0em;
-					z-index:997; }
+					margin-left:0rem;
+					z-index:1000; }
 					
 @keyframes spin {	0% { transform: rotate(0deg); }
 					100% { transform: rotate(360deg); }
 				}
 		
-.overlay {	font-size: 1em;
-			position: absolute;
+.overlay {	position: absolute;
 			z-index: 100;
-}	
-.google-visualization-tooltip { z-index: 1000; }
+}
+
+@media screen and (min-width: 601px) {
+  .overlay {
+    font-size: 0.8rem;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .overlay {
+    font-size: 0.4rem;
+  }
+}
+
+.google-visualization-tooltip { z-index: 900; }

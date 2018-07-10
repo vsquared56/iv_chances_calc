@@ -268,7 +268,7 @@ function calculate()
 		{
 			chartWrapper.setChartType("AreaChart");
 			chartOptions.isStacked = true;
-			chartOptions.legend = { position :'right'};
+			chartOptions.legend = { position :'none'};
 			chartOptions.hAxis = {title:'Number of encounters'};
 			chartOptions.vAxis = {gridlines: {count:-1}, minValue:0, maxValue:100, format: 'decimal', title: 'Probability (%)', titleTextStyle:{italic: false}};
 			
@@ -810,16 +810,14 @@ function addOverlays()
 		divWidth = document.getElementById("overlay_" + i).clientWidth;
 		divHeight = document.getElementById("overlay_" + i).clientHeight;
 		
-		if (((overlayLocations[i].x - seriesLineIntersectionsPx[i].x) < divWidth/2) || ((overlayLocations[i].y - seriesLineIntersectionsPx[i].y) < divHeight/2))
+		if (((overlayLocations[i].x - seriesLineIntersectionsPx[i].x) < divWidth/2.5) || ((overlayLocations[i].y - seriesLineIntersectionsPx[i].y) < divHeight/2.5))
 		{
 			document.getElementById("overlay_" + i).style.display = "none";
 		}
 		else
 		{
-			//document.getElementById("overlay_" + i).style.top = (overlayLocations[i].y - (divHeight / 2)) + "px";
-			//document.getElementById("overlay_" + i).style.left = (overlayLocations[i].x - (divWidth / 2)) + "px";
-			document.getElementById("overlay_" + i).style.top = (overlayLocations[i].y) + "px";
-			document.getElementById("overlay_" + i).style.left = (overlayLocations[i].x) + "px";
+			document.getElementById("overlay_" + i).style.top = (overlayLocations[i].y - (divHeight / 2)) + "px";
+			document.getElementById("overlay_" + i).style.left = (overlayLocations[i].x - (divWidth / 2)) + "px";
 		}
 	}
 	
