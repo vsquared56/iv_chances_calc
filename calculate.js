@@ -155,7 +155,7 @@ function calculateAutoEncountersToGraph()
 	}
 	else if (calcopts.chartmode === 'area')
 	{
-		maxProb = 75;
+		maxProb = 50;
 	}
 	
 	while(100*(1-binomcdf(calcopts.pokemontoget-1,encounters,(calcresults.final_prob),0)) < maxProb)
