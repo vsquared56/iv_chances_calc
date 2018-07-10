@@ -5,11 +5,13 @@ var chartOptions = {
 	
 	animation: {
 		duration: 1000,
-		easing: 'in'
+		easing: 'in',
+		startup: true
 	},
 	
 	curveType: 'none',
-	tooltip: { trigger: 'selection' }
+	tooltip: { isHtml: true,
+	           trigger: 'selection'}
 };
 
 /* Window resize handling */
@@ -74,6 +76,13 @@ function drawChart() {
 	}
 	chartDrawn = true;
 	chartWrapper.draw();
+	
+	//Add overlays to area chart when it is ready
+	document.getElementById("overlaycontainer").innerHTML = "";
+	if (calcopts.chartmode === "area")
+	{
+		google.visualization.events.addOneTimeListener(chartWrapper.getChart(), 'animationfinish', addOverlays);
+	}
 }
 
 google.charts.load('current', {'packages':['corechart']});
@@ -171,7 +180,6 @@ var width, height, heightpercent;
 /* Set chart area.
  * Call this during init.
  * Don't call during button press to prevent virtual-keyboard size changes on mobile.
- * Don't call on window resize?
  */
 function setChartArea()
 {

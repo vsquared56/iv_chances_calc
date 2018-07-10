@@ -155,3 +155,9 @@ select { 	font-size:1.2em;
 @keyframes spin {	0% { transform: rotate(0deg); }
 					100% { transform: rotate(360deg); }
 				}
+		
+.overlay {	font-size: 1em;
+			position: absolute;
+			z-index: 100;
+}	
+.google-visualization-tooltip { z-index: 1000; }

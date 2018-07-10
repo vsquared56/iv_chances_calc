@@ -720,3 +720,108 @@ function calculate()
 		drawChart();
 	}
 }
+
+function addOverlays()
+{
+	var i,j;
+	
+	/*First, calculate the intersection of each series with an imaginary line from the upper-left to the bottom-right corner of the chart
+	 */
+	var seriesLineIntersections = []; //Where index 1 is the intersection with the last, bottom-right-most curve
+	var currSeries, currSeriesVal;
+	var slope = -100/(data.getValue(data.getNumberOfRows() - 1,0));
+	var currLineVal = 100; //The value of the imaginary line above at some x;
+	
+	currSeries = calcopts.pokemontoget; //The bottom-left most curve is series 1, with data in column 1
+
+	var x;
+	var xPrev = 0;
+	var xMax = data.getValue(data.getNumberOfRows() - 1,0);
+	var yMax = 100;
+	
+	var firstSeries = 0;
+	var lastSeries = 0;
+	
+	//i iterates over rows, i.e. over different x values
+	for(i=0; i < data.getNumberOfRows(); i++)
+	{	
+		x = data.getValue(i, 0);
+		
+		//The data in each column contains the probabilities for that individual series.
+		//To find the x,y coordinates of any given line, add up all the series below it.
+		currSeriesVal = 0;
+		for(j=1; j <= currSeries; j++)
+		{
+			currSeriesVal += data.getValue(i, j); //Columns (j) start with the lowest series indexed at 1
+		}
+		
+		//Check for intersection
+		if (currSeriesVal >= currLineVal)
+		{
+			seriesLineIntersections[currSeries] = {x:x,y:currSeriesVal};
+			currSeries--; //Once we found the intersection with the top-left most curve, move on to the next
+		}
+		
+		currLineVal += slope * (x-xPrev); //Slope is negative
+		xPrev = x;
+	}
+	
+	//If no intersections were found for any bottom-right curves, set them to the bottom-right corner.
+	if (currSeries > 1)
+	{
+		for (i = currSeries; i > 0; i--)
+		{
+			seriesLineIntersections[i] = {x:xMax,y:0};
+		}
+	}
+	
+	
+	/*Next, switch to x/y pixel coordinates
+	 */
+	var cli = chartWrapper.getChart().getChartLayoutInterface();
+	
+	var seriesLineIntersectionsPx = []; //Here, we switch the direction of the index and add both the upper-left and bottom-right corner
+	
+	seriesLineIntersectionsPx[0] = {x:cli.getXLocation(0), y:cli.getYLocation(100)} //So the upper-left corner is at index 0
+	seriesLineIntersectionsPx[seriesLineIntersections.length] = {x:cli.getXLocation(xMax), y:cli.getYLocation(0)}; //And the bottom-right corner is last
+	for (var index in seriesLineIntersections)
+	{
+		seriesLineIntersectionsPx[seriesLineIntersections.length - index] = {x:cli.getXLocation(seriesLineIntersections[index].x), y:cli.getYLocation(seriesLineIntersections[index].y)};
+	}
+	
+	/*Finally, find the midpoints of the above coordinates
+	 *which will be the overlay locations
+	 */
+	var overlayLocations = []; //Now the index corresponds to the Pokemon number of the area under the location
+	
+	for (i=0; i < seriesLineIntersectionsPx.length - 1; i++)
+	{
+		overlayLocations[i] = {x:(seriesLineIntersectionsPx[i].x + seriesLineIntersectionsPx[i+1].x)/2,
+ 	                      	   y:(seriesLineIntersectionsPx[i].y + seriesLineIntersectionsPx[i+1].y)/2};
+		
+		var div = document.createElement("div");
+		
+		div.className = "overlay";
+		div.id = `overlay_${i}`;
+		div.innerHTML = `n=${i}`;
+		
+		document.getElementById("overlaycontainer").appendChild(div);
+		
+		divWidth = document.getElementById("overlay_" + i).clientWidth;
+		divHeight = document.getElementById("overlay_" + i).clientHeight;
+		
+		if (((overlayLocations[i].x - seriesLineIntersectionsPx[i].x) < divWidth/2) || ((overlayLocations[i].y - seriesLineIntersectionsPx[i].y) < divHeight/2))
+		{
+			document.getElementById("overlay_" + i).style.display = "none";
+		}
+		else
+		{
+			//document.getElementById("overlay_" + i).style.top = (overlayLocations[i].y - (divHeight / 2)) + "px";
+			//document.getElementById("overlay_" + i).style.left = (overlayLocations[i].x - (divWidth / 2)) + "px";
+			document.getElementById("overlay_" + i).style.top = (overlayLocations[i].y) + "px";
+			document.getElementById("overlay_" + i).style.left = (overlayLocations[i].x) + "px";
+		}
+	}
+	
+	console.log(seriesLineIntersections);
+}
