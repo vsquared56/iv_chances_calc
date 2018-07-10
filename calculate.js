@@ -223,7 +223,6 @@ function calculate()
 		var prob;
 		var datapoints;
 		var datainterval;
-		var datarow;
 		
 		data = new google.visualization.DataTable();
 		
@@ -283,23 +282,24 @@ function calculate()
 				data.addColumn('number', 'Probability of ' + j + ' successes');
 			}
 			
-			var prob_prev_series;
-			var datarow;
+			var probPrevSeries;
+			var dataRow;
 			// i is the number of encounters.
 			for (i = 0; i <= calcopts.encounterstograph; i+= datainterval)
 			{
-				prob_prev_series = 0;
-				datarow = [];
+				probPrevSeries = 0;
+				dataRow = [];
 				
-				datarow.push(i);
+				
+				dataRow.push(i);
 				for (j = calcopts.pokemontoget; j >= 1; j--)
 				{
 					prob = 100*(1-binomcdf(j-1,i,(calcresults.final_prob),0));
-					datarow.push(prob - prob_prev_series);
-					prob_prev_series = prob;
+					dataRow.push(prob - probPrevSeries);
+					probPrevSeries = prob;
 				}
 				
-				data.addRow(datarow);
+				data.addRow(dataRow);
 			}
 			
 			//Add tooltip when the chart is ready
