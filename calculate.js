@@ -272,7 +272,7 @@ function calculate()
 			chartOptions.hAxis = {title:'Number of encounters'};
 			chartOptions.vAxis = {gridlines: {count:-1}, minValue:0, maxValue:100, format: 'decimal', title: 'Probability (%)', titleTextStyle:{italic: false}};
 			
-			datapoints = 100; //Don't calculate/chart more than 500 data points.
+			datapoints = 100; //Don't calculate/chart more than 100 data points.
 			datainterval = Math.ceil(calcopts.encounterstograph / datapoints);
 			
 			data.addColumn('number', 'Encounters');
@@ -284,18 +284,19 @@ function calculate()
 			
 			var probPrevSeries;
 			var dataRow;
-			// i is the number of encounters.
+			
+			//i is the number of encounters.
 			for (i = 0; i <= calcopts.encounterstograph; i+= datainterval)
 			{
 				probPrevSeries = 0;
 				dataRow = [];
-				
-				
 				dataRow.push(i);
+				
+				//j is each series
 				for (j = calcopts.pokemontoget; j >= 1; j--)
 				{
 					prob = 100*(1-binomcdf(j-1,i,(calcresults.final_prob),0));
-					dataRow.push(prob - probPrevSeries);
+					dataRow.push(prob - probPrevSeries); //Due to .isStacked = true
 					probPrevSeries = prob;
 				}
 				
