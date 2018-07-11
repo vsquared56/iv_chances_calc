@@ -810,7 +810,7 @@ function addOverlays()
 		divWidth = document.getElementById("overlay_" + i).clientWidth;
 		divHeight = document.getElementById("overlay_" + i).clientHeight;
 		
-		if (((overlayLocations[i].x - seriesLineIntersectionsPx[i].x) < divWidth/2.5) || ((overlayLocations[i].y - seriesLineIntersectionsPx[i].y) < divHeight/2.5))
+		if (((overlayLocations[i].x - seriesLineIntersectionsPx[i].x) < (divWidth/2.25)) || ((overlayLocations[i].y - seriesLineIntersectionsPx[i].y) < (divHeight/2.25)))
 		{
 			document.getElementById("overlay_" + i).style.display = "none";
 		}
