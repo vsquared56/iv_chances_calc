@@ -762,16 +762,16 @@ function validateOptions(optionsSource)
 	// Validate combination of chart mode and number of Pokemon needed */
 	if (pageOpts.chartmode.value === "single")
 	{
-		if (pageOpts.pokemontoget.value > 16)
+		if (pageOpts.pokemontoget.value > 32)
 		{
-			addError("Simple chart only supports  a maximum of 16 Pokemon needed.",pageOpts.pokemontoget);
+			addError("Simple chart only supports a maximum of 32 Pokemon needed.",pageOpts.pokemontoget);
 		}
 	}
 	else if (pageOpts.chartmode.value === "area")
 	{
-		if (pageOpts.pokemontoget.value > 16)
+		if (pageOpts.pokemontoget.value > 10)
 		{
-			addError("Stacked area chart only supports a maximum of 16 Pokemon needed.",pageOpts.pokemontoget);
+			addError("Stacked area chart only supports a maximum of 10 Pokemon needed.",pageOpts.pokemontoget);
 		}
 		else if(pageOpts.pokemontoget.value === 1)
 		{
