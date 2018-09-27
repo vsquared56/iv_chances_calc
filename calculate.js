@@ -28,7 +28,8 @@ function getCalcOptions()
 				 encountertype:pageOpts.encountertype.value,
 				 minlevel:((pageOpts.minlevel.value === "any") ? 0 : parseInt(pageOpts.minlevel.value)),
 				 trainerlevel:parseInt(pageOpts.trainerlevel.value),
-				 ratemodifier:parseFloat(pageOpts.ratemodifier.value),
+				 friendshiplevel:pageOpts.friendshiplevel.value,
+				 ratemodifier:((pageOpts.encountertype.value === "trade") ? 1 : parseFloat(pageOpts.ratemodifier.value)),
 				 pokemontoget:parseInt(pageOpts.pokemontoget.value),
 				 chartmode:pageOpts.chartmode.value,
 				 encounterstograph:parseInt(pageOpts.encounterstograph.value)
@@ -45,6 +46,27 @@ function getCalcOptions()
 	else if (calcopts.encountertype === "raid")
 	{
 		calcopts.miniv = 10;
+	}
+	else if (calcopts.encountertype === "trade")
+	{
+		switch (calcopts.friendshiplevel)
+		{
+			case "best":
+				calcopts.miniv = 5;
+				break;
+			case "ultra":
+				calcopts.miniv = 3;
+				break;
+			case "great":
+				calcopts.miniv = 2;
+				break;
+			case "good":
+				calcopts.miniv = 1;
+				break;
+			case "friend":
+			default:
+				calcopts.miniv = 0;
+		}
 	}
 }
 
@@ -311,7 +333,7 @@ function calculate()
 			titleopts.afterwhat = "x";
 			
 			//Print some debug text
-			document.getElementById("debug").innerHTML = 	`Plotting 1-binomcdf(k,n,p) with k=${calcopts.pokemontoget - 1},` +
+			document.getElementById("debug").innerHTML = 	`Plotting 1-binomcdf(k,n,p) with 0<=k<=${calcopts.pokemontoget - 1},` +
 			                                                `<br>p=(${calcresults.ivnumerator}/${calcresults.ivdenominator})*(${calcresults.lvlnumerator}/${calcresults.lvldenominator})*${calcopts.ratemodifier}=` +
 															`(${calcresults.iv_prob.toFixed(6)}*${calcresults.lvl_prob.toFixed(6)}*${calcopts.ratemodifier.toFixed(6)})=${calcresults.final_prob.toFixed(8)}` +
 															`<br>for 0<=n<=${calcopts.encounterstograph}`;

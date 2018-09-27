@@ -453,9 +453,10 @@ var pageOpts = {	appraisal: new PageOptionString("Appraisal","appraisal","select
 					minattackiv: new PageOptionIntOrAny("Minimum Attack IV","min_attack_iv","select","opt_minattackiv","any","inclusivemin",0,"inclusivemax",15),
 					mindefenseiv: new PageOptionIntOrAny("Minimum Defense IV","min_defense_iv","select","opt_mindefenseiv","any","inclusivemin",0,"inclusivemax",15),
 					minstaminaiv: new PageOptionIntOrAny("Minimum Stamina IV","min_stamina_iv","select","opt_minstaminaiv","any","inclusivemin",0,"inclusivemax",15),
-					encountertype: new PageOptionString("Encounter Type","encounter_type","select","opt_encountertype","normal",["normal","raid","boosted"]),
+					encountertype: new PageOptionString("Encounter Type","encounter_type","select","opt_encountertype","normal",["normal","raid","boosted","trade"]),
 					minlevel: new PageOptionIntOrAny("Minimum Pokemon Level","min_level","select","opt_minlevel","any","inclusivemin",1,"inclusivemax",35),
 					trainerlevel: new PageOptionInt("Trainer Level","trainer_level","select","opt_trainerlevel",30,"inclusivemin",1,"inclusivemax",30),
+					friendshiplevel: new PageOptionString("Friendship Level","friendship_level","select","opt_friendshiplevel","friend",["friend","good","great","ultra","best"]),
 					ratemodifierselect: new PageOptionString("Rate Modifier Selection","ratemodifierselect","select","opt_ratemodifier","1",["1","450","75","60","50","45","35","19","24.5","custom"]), //TODO: Update pageElement
 					ratemodifier: new PageOptionFloat("Rate Modifier","rate_modifier","textbox","opt_ratemodifier",1,"exclusivemin",0,"inclusivemax",1),
 					ratemodifierinv: new PageOptionFloat("Rate Modifier (inverse)","rate_modifier_inv","textbox","opt_ratemodifier",1,"exclusivemin",0,"nomax",0),
@@ -587,6 +588,9 @@ function processOptions()
 		
 		document.getElementById("opt_minlevel").style.display = "block"; //Display the minimum Pokemon level / Trainer level div
 		document.getElementById("opt_trainerlevel").style.display = "block";
+		
+		document.getElementById("opt_friendshiplevel").style.display = "none";  //Hide the friendship level selection
+		document.getElementById("cat_ratemodifier").style.display = "block";  //Show the rate modifier category
 	}
 	else if(pageOpts.encountertype.value === "boosted")
 	{
@@ -597,15 +601,32 @@ function processOptions()
 		changePokeLvlOption(1,5,"disabled");
 		
 		document.getElementById("opt_minlevel").style.display = "block";
-		document.getElementById("opt_minlevel").style.display = "block";
+		document.getElementById("opt_trainerlevel").style.display = "block";
+		
+		document.getElementById("opt_friendshiplevel").style.display = "none";  //Hide the friendship level selection
+		document.getElementById("cat_ratemodifier").style.display = "block";  //Show the rate modifier category
 	}
 	else if(pageOpts.encountertype.value === "raid")
 	{
 		document.getElementById("opt_minlevel").disabled = true;
-		document.getElementById("opt_minlevel").disabled = true;
+		document.getElementById("opt_trainerlevel").disabled = true;
 		
 		document.getElementById("opt_minlevel").style.display = "none";  //Hide the minimum Pokemon level / Trainer level div
-		document.getElementById("opt_minlevel").style.display = "none";
+		document.getElementById("opt_trainerlevel").style.display = "none";
+		
+		document.getElementById("opt_friendshiplevel").style.display = "none";  //Hide the friendship level selection
+		document.getElementById("cat_ratemodifier").style.display = "block";  //Show the rate modifier category
+	}
+	else if(pageOpts.encountertype.value === "trade")
+	{
+		document.getElementById("opt_minlevel").disabled = true;
+		document.getElementById("opt_trainerlevel").disabled = true;
+		
+		document.getElementById("opt_minlevel").style.display = "none";  //Hide the minimum Pokemon level / Trainer level div
+		document.getElementById("opt_trainerlevel").style.display = "none";
+		
+		document.getElementById("opt_friendshiplevel").style.display = "block";  //Show the friendship level selection
+		document.getElementById("cat_ratemodifier").style.display = "none";  //Show the rate modifier category
 	}
 	  
 	/* Process minimum Pokemon level selection

@@ -40,7 +40,7 @@
 		<div class="content">
 			<div class="contentcontainer">
 				<div class="options">
-					<div class="optioncategory">
+					<div class="optioncategory" id="cat_iv">
 						<div class="optionentry" id="opt_minivpercent"><div class="optiondescription">Minimum IV Percentage:</div>
 							<select id="appraisal" onchange="processOptions()">
 								<option value="best">Wonder /  Simply amazing / Battle with the best</option>
@@ -115,12 +115,14 @@
 							</select>
 						</div>
 					</div>
-					<div class="optioncategory">
+					
+					<div class="optioncategory" id="cat_encountertype">
 						<div class="optionentry" id="opt_encountertype"><div class="optiondescription">Type of encounters:</div>
 							<select id="encounter_type" onchange="processOptions()">
 								<option value="normal">Normal wild Pokemon</option>
 								<option value="boosted">Weather boosted Pokemon</option>
 								<option value="raid">Raid Pokemon</option>
+								<option value="trade">Traded Pokemon</option>
 							</select>
 						</div>
 						<div class="optionentry" id="opt_minlevel"><div class="optiondescription">Minimum Pokemon Level:</div>
@@ -198,9 +200,19 @@
 								<option value=1>1</option>
 							</select>
 						</div>
+						
+						<div class="optionentry" id="opt_friendshiplevel" style="display:none"><div class="optiondescription">Friendship Level:</div>
+							<select id="friendship_level" onchange="processOptions()">
+								<option value="friend">Friend</option>
+								<option value="good">Good Friend</option>
+								<option value="great">Great Friend</option>
+								<option value="ultra">Ultra Friend</option>
+								<option value="best">Best Friend</option>
+							</select>
+						</div>
 					</div>
 					
-					<div class="optioncategory">
+					<div class="optioncategory" id="cat_ratemodifier">
 						<div class="optionentry" id="opt_ratemodifier"><div class="optiondescription">Additional probability modifier:</div>
 							<select id="ratemodifierselect" onchange="processOptions()">
 								<option value="1">Base probability (default)</option>
@@ -220,7 +232,7 @@
 						</div>
 					</div>
 					
-					<div class="optioncategory">
+					<div class="optioncategory" id="cat_chartmode">
 						<div class="optionentry" id="opt_pokemontoget"><div class="optiondescription">Number of above Pokemon needed:</div>
 							<input class="optiontextbox" id="pokemon_to_get" type="number" min="1" step="1" onchange="processOptions()">
 						</div>

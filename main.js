@@ -224,6 +224,7 @@ function init()
 	
 	resetOptionDefaults();
 	setPageOptions();
+	processOptions();
 	
 	getUrlOptions();
 
