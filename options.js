@@ -4,6 +4,7 @@ var optEncountersToGraphSavedNonRaid = false;
 var optEncountersToGraphSavedRaid = false;
 var optCustomMinIvPercentSaved = false;
 var optCustomRateModifierSaved = false;
+var optLuckyProbabilitySaved = false;
 var encountersToGraphDefaultNonRaid;
 var	encountersToGraphDefaultRaid;
 
@@ -457,6 +458,8 @@ var pageOpts = {	appraisal: new PageOptionString("Appraisal","appraisal","select
 					minlevel: new PageOptionIntOrAny("Minimum Pokemon Level","min_level","select","opt_minlevel","any","inclusivemin",1,"inclusivemax",35),
 					trainerlevel: new PageOptionInt("Trainer Level","trainer_level","select","opt_trainerlevel",30,"inclusivemin",1,"inclusivemax",30),
 					friendshiplevel: new PageOptionString("Friendship Level","friendship_level","select","opt_friendshiplevel","friend",["friend","good","great","ultra","best"]),
+					luckystatus: new PageOptionString("Lucky Status","lucky_status","select","opt_luckystatus","mixed",["mixed","lucky","unlucky"]),
+					luckyprobability: new PageOptionFloat("Lucky Probability","lucky_probability","textbox","opt_luckyprobability",10.0,"inclusivemin",0,"inclusivemax",100),
 					ratemodifierselect: new PageOptionString("Rate Modifier Selection","ratemodifierselect","select","opt_ratemodifier","1",["1","450","75","60","50","45","35","19","24.5","custom"]), //TODO: Update pageElement
 					ratemodifier: new PageOptionFloat("Rate Modifier","rate_modifier","textbox","opt_ratemodifier",1,"exclusivemin",0,"inclusivemax",1),
 					ratemodifierinv: new PageOptionFloat("Rate Modifier (inverse)","rate_modifier_inv","textbox","opt_ratemodifier",1,"exclusivemin",0,"nomax",0),
@@ -476,6 +479,7 @@ function resetOptionDefaults()
 	optEncountersToGraphSavedRaid = false;
 	optCustomMinIvPercentSaved = false;
 	optCustomRateModifierSaved = false;
+	optLuckyProbabilitySaved = false;
 	
 	encountersToGraphDefaultNonRaid = 300;
 	encountersToGraphDefaultRaid = 30;
@@ -639,6 +643,38 @@ function processOptions()
 		
 		document.getElementById("opt_luckystatus").style.display = "block";  //Show the lucky status selection
 		document.getElementById("opt_luckyprobability").style.display = "block";  //Show the lucky probability input box
+		
+		if(pageOpts.luckystatus.value === "lucky")
+		{
+			document.getElementById("lucky_probability").disabled = true;
+			pageOpts.luckyprobability.setValue(100);
+		}
+		else if(pageOpts.luckystatus.value === "unlucky")
+		{
+			document.getElementById("lucky_probability").disabled = true;
+			pageOpts.luckyprobability.setValue(0);
+		}
+		else
+		{
+			document.getElementById("lucky_probability").disabled = false;
+			
+			//If the Lucky Probability box was just changed, save the value.
+			if (pageOpts.luckyprobability.previousValue != pageOpts.luckyprobability.value)
+			{
+				optLuckyProbabilitySaved = pageOpts.luckyprobability.value;
+			}
+			//Otherwise, restore the saved value.
+			else if (optLuckyProbabilitySaved)
+			{
+				pageOpts.luckyprobability.setValue(optLuckyProbabilitySaved);
+			}
+			//Or set it to the default
+			else
+			{
+				pageOpts.luckyprobability.setValue(pageOpts.luckyprobability.defaultVal);
+			}
+			
+		}
 	}
 	  
 	/* Process minimum Pokemon level selection
