@@ -210,6 +210,19 @@
 								<option value="best">Best Friend</option>
 							</select>
 						</div>
+						
+						<div class="optionentry" id="opt_luckystatus" style="display:none"><div class="optiondescription">Lucky Status:</div>
+							<select id="lucky_status" onchange="processOptions()">
+								<option value="mixed">Regular Trade</option>
+								<option value="lucky">Guaranteed Lucky</option>
+								<option value="unlucky">Guaranteed Unlucky</option>
+							</select>
+						</div>
+						
+						<div class="optionentry" id="opt_luckyprobability" style="display:none"><div class="optiondescription">Lucky Probability (%):</div>
+							<input class="optiontextbox" id="lucky_probability" type="number" min="0" max="100" step="0.1" value="10.0" onchange="processOptions()">
+						</div>
+						
 					</div>
 					
 					<div class="optioncategory" id="cat_ratemodifier">

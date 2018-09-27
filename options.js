@@ -591,6 +591,9 @@ function processOptions()
 		
 		document.getElementById("opt_friendshiplevel").style.display = "none";  //Hide the friendship level selection
 		document.getElementById("cat_ratemodifier").style.display = "block";  //Show the rate modifier category
+		
+		document.getElementById("opt_luckystatus").style.display = "none";  //Hide the lucky status selection
+		document.getElementById("opt_luckyprobability").style.display = "none";  //Hide the lucky probability input box
 	}
 	else if(pageOpts.encountertype.value === "boosted")
 	{
@@ -605,6 +608,9 @@ function processOptions()
 		
 		document.getElementById("opt_friendshiplevel").style.display = "none";  //Hide the friendship level selection
 		document.getElementById("cat_ratemodifier").style.display = "block";  //Show the rate modifier category
+		
+		document.getElementById("opt_luckystatus").style.display = "none";  //Hide the lucky status selection
+		document.getElementById("opt_luckyprobability").style.display = "none";  //Hide the lucky probability input box
 	}
 	else if(pageOpts.encountertype.value === "raid")
 	{
@@ -616,6 +622,9 @@ function processOptions()
 		
 		document.getElementById("opt_friendshiplevel").style.display = "none";  //Hide the friendship level selection
 		document.getElementById("cat_ratemodifier").style.display = "block";  //Show the rate modifier category
+		
+		document.getElementById("opt_luckystatus").style.display = "none";  //Hide the lucky status selection
+		document.getElementById("opt_luckyprobability").style.display = "none";  //Hide the lucky probability input box
 	}
 	else if(pageOpts.encountertype.value === "trade")
 	{
@@ -626,7 +635,10 @@ function processOptions()
 		document.getElementById("opt_trainerlevel").style.display = "none";
 		
 		document.getElementById("opt_friendshiplevel").style.display = "block";  //Show the friendship level selection
-		document.getElementById("cat_ratemodifier").style.display = "none";  //Show the rate modifier category
+		document.getElementById("cat_ratemodifier").style.display = "none";  //Hide the rate modifier category
+		
+		document.getElementById("opt_luckystatus").style.display = "block";  //Show the lucky status selection
+		document.getElementById("opt_luckyprobability").style.display = "block";  //Show the lucky probability input box
 	}
 	  
 	/* Process minimum Pokemon level selection
