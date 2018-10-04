@@ -22,6 +22,7 @@ function getCalcOptions()
 {
 	calcopts = { minivpercent:parseFloat(pageOpts.minivpercent.value),
 				 miniv:0,
+				 minivlucky:12,
 				 minattackiv:((pageOpts.minattackiv.value === "any") ? 0 : parseInt(pageOpts.minattackiv.value)),
 				 mindefenseiv:((pageOpts.mindefenseiv.value === "any") ? 0 : parseInt(pageOpts.mindefenseiv.value)),
 				 minstaminaiv:((pageOpts.minstaminaiv.value === "any") ? 0 : parseInt(pageOpts.minstaminaiv.value)),
@@ -29,6 +30,7 @@ function getCalcOptions()
 				 minlevel:((pageOpts.minlevel.value === "any") ? 0 : parseInt(pageOpts.minlevel.value)),
 				 trainerlevel:parseInt(pageOpts.trainerlevel.value),
 				 friendshiplevel:pageOpts.friendshiplevel.value,
+				 luckyprobability:pageOpts.luckyprobability.value,
 				 ratemodifier:((pageOpts.encountertype.value === "trade") ? 1 : parseFloat(pageOpts.ratemodifier.value)),
 				 pokemontoget:parseInt(pageOpts.pokemontoget.value),
 				 chartmode:pageOpts.chartmode.value,
@@ -78,32 +80,70 @@ function calculatePerEncounterProb()
 	calcresults = { ivnumerator: 0,
 					ivdenominator: 0,
 					iv_prob: 0,
+					ivnumeratorunlucky: 0,
+					ivdenominatorunlucky: 0,
+					iv_probunlucky: 0,
+					ivnumeratorlucky: 0,
+					ivdenominatorlucky: 0,
+					iv_problucky: 0,
 					lvlnumerator: 1,
 					lvldenominator: 1,
 					lvl_prob: 0
 					}
-	/* Calculate the number of potential matches (and the total possible matches) given the input minattackiv, minivpercent, and miniv */
 	
-	// Loop through the entire iv table, counting the chance any single encounter will fit our criteria
-	for (i = 0; i < iv.length; i++)
+	var ivnumerator = 0;
+	var ivdenominator = 0;
+	
+	/* Calculate the number of potential matches (and the total possible matches) given the input minattackiv, minivpercent, and miniv */
+	function calculateIVProb(miniv)
 	{
-		// If it matches ATK,DEF,STA and IV% criteria, and fits the type of encounter (miniv), we want it.
-		if ((iv[i].atk >= calcopts.minattackiv) &&
-		    (iv[i].def >= calcopts.mindefenseiv) &&
-			(iv[i].sta >= calcopts.minstaminaiv) &&
-			(iv[i].percent >= calcopts.minivpercent) &&
-			(iv[i].lowestiv >= calcopts.miniv))
+		ivnumerator = 0;
+		ivdenominator = 0;
+		
+		// Loop through the entire iv table, counting the chance any single encounter will fit our criteria
+		for (i = 0; i < iv.length; i++)
 		{
-			calcresults.ivnumerator++;
-		}
-		// Divide by the total number of possible encounters (those matching the encounter type, miniv)
-		if (iv[i].lowestiv >= calcopts.miniv)
-		{
-			calcresults.ivdenominator++;
+			// If it matches ATK,DEF,STA and IV% criteria, and fits the type of encounter (miniv), we want it.
+			if ((iv[i].atk >= calcopts.minattackiv) &&
+				(iv[i].def >= calcopts.mindefenseiv) &&
+				(iv[i].sta >= calcopts.minstaminaiv) &&
+				(iv[i].percent >= calcopts.minivpercent) &&
+				(iv[i].lowestiv >= miniv))
+			{
+				ivnumerator++;
+			}
+			// Divide by the total number of possible encounters (those matching the encounter type, miniv)
+			if (iv[i].lowestiv >= miniv)
+			{
+				ivdenominator++;
+			}
 		}
 	}
-	calcresults.iv_prob = (calcresults.ivnumerator / calcresults.ivdenominator);
 	
+	if (calcopts.encountertype != "trade")
+	{
+		calculateIVProb(calcopts.miniv);
+		calcresults.ivnumerator = ivnumerator;
+		calcresults.ivdenominator = ivdenominator;
+		calcresults.iv_prob = (calcresults.ivnumerator / calcresults.ivdenominator);
+	}
+	else
+	{
+		//First get the IV probability for unlucky trades
+		calculateIVProb(calcopts.miniv);
+		calcresults.ivnumeratorunlucky = ivnumerator;
+		calcresults.ivdenominatorunlucky = ivdenominator;
+		
+		//Then for lucky trades
+		calculateIVProb(calcopts.minivlucky);
+		calcresults.ivnumeratorlucky = ivnumerator;
+		calcresults.ivdenominatorlucky = ivdenominator;
+		
+		calcresults.iv_prob = (1-(calcopts.luckyprobability/100))*(calcresults.ivnumeratorunlucky / calcresults.ivdenominatorunlucky) + 
+							  (calcopts.luckyprobability/100)*(calcresults.ivnumeratorlucky / calcresults.ivdenominatorlucky);
+		
+	}
+		
 	// Calculate level modifier
 	calcresults.lvlnumerator = 1;
 	calcresults.lvldenominator = 1;
