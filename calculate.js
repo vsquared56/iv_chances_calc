@@ -295,7 +295,7 @@ function calculate()
 			chartOptions.isStacked = false;
 			chartOptions.legend = { position :'none'};
 			chartOptions.hAxis = {title:'Number of encounters'};
-			chartOptions.vAxis = {gridlines: {count:-1}, minValue:0, maxValue:100, format: 'decimal', title: 'Probability (%)', titleTextStyle:{italic: false}};
+			chartOptions.vAxis = {gridlines: {count:-1}, minValue:0, maxValue:100, viewWindow:{min:0, max:100}, format: 'decimal', title: 'Probability (%)', titleTextStyle:{italic: false}};
 
 			data.addColumn('number', 'Encounters');
 			data.addColumn('number', 'Probability');
@@ -332,7 +332,7 @@ function calculate()
 			chartOptions.isStacked = true;
 			chartOptions.legend = { position :'none'};
 			chartOptions.hAxis = {title:'Number of encounters'};
-			chartOptions.vAxis = {gridlines: {count:-1}, minValue:0, maxValue:100, format: 'decimal', title: 'Probability (%)', titleTextStyle:{italic: false}};
+			chartOptions.vAxis = {gridlines: {count:-1}, minValue:0, maxValue:100, viewWindow:{min:0, max:100}, format: 'decimal', title: 'Probability (%)', titleTextStyle:{italic: false}};
 			
 			datapoints = 100; //Don't calculate/chart more than 100 data points.
 			datainterval = Math.ceil(calcopts.encounterstograph / datapoints);
@@ -443,7 +443,7 @@ function calculate()
 			//Set the chart scale
 			var maxValRounded = Math.pow(10,Math.floor(Math.log10(maxprob)))
 			var maxVal = (maxValRounded * Math.ceil(maxprob / maxValRounded));
-			chartOptions.vAxis = {gridlines: {count:-1}, minValue:0, maxValue:maxVal, format: 'decimal', title: 'Probability (%)', titleTextStyle:{italic: false}};
+			chartOptions.vAxis = {gridlines: {count:-1}, minValue:0, maxValue:maxVal, viewWindow:{min:0, max:maxVal}, format: 'decimal', title: 'Probability (%)', titleTextStyle:{italic: false}};
 			
 			//Set the title options
 			titleopts.findingwhat = "x";
@@ -542,7 +542,7 @@ function calculate()
 			}		
 			
 			//Set the chart scale
-			chartOptions.vAxis = {gridlines: {count:-1}, minValue:0, maxValue:100, format: 'decimal', title: 'Probability (%)', titleTextStyle:{italic: false}};
+			chartOptions.vAxis = {gridlines: {count:-1}, minValue:0, maxValue:100, viewWindow:{min:0, max:100}, format: 'decimal', title: 'Probability (%)', titleTextStyle:{italic: false}};
 			
 			//Set the title options
 			titleopts.findingwhat = "at least x";
@@ -619,7 +619,7 @@ function calculate()
 			//Set the chart scale
 			var maxValRounded = Math.pow(10,Math.floor(Math.log10(maxprob)))
 			var maxVal = (maxValRounded * Math.ceil(maxprob / maxValRounded));
-			chartOptions.vAxis = {gridlines: {count:-1}, minValue:0, maxValue:maxVal, format: 'decimal', title: 'Probability (%)', titleTextStyle:{italic: false}};
+			chartOptions.vAxis = {gridlines: {count:-1}, minValue:0, maxValue:maxVal, viewWindow:{min:0, max:maxVal}, format: 'decimal', title: 'Probability (%)', titleTextStyle:{italic: false}};
 			
 			//Set the title options
 			titleopts.findingwhat = "x";
@@ -702,7 +702,7 @@ function calculate()
 
 			
 			//Set the chart scale
-			chartOptions.vAxis = {gridlines: {count:-1}, minValue:0, maxValue:100, format: 'decimal', title: 'Probability (%)', titleTextStyle:{italic: false}};
+			chartOptions.vAxis = {gridlines: {count:-1}, minValue:0, maxValue:100, viewWindow:{min:0, max:100}, format: 'decimal', title: 'Probability (%)', titleTextStyle:{italic: false}};
 			
 			//Set the title options
 			titleopts.findingwhat = "at least x";
