@@ -133,11 +133,13 @@ function calculatePerEncounterProb()
 		calculateIVProb(calcopts.miniv);
 		calcresults.ivnumeratorunlucky = ivnumerator;
 		calcresults.ivdenominatorunlucky = ivdenominator;
+		calcresults.iv_probunlucky = (calcresults.ivnumeratorunlucky / calcresults.ivdenominatorunlucky);
 		
 		//Then for lucky trades
 		calculateIVProb(calcopts.minivlucky);
 		calcresults.ivnumeratorlucky = ivnumerator;
 		calcresults.ivdenominatorlucky = ivdenominator;
+		calcresults.iv_problucky = (calcresults.ivnumeratorlucky / calcresults.ivdenominatorlucky);
 		
 		calcresults.iv_prob = (1-(calcopts.luckyprobability/100))*(calcresults.ivnumeratorunlucky / calcresults.ivdenominatorunlucky) + 
 							  (calcopts.luckyprobability/100)*(calcresults.ivnumeratorlucky / calcresults.ivdenominatorlucky);
@@ -720,7 +722,19 @@ function calculate()
 	/* Finished calculating for all charts */
 		
 		//Print the final probability per encounter
-		document.getElementById("resultstext").innerHTML =	`On average, ${calcresults.ivnumerator} of every ${calcresults.ivdenominator} Pokemon (${(calcresults.iv_prob*100).toFixed(2)}%) will match the IV criteria...<br>`;
+		if (calcopts.encountertype != "trade")
+		{
+			document.getElementById("resultstext").innerHTML =	`On average, ${calcresults.ivnumerator} of every ${calcresults.ivdenominator} Pokemon (${(calcresults.iv_prob*100).toFixed(2)}%) will match the IV criteria...<br>`;
+		}
+		else
+		{
+			document.getElementById("resultstext").innerHTML =	`On average, ${calcresults.ivnumeratorlucky} of every ${calcresults.ivdenominatorlucky} lucky trades (${(calcresults.iv_problucky*100).toFixed(2)}%), ` +
+																`and ${calcresults.ivnumeratorunlucky} of every ${calcresults.ivdenominatorunlucky} unlucky trades (${(calcresults.iv_probunlucky*100).toFixed(2)}%) will match the IV criteria...<br>` +
+																`Since ${calcopts.luckyprobability}% of all trades will be lucky, ` +
+																`${calcopts.luckyprobability/100}*${(calcresults.iv_problucky).toFixed(4)}+${((100-calcopts.luckyprobability)/100)}*${(calcresults.iv_probunlucky).toFixed(4)}=` +
+																`${(calcresults.iv_prob*100).toFixed(2)}% of all trades will match the IV criteria.<br>`;
+		}
+		
 		if (calcopts.minlevel != 0)
 		{
 			document.getElementById("resultstext").innerHTML += `Also, ${calcresults.lvlnumerator}/${calcresults.lvldenominator} (${(calcresults.lvl_prob*100).toFixed(2)}%) of those will match the level requirements...<br>`;
@@ -737,6 +751,7 @@ function calculate()
 		var titleLevel = "";
 		var titleMinIV = "";
 		var titleIV = "";
+		var titleEncounters = "";
 
 		if (calcopts.ratemodifier != 1)
 		{
@@ -767,8 +782,17 @@ function calculate()
 			}
 		}
 		
+		if (calcopts.encountertype != "trade")
+		{
+			titleEncounters = `${calcopts.encountertype} encounters`;
+		}
+		else
+		{
+			titleEncounters = `trade encounters (${calcopts.friendshiplevel} level, ${calcopts.luckyprobability}% lucky chance)`;
+		}
+		
 		chartOptions.title  = `Chance of finding ${titleopts.findingwhat} ${titleShiny} Pokemon ${titleMinIV} ${titleLevel} ${titleIV} ` +
-							  `after ${titleopts.afterwhat} ${calcopts.encountertype} encounters`;
+							  `after ${titleopts.afterwhat} ${titleEncounters}`;
 		
 		
 		chartOptions.height = height;
