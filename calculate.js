@@ -322,10 +322,22 @@ function calculate()
 			titleopts.afterwhat = "x";
 							 
 			//Print some debug text
-			document.getElementById("debug").innerHTML = 	`Plotting 1-binomcdf(k,n,p) with k=${calcopts.pokemontoget - 1},` +
-			                                                `<br>p=(${calcresults.ivnumerator}/${calcresults.ivdenominator})*(${calcresults.lvlnumerator}/${calcresults.lvldenominator})*${calcopts.ratemodifier}=` +
-															`(${calcresults.iv_prob.toFixed(6)}*${calcresults.lvl_prob.toFixed(6)}*${calcopts.ratemodifier.toFixed(6)})=${calcresults.final_prob.toFixed(8)}` +
-															`<br>for 0<=n<=${calcopts.encounterstograph}`;
+			if (calcopts.encountertype !== "trade")
+			{
+				document.getElementById("debug").innerHTML = 	`Plotting 1-binomcdf(k,n,p) with k=${calcopts.pokemontoget - 1},` +
+																`<br>p = (${calcresults.ivnumerator}/${calcresults.ivdenominator})*(${calcresults.lvlnumerator}/${calcresults.lvldenominator})*${calcopts.ratemodifier}=` +
+																`(${calcresults.iv_prob.toFixed(6)}*${calcresults.lvl_prob.toFixed(6)}*${calcopts.ratemodifier.toFixed(6)})=${calcresults.final_prob.toFixed(8)}` +
+																`<br>for 0<=n<=${calcopts.encounterstograph}`;
+			}
+			else
+			{
+				document.getElementById("debug").innerHTML = 	`Plotting 1-binomcdf(k,n,p) with k=${calcopts.pokemontoget - 1},` +
+																`<br>p = (${calcopts.luckyprobability/100}*(${calcresults.ivnumeratorlucky}/${calcresults.ivdenominatorlucky})` +
+																`+${1-calcopts.luckyprobability/100}*(${calcresults.ivnumeratorunlucky}/${calcresults.ivdenominatorunlucky}))` +
+																`*(${calcresults.lvlnumerator}/${calcresults.lvldenominator})*${calcopts.ratemodifier}=` +
+																`(${calcresults.iv_prob.toFixed(6)}*${calcresults.lvl_prob.toFixed(6)}*${calcopts.ratemodifier.toFixed(6)})=${calcresults.final_prob.toFixed(8)}` +
+																`<br>for 0<=n<=${calcopts.encounterstograph}`;
+			}
 		}
 		/* Area chart */
 		else if (calcopts.chartmode === "area")
@@ -375,10 +387,22 @@ function calculate()
 			titleopts.afterwhat = "x";
 			
 			//Print some debug text
-			document.getElementById("debug").innerHTML = 	`Plotting 1-binomcdf(k,n,p) with 0<=k<=${calcopts.pokemontoget - 1},` +
-			                                                `<br>p=(${calcresults.ivnumerator}/${calcresults.ivdenominator})*(${calcresults.lvlnumerator}/${calcresults.lvldenominator})*${calcopts.ratemodifier}=` +
-															`(${calcresults.iv_prob.toFixed(6)}*${calcresults.lvl_prob.toFixed(6)}*${calcopts.ratemodifier.toFixed(6)})=${calcresults.final_prob.toFixed(8)}` +
-															`<br>for 0<=n<=${calcopts.encounterstograph}`;
+			if (calcopts.encountertype !== "trade")
+			{
+				document.getElementById("debug").innerHTML = 	`Plotting 1-binomcdf(k,n,p) with 0<=k<=${calcopts.pokemontoget - 1},` +
+																`<br>p = (${calcresults.ivnumerator}/${calcresults.ivdenominator})*(${calcresults.lvlnumerator}/${calcresults.lvldenominator})*${calcopts.ratemodifier}=` +
+																`(${calcresults.iv_prob.toFixed(6)}*${calcresults.lvl_prob.toFixed(6)}*${calcopts.ratemodifier.toFixed(6)})=${calcresults.final_prob.toFixed(8)}` +
+																`<br>for 0<=n<=${calcopts.encounterstograph}`;
+			}
+			else
+			{
+				document.getElementById("debug").innerHTML = 	`Plotting 1-binomcdf(k,n,p) with k=${calcopts.pokemontoget - 1},` +
+																`<br>p = (${calcopts.luckyprobability/100}*(${calcresults.ivnumeratorlucky}/${calcresults.ivdenominatorlucky})` +
+																`+${1-calcopts.luckyprobability/100}*(${calcresults.ivnumeratorunlucky}/${calcresults.ivdenominatorunlucky}))` +
+																`*(${calcresults.lvlnumerator}/${calcresults.lvldenominator})*${calcopts.ratemodifier}=` +
+																`(${calcresults.iv_prob.toFixed(6)}*${calcresults.lvl_prob.toFixed(6)}*${calcopts.ratemodifier.toFixed(6)})=${calcresults.final_prob.toFixed(8)}` +
+																`<br>for 0<=n<=${calcopts.encounterstograph}`;
+			}
 		}
 		/* PMF Chart */
 		else if (calcopts.chartmode === "pmf")
@@ -452,10 +476,22 @@ function calculate()
 			titleopts.afterwhat = `exactly ${calcopts.encounterstograph}`;
 			
 			//Print some debug text
-			document.getElementById("debug").innerHTML = 	`Plotting binompmf(k,n,p) with 0<=k<=${maxencounters},` +
-															`<br>p = (${calcresults.ivnumerator}/${calcresults.ivdenominator})*(${calcresults.lvlnumerator}/${calcresults.lvldenominator})*${calcopts.ratemodifier}=` +
-															`(${calcresults.iv_prob.toFixed(6)}*${calcresults.lvl_prob.toFixed(6)}*${calcopts.ratemodifier.toFixed(6)})=${calcresults.final_prob.toFixed(8)}` +
-															`<br>for n=${calcopts.encounterstograph}`;
+			if (calcopts.encountertype !== "trade")
+			{
+				document.getElementById("debug").innerHTML = 	`Plotting binompmf(k,n,p) with 0<=k<=${maxencounters},` +
+																`<br>p = (${calcresults.ivnumerator}/${calcresults.ivdenominator})*(${calcresults.lvlnumerator}/${calcresults.lvldenominator})*${calcopts.ratemodifier}=` +
+																`(${calcresults.iv_prob.toFixed(6)}*${calcresults.lvl_prob.toFixed(6)}*${calcopts.ratemodifier.toFixed(6)})=${calcresults.final_prob.toFixed(8)}` +
+																`<br>for n=${calcopts.encounterstograph}`;
+			}
+			else
+			{
+				document.getElementById("debug").innerHTML = 	`Plotting 1-binomcdf(k,n,p) with k=${calcopts.pokemontoget - 1},` +
+																`<br>p = (${calcopts.luckyprobability/100}*(${calcresults.ivnumeratorlucky}/${calcresults.ivdenominatorlucky})` +
+																`+${1-calcopts.luckyprobability/100}*(${calcresults.ivnumeratorunlucky}/${calcresults.ivdenominatorunlucky}))` +
+																`*(${calcresults.lvlnumerator}/${calcresults.lvldenominator})*${calcopts.ratemodifier}=` +
+																`(${calcresults.iv_prob.toFixed(6)}*${calcresults.lvl_prob.toFixed(6)}*${calcopts.ratemodifier.toFixed(6)})=${calcresults.final_prob.toFixed(8)}` +
+																`<br>for 0<=n<=${calcopts.encounterstograph}`;
+			}
 		}
 		/* CDF chart */
 		else if (calcopts.chartmode === "cdf")
@@ -493,10 +529,22 @@ function calculate()
 			var maxprob = 0;
 			
 			//Print some debug text
-			document.getElementById("debug").innerHTML = 	`Plotting 1-binomcdf(k,n,p) with 0<=k<=${maxencounters},` +
-															`<br>p = (${calcresults.ivnumerator}/${calcresults.ivdenominator})*(${calcresults.lvlnumerator}/${calcresults.lvldenominator})*${calcopts.ratemodifier}=` +
-															`(${calcresults.iv_prob.toFixed(6)}*${calcresults.lvl_prob.toFixed(6)}*${calcopts.ratemodifier.toFixed(6)}) = ${calcresults.final_prob.toFixed(8)}` +
-															`<br>for n=${calcopts.encounterstograph}`;
+			if (calcopts.encountertype !== "trade")
+			{
+				document.getElementById("debug").innerHTML = 	`Plotting 1-binomcdf(k,n,p) with 0<=k<=${maxencounters},` +
+																`<br>p = (${calcresults.ivnumerator}/${calcresults.ivdenominator})*(${calcresults.lvlnumerator}/${calcresults.lvldenominator})*${calcopts.ratemodifier}=` +
+																`(${calcresults.iv_prob.toFixed(6)}*${calcresults.lvl_prob.toFixed(6)}*${calcopts.ratemodifier.toFixed(6)}) = ${calcresults.final_prob.toFixed(8)}` +
+																`<br>for n=${calcopts.encounterstograph}`;
+			}
+			else
+			{
+				document.getElementById("debug").innerHTML = 	`Plotting 1-binomcdf(k,n,p) with k=${calcopts.pokemontoget - 1},` +
+																`<br>p = (${calcopts.luckyprobability/100}*(${calcresults.ivnumeratorlucky}/${calcresults.ivdenominatorlucky})` +
+																`+${1-calcopts.luckyprobability/100}*(${calcresults.ivnumeratorunlucky}/${calcresults.ivdenominatorunlucky}))` +
+																`*(${calcresults.lvlnumerator}/${calcresults.lvldenominator})*${calcopts.ratemodifier}=` +
+																`(${calcresults.iv_prob.toFixed(6)}*${calcresults.lvl_prob.toFixed(6)}*${calcopts.ratemodifier.toFixed(6)})=${calcresults.final_prob.toFixed(8)}` +
+																`<br>for 0<=n<=${calcopts.encounterstograph}`;
+			}
 			
 			//Toss the extreme left tail (anything less than 10 standard deviations left of the mean)
 			var begin = Math.max(0,Math.floor((calcopts.encounterstograph*calcresults.final_prob)-10*Math.sqrt(calcopts.encounterstograph*calcresults.final_prob*(1-calcresults.final_prob))));
@@ -628,12 +676,27 @@ function calculate()
 			titleopts.afterwhat = `exactly ${calcopts.encounterstograph}`;
 			
 			//Print some debug text
-			document.getElementById("debug").innerHTML = 	`Using a Gaussian approximation of the binomial distribution...` +
-			                                                `<br>Plotting normalpdf(x,μ,σ²) with 0<=x<=${maxencounters},` +
-															`<br>μ=n*p=${calcopts.encounterstograph}*(${calcresults.ivnumerator}/${calcresults.ivdenominator})*(${calcresults.lvlnumerator}/${calcresults.lvldenominator})*${calcopts.ratemodifier}=` +
-															`${calcopts.encounterstograph}*(${calcresults.iv_prob.toFixed(6)}*${calcresults.lvl_prob.toFixed(6)}*${calcopts.ratemodifier.toFixed(6)})=${(calcopts.encounterstograph*calcresults.final_prob.toFixed(8))}` +
-															`<br>σ²=n*p*(1-p)=${(calcopts.encounterstograph*calcresults.final_prob*(1-calcresults.final_prob)).toFixed(4)}` +
-															`<br>with np=${(calcopts.encounterstograph*calcresults.final_prob).toFixed(4)} n(1-p)=${(calcopts.encounterstograph*(1-calcresults.final_prob)).toFixed(4)}`;
+			if (calcopts.encountertype !== "trade")
+			{
+				document.getElementById("debug").innerHTML = 	`Using a Gaussian approximation of the binomial distribution...` +
+																`<br>Plotting normalpdf(x,μ,σ²) with 0<=x<=${maxencounters},` +
+																`<br>μ=n*p=${calcopts.encounterstograph}*(${calcresults.ivnumerator}/${calcresults.ivdenominator})*(${calcresults.lvlnumerator}/${calcresults.lvldenominator})*${calcopts.ratemodifier}=` +
+																`${calcopts.encounterstograph}*(${calcresults.iv_prob.toFixed(6)}*${calcresults.lvl_prob.toFixed(6)}*${calcopts.ratemodifier.toFixed(6)})=${(calcopts.encounterstograph*calcresults.final_prob.toFixed(8))}` +
+																`<br>σ²=n*p*(1-p)=${(calcopts.encounterstograph*calcresults.final_prob*(1-calcresults.final_prob)).toFixed(4)}` +
+																`<br>with np=${(calcopts.encounterstograph*calcresults.final_prob).toFixed(4)} n(1-p)=${(calcopts.encounterstograph*(1-calcresults.final_prob)).toFixed(4)}`;
+			}
+			else
+			{
+				document.getElementById("debug").innerHTML = 	`Using a Gaussian approximation of the binomial distribution...` +
+																`<br>Plotting normalpdf(x,μ,σ²) with 0<=x<=${maxencounters},` +
+																`<br>μ=n*p=${calcopts.encounterstograph}*` +
+																`(${calcopts.luckyprobability/100}*(${calcresults.ivnumeratorlucky}/${calcresults.ivdenominatorlucky})` +
+																`+${1-calcopts.luckyprobability/100}*(${calcresults.ivnumeratorunlucky}/${calcresults.ivdenominatorunlucky}))` +
+																`*(${calcresults.lvlnumerator}/${calcresults.lvldenominator})*${calcopts.ratemodifier}=` +
+																`${calcopts.encounterstograph}*(${calcresults.iv_prob.toFixed(6)}*${calcresults.lvl_prob.toFixed(6)}*${calcopts.ratemodifier.toFixed(6)})=${(calcopts.encounterstograph*calcresults.final_prob.toFixed(8))}` +
+																`<br>σ²=n*p*(1-p)=${(calcopts.encounterstograph*calcresults.final_prob*(1-calcresults.final_prob)).toFixed(4)}` +
+																`<br>with np=${(calcopts.encounterstograph*calcresults.final_prob).toFixed(4)} n(1-p)=${(calcopts.encounterstograph*(1-calcresults.final_prob)).toFixed(4)}`;
+			}
 		}
 		/* Gaussian CDF chart */
 		else if (calcopts.chartmode === "normalcdf")
@@ -711,12 +774,27 @@ function calculate()
 			titleopts.afterwhat = `exactly ${calcopts.encounterstograph}`;
 			
 			//Print some debug text
-			document.getElementById("debug").innerHTML = 	`Using a Gaussian approximation of the binomial distribution...` +
-			                                                `Plotting normalcdf(x,μ,σ²) with 0<=x<=${maxencounters},` +
-															`<br>μ=n*p=${calcopts.encounterstograph}*(${calcresults.ivnumerator}/${calcresults.ivdenominator})*(${calcresults.lvlnumerator}/${calcresults.lvldenominator})*${calcopts.ratemodifier}=` +
-															`${calcopts.encounterstograph}*(${calcresults.iv_prob.toFixed(6)}*${calcresults.lvl_prob.toFixed(6)}*${calcopts.ratemodifier.toFixed(6)})=${(calcopts.encounterstograph*calcresults.final_prob.toFixed(8))}` +
-															`<br>σ²=n*p*(1-p)=${(calcopts.encounterstograph*calcresults.final_prob*(1-calcresults.final_prob)).toFixed(4)}` +
-															`<br>with np=${(calcopts.encounterstograph*calcresults.final_prob).toFixed(4)} n(1-p)=${(calcopts.encounterstograph*(1-calcresults.final_prob)).toFixed(4)}`;
+			if (calcopts.encountertype !== "trade")
+			{
+				document.getElementById("debug").innerHTML = 	`Using a Gaussian approximation of the binomial distribution...` +
+																`<br>Plotting normalcdf(x,μ,σ²) with 0<=x<=${maxencounters},` +
+																`<br>μ=n*p=${calcopts.encounterstograph}*(${calcresults.ivnumerator}/${calcresults.ivdenominator})*(${calcresults.lvlnumerator}/${calcresults.lvldenominator})*${calcopts.ratemodifier}=` +
+																`${calcopts.encounterstograph}*(${calcresults.iv_prob.toFixed(6)}*${calcresults.lvl_prob.toFixed(6)}*${calcopts.ratemodifier.toFixed(6)})=${(calcopts.encounterstograph*calcresults.final_prob.toFixed(8))}` +
+																`<br>σ²=n*p*(1-p)=${(calcopts.encounterstograph*calcresults.final_prob*(1-calcresults.final_prob)).toFixed(4)}` +
+																`<br>with np=${(calcopts.encounterstograph*calcresults.final_prob).toFixed(4)} n(1-p)=${(calcopts.encounterstograph*(1-calcresults.final_prob)).toFixed(4)}`;
+			}
+			else
+			{
+				document.getElementById("debug").innerHTML = 	`Using a Gaussian approximation of the binomial distribution...` +
+																`<br>Plotting normalcdf(x,μ,σ²) with 0<=x<=${maxencounters},` +
+																`<br>μ=n*p=${calcopts.encounterstograph}*` +
+																`(${calcopts.luckyprobability/100}*(${calcresults.ivnumeratorlucky}/${calcresults.ivdenominatorlucky})` +
+																`+${1-calcopts.luckyprobability/100}*(${calcresults.ivnumeratorunlucky}/${calcresults.ivdenominatorunlucky}))` +
+																`*(${calcresults.lvlnumerator}/${calcresults.lvldenominator})*${calcopts.ratemodifier}=` +
+																`${calcopts.encounterstograph}*(${calcresults.iv_prob.toFixed(6)}*${calcresults.lvl_prob.toFixed(6)}*${calcopts.ratemodifier.toFixed(6)})=${(calcopts.encounterstograph*calcresults.final_prob.toFixed(8))}` +
+																`<br>σ²=n*p*(1-p)=${(calcopts.encounterstograph*calcresults.final_prob*(1-calcresults.final_prob)).toFixed(4)}` +
+																`<br>with np=${(calcopts.encounterstograph*calcresults.final_prob).toFixed(4)} n(1-p)=${(calcopts.encounterstograph*(1-calcresults.final_prob)).toFixed(4)}`;
+			}
 		}
 		
 	/* Finished calculating for all charts */
